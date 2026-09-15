@@ -14,8 +14,18 @@
     </div>
 
     <div class="compare" data-compare>
-        <img class="compare-img" src="<?= e(asset('img/kaput-oncesi.webp')) ?>" alt="Düzeltme öncesi, hologram izleriyle dağılmış yansıma" width="1600" height="894" loading="lazy" decoding="async">
-        <img class="compare-img compare-after" src="<?= e(asset('img/kaput-sonrasi.webp')) ?>" alt="Düzeltme sonrası, keskin ve kesintisiz yansıma" width="1600" height="894" loading="lazy" decoding="async">
+        <!-- Sanat yonetimi: her kirilma noktasinin kendi kirpimi var.
+             Genis ekranda sinematik bant (2.40:1), dar ekranda daha dikey
+             kare (1.50:1). Iki kare de ayni offset'ten kesildi, aksi halde
+             surgu hizasi kayardi. Boylece hicbir boyutta gorsel ezilmiyor. -->
+        <picture>
+            <source media="(min-width: 640px)" srcset="<?= e(asset('img/kaput-oncesi-genis.webp')) ?>" width="1600" height="667">
+            <img class="compare-img" src="<?= e(asset('img/kaput-oncesi-dar.webp')) ?>" alt="Düzeltme öncesi, hologram izleriyle dağılmış yansıma" width="1341" height="894" loading="lazy" decoding="async">
+        </picture>
+        <picture class="compare-after">
+            <source media="(min-width: 640px)" srcset="<?= e(asset('img/kaput-sonrasi-genis.webp')) ?>" width="1600" height="667">
+            <img class="compare-img" src="<?= e(asset('img/kaput-sonrasi-dar.webp')) ?>" alt="Düzeltme sonrası, keskin ve kesintisiz yansıma" width="1341" height="894" loading="lazy" decoding="async">
+        </picture>
         <div class="compare-handle" data-compare-handle aria-hidden="true">
             <span class="compare-grip">
                 <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">

@@ -247,8 +247,32 @@ taşar.** Başlık ve alt bilgi `.shell` içinde, görsel `.shell` dışında.
 | Scroll bölümüyle tutarlılık | yok | ikisi de tam ekran |
 | Mobilde karşılaştırma yüksekliği | 220 px (16:9) | 260 px (3:2) |
 
-Yükseklik `max-h-[80dvh]` ile sınırlandı; aksi halde geniş ekranda 16:9 oran
-1057 px'e çıkıp görünüm alanını aşıyordu.
+### Sanat yönetimi: her kırılma noktasına kendi kırpımı
+
+Tam ekrana taşıyınca yeni bir sorun çıktı: 16:9 görsel 2,59 oranındaki bir bandın
+içine `object-fit: cover` ile oturunca **%31,5'i kırpılıyordu** ve kesim kötü bir
+yerden geçiyordu (duvardaki nesneler yarıdan bölünüyordu).
+
+Çözüm yükseklik sınırı değil, **kaynağı her kırılma noktası için ayrı kırpmak** oldu:
+
+| | Kırpım | Kullanım |
+|---|---|---|
+| `kaput-*-genis.webp` | 1600×667 (2,40:1) | 640 px üstü, tam ekran bant |
+| `kaput-*-dar.webp` | 1341×894 (1,50:1) | 640 px altı |
+
+Kap oranı da o kırpımla eşleşiyor (`aspect-[12/5]` / `aspect-[3/2]`), yani
+tarayıcının kırpacağı bir şey kalmıyor:
+
+| | Önce | Sonra |
+|---|---|---|
+| Kırpılan alan, 1880 px | %31,5 | **%0,4** |
+| Kırpılan alan, 390 px | %16 | **%0** |
+
+İki kare de **aynı offset'ten** kesildi; farklı kesilseydi sürgü kaydırıldığında
+kareler birbirine oturmaz, karşılaştırma bozulurdu.
+
+Yan fayda: geniş kırpım, atölye diline uymayan arka plan nesnelerini kadraj
+dışında bırakıyor.
 
 ### Hero yazısının okunabilirliği
 

@@ -168,8 +168,11 @@
      tasiyor (1880px'te 1057px), o yuzden ust sinir var. */
   /* Dar ekranda 16:9 yalnizca ~220px yukseklik birakiyor, iki kareyi
      karsilastirmak icin yetersiz. Mobilde 3:2, sm ustunde 16:9. */
-  .compare        { @apply relative aspect-[3/2] max-h-[80dvh] w-full overflow-hidden border-y border-line sm:aspect-video; }
+  /* Oran, o kirilma noktasindaki gorselin kendi orani ile ayni:
+     dar ekranda 1.50:1, genis ekranda 2.40:1. Kirpma neredeyse sifir. */
+  .compare        { @apply relative aspect-[3/2] max-h-[86dvh] w-full overflow-hidden border-y border-line sm:aspect-[12/5]; }
   .compare-img    { @apply absolute inset-0 h-full w-full object-cover; }
+  .compare picture{ @apply absolute inset-0 block h-full w-full; }
   .compare-after  { clip-path: inset(0 0 0 var(--compare-pos, 50%)); }
   .compare-handle { @apply absolute inset-y-0 w-0.5 -translate-x-1/2 bg-brand; left: var(--compare-pos, 50%); }
   .compare-grip   { @apply absolute left-1/2 top-1/2 grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-glass bg-brand shadow-brand; }
