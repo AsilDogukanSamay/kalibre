@@ -74,6 +74,32 @@ check('kontrol karakterleri temizlenir', !str_contains($v->validated()['full_nam
 $v = new Validator(['full_name' => 'Ad', 'email' => 'a@b.com', 'phone' => '05321184421', 'message' => str_repeat('x', 12)], $rules);
 check('min kurali calisir', !$v->passes() && isset($v->errors()['full_name']));
 
+// ---------------------------------------------------------------- Env
+echo "
+Yapilandirma okuyucu
+";
+
+$tmp = sys_get_temp_dir() . '/kalibre_env_test';
+file_put_contents($tmp, implode("
+", [
+    'DUZ=deger',
+    'YORUMLU=deger   # bu aciklama degerin parcasi olmamali',
+    'TIRNAKLI="icinde # olan deger"',
+    '# tamamen yorum satiri',
+    'BOSLUKLU =  kirpilmali  ',
+]));
+(function () use ($tmp) {
+    $r = new ReflectionClass(App\Core\Env::class);
+    $r->setStaticPropertyValue('loaded', false);
+    $r->setStaticPropertyValue('data', []);
+    App\Core\Env::load($tmp);
+})();
+check('duz deger okunur', App\Core\Env::get('DUZ') === 'deger');
+check('satir sonu yorumu kirpilir', App\Core\Env::get('YORUMLU') === 'deger', '-> ' . var_export(App\Core\Env::get('YORUMLU'), true));
+check('tirnak icindeki # korunur', App\Core\Env::get('TIRNAKLI') === 'icinde # olan deger', '-> ' . var_export(App\Core\Env::get('TIRNAKLI'), true));
+check('bosluklar kirpilir', App\Core\Env::get('BOSLUKLU') === 'kirpilmali');
+@unlink($tmp);
+
 // ---------------------------------------------------------------- XSS
 echo "\nXSS kacisi\n";
 

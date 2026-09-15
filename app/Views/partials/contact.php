@@ -12,6 +12,13 @@
                 <div>
                     <dt class="text-xs uppercase tracking-[0.14em] text-ink-faint">Atölye</dt>
                     <dd class="mt-1 max-w-[42ch] text-sm text-ink"><?= e($brand['address']) ?></dd>
+                    <dd class="mt-1.5">
+                        <a class="inline-flex items-center gap-1.5 text-sm text-brand-text underline decoration-brand/40 underline-offset-4 transition hover:decoration-brand"
+                           href="<?= e($brand['maps']) ?>" target="_blank" rel="noopener">
+                            Haritada gör
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4l-7.3 7.3-1.4-1.4L13.6 5H11V3z"/><path d="M5 5h4V3H3v14h14v-6h-2v4H5V5z"/></svg>
+                        </a>
+                    </dd>
                 </div>
                 <div>
                     <dt class="text-xs uppercase tracking-[0.14em] text-ink-faint">Telefon</dt>
@@ -37,7 +44,7 @@
                     <div class="field">
                         <label class="field-label" for="phone">Telefon</label>
                         <input class="field-input" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required>
-                        <p class="field-hint">Ayni gun icinde bu numaradan ariyoruz.</p>
+                        <p class="field-hint">Aynı gün içinde bu numaradan arıyoruz.</p>
                         <p class="field-error" data-error-for="phone"></p>
                     </div>
                 </div>

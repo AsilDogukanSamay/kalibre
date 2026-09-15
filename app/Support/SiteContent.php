@@ -20,6 +20,8 @@ final class SiteContent
                 'whatsapp' => '902123470118',
                 'address'  => 'Ayazağa Mah. Kemerburgaz Cad. No 14, Maslak, İstanbul',
                 'hours'    => 'Hafta içi 09.00 - 19.00, Cumartesi 10.00 - 16.00',
+                'maps'     => 'https://www.google.com/maps/search/?api=1&query=Ayaza%C4%9Fa+Mah.+Kemerburgaz+Cad.+No+14+Maslak+%C4%B0stanbul',
+                'geo'      => ['lat' => 41.1105, 'lng' => 29.0203],
             ],
 
             'hero' => [
@@ -38,6 +40,7 @@ final class SiteContent
             'services' => [
                 [
                     'title' => 'Boya düzeltme',
+                    'price' => "24.900 TL'den başlar",
                     'body'  => 'İki veya üç kademeli kesme ve parlatma. Swirl, hologram ve hafif çizikler kalkar, kalan vernik her adımda ölçülür.',
                     'meta'  => '1 ile 3 gün',
                     'image' => 'bento-duzeltme.webp',
@@ -45,6 +48,7 @@ final class SiteContent
                 ],
                 [
                     'title' => 'Seramik kaplama',
+                    'price' => "18.500 TL'den başlar",
                     'body'  => '9H sınıfı kaplama, düzeltme bittikten sonra kontrollü ortamda uygulanır. Yıkama direnci ve su itme performansı kayıt altına alınır.',
                     'meta'  => '36 ay garanti',
                     'image' => 'bento-seramik.webp',
@@ -52,6 +56,7 @@ final class SiteContent
                 ],
                 [
                     'title' => 'İç detaylı temizlik',
+                    'price' => "6.400 TL'den başlar",
                     'body'  => 'Deri, alkantara ve tekstil için ayrı kimyasal. Ekstraksiyon sonrası koku giderme ve UV koruma.',
                     'meta'  => '6 ile 10 saat',
                     'image' => 'bento-ic-temizlik.webp',
@@ -59,6 +64,7 @@ final class SiteContent
                 ],
                 [
                     'title' => 'Şeffaf koruma filmi',
+                    'price' => "32.000 TL'den başlar",
                     'body'  => 'Ön tampon, kaput ve ayna kapakları için kesim şablonuyla uygulanan self healing film. Taş çiziklerini fiziksel olarak durdurur.',
                     'meta'  => '2 ile 4 gün',
                     'image' => 'bento-film.webp',

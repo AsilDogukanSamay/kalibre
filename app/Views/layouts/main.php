@@ -3,6 +3,8 @@
 /** @var array<string,mixed> $brand */
 $brand = $brand ?? [];
 $brandTheme = $brandTheme ?? App\Support\Brand::current();
+$siteUrl     = rtrim((string) App\Core\Env::get('APP_URL', 'http://localhost:5174'), '/');
+$currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 ?><!doctype html>
 <html lang="tr" data-brand="<?= e($brandTheme['key']) ?>">
 <head>
@@ -14,8 +16,10 @@ $brandTheme = $brandTheme ?? App\Support\Brand::current();
     <meta property="og:title" content="Kalibre · Boya düzeltme ve seramik kaplama">
     <meta property="og:description" content="Her araç mikron ölçümüyle başlar, ölçüm raporuyla teslim edilir.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="<?= e(($_ENV['APP_URL'] ?? 'https://alanadiniz.com') . '/assets/img/og-kapak.jpg') ?>">
+    <meta property="og:image" content="<?= e($siteUrl . '/assets/img/og-kapak.jpg') ?>">
+    <meta property="og:url" content="<?= e($siteUrl . $currentPath) ?>">
     <meta name="twitter:card" content="summary_large_image">
+    <link rel="canonical" href="<?= e($siteUrl . $currentPath) ?>">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -74,6 +78,36 @@ $brandTheme = $brandTheme ?? App\Support\Brand::current();
 <?= partial('partials/whatsapp', ['brand' => $brand]) ?>
 
 <div class="toast-layer" id="toastLayer" role="status" aria-live="polite"></div>
+
+<!-- Schema.org LocalBusiness: adres, telefon ve calisma saatlerinin
+     arama sonucunda zengin sonuc olarak cikabilmesi icin. -->
+<script type="application/ld+json">
+<?= json_encode([
+    '@context'  => 'https://schema.org',
+    '@type'     => 'AutoDetailing',
+    'name'      => $brandTheme['name'],
+    'url'       => $siteUrl,
+    'image'     => $siteUrl . '/assets/img/og-kapak.jpg',
+    'telephone' => $brand['phone'] ?? '',
+    'address'   => [
+        '@type'           => 'PostalAddress',
+        'streetAddress'   => 'Ayazağa Mah. Kemerburgaz Cad. No 14',
+        'addressLocality' => 'Sarıyer',
+        'addressRegion'   => 'İstanbul',
+        'addressCountry'  => 'TR',
+    ],
+    'geo' => [
+        '@type'     => 'GeoCoordinates',
+        'latitude'  => $brand['geo']['lat'] ?? null,
+        'longitude' => $brand['geo']['lng'] ?? null,
+    ],
+    'openingHoursSpecification' => [
+        ['@type' => 'OpeningHoursSpecification', 'dayOfWeek' => ['Monday','Tuesday','Wednesday','Thursday','Friday'], 'opens' => '09:00', 'closes' => '19:00'],
+        ['@type' => 'OpeningHoursSpecification', 'dayOfWeek' => ['Saturday'], 'opens' => '10:00', 'closes' => '16:00'],
+    ],
+    'priceRange' => '₺₺₺',
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) ?>
+</script>
 
 <script src="<?= e(asset('js/app.js')) ?>" defer></script>
 </body>

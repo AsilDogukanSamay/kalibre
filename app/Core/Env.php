@@ -36,6 +36,15 @@ final class Env
             $key   = trim($key);
             $value = trim($value);
 
+            // Satir sonu yorumu: DEGER=x   # aciklama
+            // Yalnizca tirnaksiz degerlerde kirpilir; tirnak icindeki # korunur.
+            if ($value !== '' && $value[0] !== '"' && $value[0] !== "'") {
+                $yorum = strpos($value, '#');
+                if ($yorum !== false) {
+                    $value = rtrim(substr($value, 0, $yorum));
+                }
+            }
+
             // "deger" veya 'deger' sarmalayicilarini soy
             if (strlen($value) > 1) {
                 $first = $value[0];

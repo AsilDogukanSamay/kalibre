@@ -25,7 +25,12 @@
                 <div class="cell-body">
                     <h3 class="h-card"><?= e($service['title']) ?></h3>
                     <p class="body-sm max-w-md"><?= e($service['body']) ?></p>
-                    <span class="cell-meta"><?= e($service['meta']) ?></span>
+                    <div class="mt-1 flex flex-wrap items-center gap-2">
+                        <span class="cell-meta"><?= e($service['meta']) ?></span>
+                        <?php if (!empty($service['price'])): ?>
+                            <span class="cell-price"><?= e($service['price']) ?></span>
+                        <?php endif; ?>
+                    </div>
                 </div>
             </article>
         <?php endforeach; ?>

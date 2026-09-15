@@ -240,7 +240,8 @@
   .cell-scrim { @apply absolute inset-0 bg-gradient-to-t from-surface-900 from-[30%] via-surface-900/60 via-[58%] to-transparent; }
   .cell-tint  { @apply absolute inset-0 bg-gradient-to-br from-brand/20 via-surface-800/40 to-transparent; }
   .cell-body  { @apply relative flex flex-col gap-2.5; }
-  .cell-meta  { @apply readout mt-1 inline-flex w-fit rounded-glass border border-line-strong bg-white/5 px-3 py-1 text-xs text-ink; }
+  .cell-meta  { @apply readout inline-flex w-fit rounded-glass border border-line-strong bg-white/5 px-3 py-1 text-xs text-ink; }
+  .cell-price { @apply readout inline-flex w-fit rounded-glass border border-brand/40 bg-brand/[0.10] px-3 py-1 text-xs text-ink; }
 
 
   /* ---------- Süreç ---------- */

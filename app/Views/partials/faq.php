@@ -17,6 +17,11 @@
                     <p class="faq-body"><?= e($item['a']) ?></p>
                 </details>
             <?php endforeach; ?>
+            <p class="body-sm mt-3">
+                Aradığınız soruyu bulamadıysanız
+                <a class="text-brand-text underline decoration-brand/40 underline-offset-4 transition hover:decoration-brand" href="#iletisim">formu bırakın</a>,
+                aynı gün içinde arıyoruz.
+            </p>
         </div>
     </div>
 </section>

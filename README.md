@@ -317,6 +317,20 @@ videolar poster yüklendikten sonra iniyor, ilk boyamayı etkilemiyor.
 
 ---
 
+## 7b. SEO ve yerel işletme verisi
+
+| Ne | Nerede |
+|---|---|
+| `canonical` · `og:url` | `.env` içindeki `APP_URL` üzerinden üretilir, sayfaya göre değişir |
+| `og:image` · `twitter:card` | Paylaşımda kapak görseli |
+| **Schema.org `AutoDetailing`** | Adres, telefon, koordinat ve çalışma saatleri JSON-LD olarak gömülü; Google'da zengin sonuç için |
+| Haritada gör | İletişim bölümünde Google Maps bağlantısı |
+
+`APP_URL` yayına alırken gerçek alan adıyla değiştirilmelidir; canonical ve
+og etiketleri otomatik olarak ona göre üretilir.
+
+---
+
 ## 8. Kurulum
 
 ```bash
@@ -344,7 +358,7 @@ Harici bağımlılık gerektirmez. Veri erişim katmanı sahte bir PDO ile test 
 böylece **MySQL kurulu olmadan da** prepared statement kullanıldığı ve kullanıcı
 girdisinin SQL metnine birleştirilmediği doğrulanabilir.
 
-Mevcut durum: **22 test, hepsi geçiyor.**
+Mevcut durum: **26 test, hepsi geçiyor.**
 
 ### Rotalar
 
