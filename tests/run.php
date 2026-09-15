@@ -1,0 +1,158 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * Bagimlilik gerektirmeyen duman testleri.
+ *   php tests/run.php
+ *
+ * MySQL olmadan da calisir: veri erisim katmani sahte bir PDO ile test edilir,
+ * boylece prepared statement kullanildigi ve degerlerin SQL metnine
+ * birlestirilmedigi dogrulanir.
+ */
+
+use App\Core\Autoloader;
+use App\Core\Validator;
+use App\Core\View;
+use App\Models\ContactMessage;
+
+$root = dirname(__DIR__);
+require $root . '/app/Core/Autoloader.php';
+Autoloader::register($root . '/app');
+require $root . '/app/Core/helpers.php';
+
+$pass = 0;
+$fail = 0;
+
+function check(string $name, bool $ok, string $detail = ''): void
+{
+    global $pass, $fail;
+    if ($ok) {
+        $pass++;
+        printf("  [ok]   %s\n", $name);
+    } else {
+        $fail++;
+        printf("  [FAIL] %s %s\n", $name, $detail);
+    }
+}
+
+// ---------------------------------------------------------------- Validator
+echo "\nDogrulama katmani\n";
+
+$rules = [
+    'full_name' => 'required|min:3|max:120',
+    'email'     => 'required|email|max:180',
+    'phone'     => 'required|phone|max:32',
+    'message'   => 'required|min:10|max:2000',
+];
+
+$v = new Validator([], $rules);
+check('bos form reddedilir', !$v->passes());
+check('dort alan icin de hata uretir', count($v->errors()) === 4);
+
+$v = new Validator([
+    'full_name' => 'Deniz Ulgen',
+    'email'     => 'gecersiz-eposta',
+    'phone'     => '0532 118 44 21',
+    'message'   => 'Audi RS6 icin seramik kaplama fiyati ogrenmek istiyorum.',
+], $rules);
+check('gecersiz e-posta yakalanir', !$v->passes() && isset($v->errors()['email']));
+check('gecerli alanlar hata uretmez', !isset($v->errors()['phone']), print_r($v->errors(), true));
+
+$v = new Validator([
+    'full_name' => '  Deniz Ulgen  ',
+    'email'     => 'deniz@ornek.com',
+    'phone'     => '+90 532 118 44 21',
+    'message'   => 'Audi RS6 icin seramik kaplama fiyati ogrenmek istiyorum.',
+], $rules);
+check('gecerli form kabul edilir', $v->passes(), print_r($v->errors(), true));
+check('bosluklar kirpilir', $v->validated()['full_name'] === 'Deniz Ulgen');
+
+$v = new Validator(['full_name' => "Ad\x00Soyad", 'email' => 'a@b.com', 'phone' => '05321184421', 'message' => str_repeat('x', 12)], $rules);
+$v->passes();
+check('kontrol karakterleri temizlenir', !str_contains($v->validated()['full_name'], "\x00"));
+
+$v = new Validator(['full_name' => 'Ad', 'email' => 'a@b.com', 'phone' => '05321184421', 'message' => str_repeat('x', 12)], $rules);
+check('min kurali calisir', !$v->passes() && isset($v->errors()['full_name']));
+
+// ---------------------------------------------------------------- XSS
+echo "\nXSS kacisi\n";
+
+$payload = '<script>alert("xss")</script>';
+$escaped = View::e($payload);
+check('script etiketi kacirilir', !str_contains($escaped, '<script>'));
+check('tirnak kacirilir', str_contains(View::e('a"b\'c'), '&quot;') && str_contains(View::e('a"b\'c'), '&#039;'));
+check('e() yardimcisi ayni sonucu verir', e($payload) === $escaped);
+
+// ---------------------------------------------------------------- PDO
+echo "\nVeri erisim katmani (sahte PDO)\n";
+
+final class FakeStatement extends PDOStatement
+{
+    public array $executedWith = [];
+    public array $bound = [];
+    public function execute(?array $params = null): bool
+    {
+        $this->executedWith = $params ?? [];
+        return true;
+    }
+    public function bindValue(string|int $param, mixed $value, int $type = PDO::PARAM_STR): bool
+    {
+        $this->bound[$param] = $value;
+        return true;
+    }
+    public function fetchColumn(int $column = 0): mixed
+    {
+        return 2;
+    }
+}
+
+final class FakePdo extends PDO
+{
+    public string $lastSql = '';
+    public ?FakeStatement $lastStatement = null;
+    public function __construct()
+    {
+    }
+    public function prepare(string $query, array $options = []): FakeStatement
+    {
+        $this->lastSql = $query;
+        return $this->lastStatement = new FakeStatement();
+    }
+    public function lastInsertId(?string $name = null): string
+    {
+        return '4271';
+    }
+}
+
+$pdo = new FakePdo();
+$repo = new ContactMessage($pdo);
+
+$dirty = [
+    'full_name' => "Robert'); DROP TABLE contact_messages;--",
+    'email'     => 'saldirgan@ornek.com',
+    'phone'     => '05321184421',
+    'message'   => 'SQL injection denemesi',
+];
+$id = $repo->create($dirty, '203.0.113.7', 'PHPUnit');
+
+check('INSERT prepared statement ile calisir', str_contains($pdo->lastSql, ':full_name'));
+check('kullanici girdisi SQL metnine girmez', !str_contains($pdo->lastSql, 'DROP TABLE'));
+check('deger parametre olarak baglanir', ($pdo->lastStatement->executedWith[':full_name'] ?? null) === $dirty['full_name']);
+check('lastInsertId dondurulur', $id === 4271);
+
+$repo->recentCountByIp('203.0.113.7', 10);
+check('spam freni sorgusu da parametrelidir', str_contains($pdo->lastSql, ':ip') && str_contains($pdo->lastSql, ':minutes'));
+check('IP degeri baglanir', ($pdo->lastStatement->bound[':ip'] ?? null) === '203.0.113.7');
+
+// ---------------------------------------------------------------- Sablonlar
+echo "\nSablonlar\n";
+
+$html = View::render('home', App\Support\SiteContent::all() + ['campaignEndsAt' => '', 'appName' => 'Test']);
+check('ana sayfa render edilir', str_contains($html, 'Boyayı ölçerek düzeltiyoruz.'));
+check('hicbir etikette style attribute yok', !preg_match('/<[^>]+\sstyle\s*=/i', $html));
+check('hero videosu bagli', str_contains($html, 'video/hero.mp4'));
+check('scroll videosu bagli', str_contains($html, 'video/paso.mp4'));
+check('cam yuzey siniflari kullanilir', substr_count($html, 'glass') > 10);
+
+printf("\n%d gecti, %d kaldi\n\n", $pass, $fail);
+exit($fail === 0 ? 0 : 1);

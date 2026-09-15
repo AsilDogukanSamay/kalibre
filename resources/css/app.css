@@ -1,0 +1,296 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   KALİBRE - merkezi CSS mimarisi
+   Tüm görselleştirme burada tanımlı component sınıfları ve
+   Tailwind utility sınıfları üzerinden yönetilir.
+   Hiçbir HTML etiketinde style="..." attribute'u kullanılmaz.
+   ============================================================ */
+
+@layer base {
+  /* --- TASARIM TOKEN'LARI ---------------------------------------------
+     Renkler burada tanimlanir, Tailwind bu degiskenleri okur.
+     data-brand niteligi .env'deki APP_BRAND degerinden gelir. */
+  :root {
+    --surface-900: 16 18 20;
+    --surface-800: 21 24 27;
+    --surface-700: 27 31 36;
+    --surface-600: 36 42 49;
+    --line:        39 44 50;
+    --line-strong: 54 61 69;
+    --ink:        233 236 239;
+    --ink-muted:  139 148 156;
+    --ink-faint:  109 119 128;
+    --warn:       255 154 139;
+    --good:        91 208 138;
+
+    /* Varsayilan marka: Kalibre */
+    --brand:       75 123 255;
+    --brand-dark:  61 107 240;
+    --brand-tint: 122 156 255;
+    --brand-alt:   75 123 255;
+  }
+
+  /* Bosch kurumsal paleti: kirmizi #EA0016, koyu mavi #00509D, acik mavi #008ECF */
+  :root[data-brand="bosch"] {
+    --brand:      234   0  22;
+    --brand-dark: 184   0  15;
+    --brand-tint: 255  42  60;
+    --brand-alt:    0 142 207;
+  }
+
+  :root { color-scheme: dark; }
+  html  { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    @apply bg-surface-900 text-ink font-sans antialiased;
+    font-variation-settings: "wdth" 92, "wght" 400;
+  }
+
+  ::selection { @apply bg-brand text-white; }
+
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    @apply outline-none ring-2 ring-brand ring-offset-2 ring-offset-surface-900;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+
+  /* ---------- Yerleşim ---------- */
+  .shell        { @apply mx-auto w-full max-w-[82.5rem] px-5 sm:px-6; }
+  .section      { @apply py-16 sm:py-20 lg:py-28; }
+  .section-head { @apply mb-10 flex max-w-2xl flex-col gap-3 sm:mb-14; }
+
+  /* ---------- Tipografi: tek aile, genişlik ekseni ikinci "font" ---------- */
+  .display   { font-variation-settings: "wdth" 118, "wght" 700; @apply tracking-tight; line-height: 1.04; }
+  .h-display { @apply display text-[clamp(2.2rem,4.5vw,3.8rem)]; }
+  .h-section { @apply display text-[clamp(2rem,4.4vw,3.1rem)] text-balance; }
+  .h-card    { @apply text-[clamp(1.3rem,2.2vw,1.65rem)] tracking-tight; font-variation-settings: "wdth" 108, "wght" 650; line-height: 1.15; }
+  .body-text { @apply max-w-[52ch] text-[clamp(1rem,1.35vw,1.13rem)] leading-relaxed text-ink-muted; }
+  .body-sm   { @apply max-w-[58ch] text-sm leading-relaxed text-ink-muted; }
+
+  /* Ölçüm okumaları: dar genişlik + tablo rakamları */
+  .readout { font-variation-settings: "wdth" 70, "wght" 600; @apply tabular-nums tracking-wide; }
+
+  /* ---------- GLASSMORPHISM ÇEKİRDEĞİ ----------
+     Tek kaynak: her buzlu cam yüzey bu sınıflardan türer (DRY). */
+  .glass {
+    @apply rounded-glass border border-white/10 bg-white/[0.055] shadow-glass
+           backdrop-blur-glass backdrop-saturate-150;
+  }
+  .glass-strong {
+    @apply rounded-glass border border-white/[0.14] bg-white/[0.09] shadow-glass-lg
+           backdrop-blur-glass backdrop-saturate-150;
+  }
+  .glass-soft {
+    @apply rounded-glass border border-white/[0.07] bg-white/[0.03] backdrop-blur-md;
+  }
+  /* Üst kenarda cam parlaması */
+  .glass-sheen {
+    @apply relative overflow-hidden
+           before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px
+           before:bg-gradient-to-r before:from-transparent before:via-white/35 before:to-transparent;
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .glass, .glass-strong, .glass-soft { @apply bg-surface-700 backdrop-blur-none; }
+  }
+  .glass-card {
+    @apply glass glass-sheen p-6 transition duration-300 sm:p-7
+           hover:border-white/20 hover:bg-white/[0.085];
+  }
+
+  /* ---------- Butonlar ---------- */
+  .btn {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-glass
+           border border-transparent px-6 py-3 text-[0.94rem] transition duration-200
+           active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60;
+    font-variation-settings: "wdth" 96, "wght" 600;
+  }
+  .btn-primary { @apply btn bg-brand text-white shadow-brand hover:bg-brand-dark; }
+  .btn-ghost   { @apply btn border-line-strong bg-white/5 text-ink backdrop-blur-md hover:border-ink; }
+  .btn-sm      { @apply px-[1.05rem] py-[0.58rem] text-[0.88rem]; }
+  .btn-block   { @apply w-full; }
+
+  /* ---------- Navigasyon ---------- */
+  .nav-bar  { @apply sticky top-0 z-40 h-16 border-b border-line bg-surface-900/85 backdrop-blur-glass; }
+  .nav-in   { @apply flex h-full items-center gap-10; }
+  .nav-link { @apply text-[0.92rem] text-ink-muted transition hover:text-ink; }
+  .wordmark     { @apply text-[1.05rem] tracking-[0.05em] text-ink; font-variation-settings: "wdth" 118, "wght" 800; }
+  .wordmark-sub { @apply mt-0.5 text-[10px] uppercase tracking-[0.18em] text-ink-faint; font-variation-settings: "wdth" 96, "wght" 500; }
+
+  /* ---------- Hero ---------- */
+  .hero-bg    { @apply absolute inset-0 z-0 overflow-hidden bg-surface-800; }
+  .hero-media { @apply absolute inset-0 h-full w-full object-cover; }
+  .hero-video { @apply opacity-0 transition-opacity duration-1000; }
+  .hero-bg-playing .hero-video { @apply opacity-100; }
+  .hero-inner { @apply relative z-10; }
+  .hero-scrim {
+    @apply pointer-events-none absolute inset-0;
+    background: linear-gradient(to top, rgba(16,18,20,.92) 22%, rgba(16,18,20,.76) 55%, rgba(16,18,20,.48) 100%);
+  }
+  /* 1320px = .shell maksimum genişliğine ulaştığı nokta. Bu eşikten sonra
+     yazı bloğunun sağ kenarı ekranın ~%50'sinde sabit kalır, perdeyi
+     yatay kurmak güvenli olur. Altında dikey perde çalışır. */
+  @media (min-width: 1320px) {
+    .hero-scrim {
+      background:
+        linear-gradient(90deg, rgba(16,18,20,.88) 0%, rgba(16,18,20,.82) 38%, rgba(16,18,20,.60) 52%, rgba(16,18,20,.12) 68%, rgba(16,18,20,0) 86%, rgba(16,18,20,.16) 100%),
+        linear-gradient(to bottom, rgba(16,18,20,.24) 0%, transparent 22%, transparent 68%, rgba(16,18,20,.46) 100%);
+    }
+  }
+  /* Perdeden bağımsız ikinci güvence: parlak bir kare denk gelse de yazı ayakta kalır */
+  .hero-copy h1, .hero-copy p { text-shadow: 0 1px 2px rgba(8,10,12,.55), 0 4px 28px rgba(8,10,12,.75); }
+  @media (prefers-reduced-motion: reduce) { .hero-video { @apply hidden; } }
+
+  /* ---------- Ölçü şeridi ---------- */
+  .fact-num { @apply readout block text-[clamp(1.8rem,3.2vw,2.5rem)] text-ink; }
+  .fact-lbl { @apply mt-1.5 block text-[0.86rem] text-ink-muted; }
+
+  /* ---------- Öncesi / sonrası sürgüsü ----------
+     Konum tek bir custom property ile taşınır; JS yalnızca o değeri günceller,
+     kırpma ve konumlandırma kuralları burada kalır. */
+  .compare        { @apply relative aspect-video overflow-hidden rounded-glass border border-line; }
+  .compare-img    { @apply absolute inset-0 h-full w-full object-cover; }
+  .compare-after  { clip-path: inset(0 0 0 var(--compare-pos, 50%)); }
+  .compare-handle { @apply absolute inset-y-0 w-0.5 -translate-x-1/2 bg-brand; left: var(--compare-pos, 50%); }
+  .compare-grip   { @apply absolute left-1/2 top-1/2 grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-glass bg-brand shadow-brand; }
+  .compare-range  { @apply absolute inset-0 h-full w-full cursor-ew-resize opacity-0; }
+  .compare-tag    { @apply glass-soft pointer-events-none absolute bottom-3 px-2.5 py-1 text-xs; }
+
+  /* ---------- Scroll ile ilerleyen paso ---------- */
+  .scrub-track { @apply relative; height: 280vh; }
+  .scrub       { @apply sticky top-0 grid h-[100dvh] grid-cols-1 overflow-hidden border-b border-line lg:grid-cols-[minmax(0,1fr)_20rem]; }
+  .scrub-stage { @apply relative overflow-hidden bg-black; }
+  .scrub-stage img, .scrub-stage video { @apply absolute inset-0 h-full w-full object-cover object-[38%_50%]; }
+  .scrub-stage video { @apply opacity-0 transition-opacity duration-500; }
+  .scrub-stage-video video { @apply opacity-100; }
+  .scrub-stage-video img   { @apply opacity-0; }
+  /* Karartma ve isik seridi YALNIZCA video yokken calisir.
+     Video varken pasta makinesinin kendisi ilerlemeyi anlatiyor;
+     ikinci bir ilerleme sinyali eklemek celiskili okunuyordu. */
+  .scrub-dull {
+    @apply pointer-events-none absolute inset-0 bg-surface-900/25 backdrop-saturate-[0.45] backdrop-brightness-90 transition-opacity duration-500;
+    clip-path: inset(0 0 0 calc(var(--scrub-p, 0) * 100%));
+  }
+  .scrub-stage-video .scrub-dull { @apply opacity-0; }
+  .scrub-stage-video .scrub-beam { @apply opacity-0; }
+
+  /* Paso ilerlemesi: scroll'un ne ise yaradigini acikca soyleyen gosterge */
+  .scrub-progress     { @apply flex items-center justify-between text-xs text-ink-faint; }
+  .scrub-progress-val { @apply readout text-ink; }
+  .scrub-beam {
+    @apply pointer-events-none absolute -inset-y-[10%] left-0 w-1/3 transition-opacity duration-500;
+    background: linear-gradient(90deg, transparent, rgb(var(--brand) / .30) 46%, rgba(255,255,255,.16) 56%, transparent);
+    transform: translateX(calc(var(--scrub-p, 0) * 320%)) skewX(-8deg);
+  }
+  .scrub-panel { @apply glass-soft flex flex-col justify-center gap-7 rounded-none border-l border-line p-6 sm:p-8; }
+  .gauge-value { @apply readout block text-[clamp(2rem,4vw,2.8rem)] leading-none text-ink; }
+  .gauge-unit  { @apply ml-1 text-sm text-ink-muted; font-variation-settings: "wdth" 92, "wght" 400; }
+  .gauge-label { @apply mt-1.5 block text-[0.85rem] text-ink-muted; }
+  .gauge-bar   { @apply h-[3px] overflow-hidden rounded-glass bg-line; }
+  .gauge-fill  { @apply block h-full bg-brand; width: calc(var(--scrub-p, 0) * 100%); }
+  /* Dar ekranda sahne yuksekligin cogunu alir; panel kompaktlasir.
+     Bolumun konusu video, panel destekleyici. */
+  @media (max-width: 1023px) {
+    .scrub-track { height: 220vh; }
+    .scrub       { grid-template-rows: minmax(0, 1fr) auto; }
+    .scrub-stage { @apply min-h-[52dvh]; }
+    .scrub-panel { @apply flex-row flex-wrap items-center gap-x-7 gap-y-3 border-l-0 border-t border-line p-5; }
+    .scrub-panel > p:last-child { @apply hidden; }   /* aciklama giris bolumunde zaten var */
+    .gauge-value { @apply text-[1.75rem]; }
+    .gauge-label { @apply mt-1 text-xs; }
+    .scrub-progress { @apply basis-full; }
+    .gauge-bar   { @apply basis-full; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scrub-track { height: auto; }
+    .scrub       { @apply static h-auto min-h-[70vh]; }
+  }
+
+  /* ---------- Bento ---------- */
+  /* Hucre icerigi alta yaslanir, fotograf arkada tum kareyi kaplar. */
+  .cell       { @apply glass-card relative flex min-h-[15.5rem] flex-col justify-end overflow-hidden; }
+  .cell-photo { @apply absolute inset-0 h-full w-full object-cover object-[50%_30%]; }
+  /* Perde yazinin oturdugu alt %30'u tamamen kapatir, sonra hizla acilir.
+     Olculdu: en kotu baslik kontrasti 9.0:1 (onceki egride 7.2:1) ve
+     fotografin ust yarisi da daha gorunur. Iki eksende birden iyilesme. */
+  .cell-scrim { @apply absolute inset-0 bg-gradient-to-t from-surface-900 from-[30%] via-surface-900/60 via-[58%] to-transparent; }
+  .cell-tint  { @apply absolute inset-0 bg-gradient-to-br from-brand/20 via-surface-800/40 to-transparent; }
+  .cell-body  { @apply relative flex flex-col gap-2.5; }
+  .cell-meta  { @apply readout mt-1 inline-flex w-fit rounded-glass border border-line-strong bg-white/5 px-3 py-1 text-xs text-ink; }
+
+
+  /* ---------- Süreç ---------- */
+  .step      { @apply glass-card flex flex-col gap-2; }
+  .step-rule { @apply h-0.5 w-8 bg-brand; }
+  .step-time { @apply readout mt-auto pt-3 text-sm text-brand; }
+
+  /* ---------- Fiyat ---------- */
+  .plan       { @apply glass-card flex flex-col gap-5; }
+  .plan-best  { @apply border-brand/40 bg-brand/[0.07]; }
+  .plan-price { @apply readout text-[clamp(2rem,3.6vw,2.7rem)] leading-none text-ink; }
+  .plan-badge { @apply rounded-pill bg-brand px-3 py-1 text-xs text-white; font-variation-settings: "wdth" 96, "wght" 600; }
+
+  /* ---------- Form ---------- */
+  .field       { @apply flex flex-col gap-1.5; }
+  .field-label { @apply text-[0.86rem] text-ink; font-variation-settings: "wdth" 96, "wght" 600; }
+  .field-input {
+    @apply w-full rounded-glass border border-line-strong bg-surface-700/70 px-4 py-3 text-[0.95rem]
+           text-ink backdrop-blur-md transition placeholder:text-ink-faint
+           focus:border-brand focus:bg-surface-700;
+  }
+  .field-input-invalid { @apply border-warn bg-warn/[0.07]; }
+  .field-hint  { @apply text-xs text-ink-faint; }
+  .field-error { @apply hidden text-xs text-warn; }
+  .field-error-visible { @apply block; }
+  .honeypot    { @apply pointer-events-none absolute -left-[9999px] h-px w-px opacity-0; }
+
+  /* ---------- Toast ---------- */
+  .toast-layer { @apply pointer-events-none fixed inset-x-0 top-4 z-[60] flex flex-col items-center gap-3 px-4; }
+  .toast       { @apply glass-strong glass-sheen pointer-events-auto flex w-full max-w-md items-start gap-3 p-4; }
+  .toast-success { @apply border-good/40 bg-good/[0.10]; }
+  .toast-error   { @apply border-warn/45 bg-warn/[0.10]; }
+  .toast-dot     { @apply mt-1.5 h-2 w-2 shrink-0 rounded-pill; }
+  .toast-dot-success { @apply bg-good; }
+  .toast-dot-error   { @apply bg-warn; }
+  .toast-title { @apply text-sm text-ink; font-variation-settings: "wdth" 96, "wght" 600; }
+  .toast-body  { @apply mt-0.5 text-xs leading-relaxed text-ink-muted; }
+  .toast-close { @apply -mr-1 -mt-1 ml-auto rounded-glass p-1 text-ink-faint transition hover:text-ink; }
+
+  /* ---------- Geri sayım ---------- */
+  .countdown-cell { @apply glass-soft flex min-w-[4.25rem] flex-col items-center px-3 py-2.5; }
+  .countdown-num  { @apply readout text-2xl text-ink sm:text-3xl; }
+  .countdown-lbl  { @apply text-[10px] uppercase tracking-[0.14em] text-ink-faint; }
+
+  /* ---------- WhatsApp ---------- */
+  .wa-fab  { @apply fixed bottom-5 right-5 z-50 inline-flex h-14 w-14 items-center justify-center rounded-pill bg-[#25D366] text-white shadow-glass-lg transition hover:brightness-110; }
+  .wa-ring { @apply pointer-events-none absolute inset-0 rounded-pill bg-[#25D366] opacity-60 animate-pulse-ring; }
+
+  /* ---------- Vaka calismasi: palet ornekleri ----------
+     Renk degerleri Brand sinifindan geliyor ama boyama CSS'te kaliyor,
+     boylece markup'ta style attribute'u olusmuyor. */
+  [data-swatch="#EA0016"] { background-color: #EA0016; }
+  [data-swatch="#00509D"] { background-color: #00509D; }
+  [data-swatch="#008ECF"] { background-color: #008ECF; }
+  [data-swatch="#4B7BFF"] { background-color: #4B7BFF; }
+  [data-swatch="#3D6BF0"] { background-color: #3D6BF0; }
+  [data-swatch="#7A9CFF"] { background-color: #7A9CFF; }
+
+  /* ---------- Vaka calismasi yerlesimi ---------- */
+  .case-rule { @apply h-px w-full bg-line; }
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+}

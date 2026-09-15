@@ -1,0 +1,324 @@
+/**
+ * Bosch Car Service - frontend davranis katmani.
+ * Modul basina tek sorumluluk, hepsi ayni baslatma noktasindan calisir.
+ * Hicbir stil burada uretilmez; yalnizca CSS mimarisindeki siniflar takilip cikarilir.
+ */
+(function () {
+  'use strict';
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ------------------------------------------------------------------
+   * Toast bildirimi - glassmorphic, tek uretici fonksiyon (DRY)
+   * ---------------------------------------------------------------- */
+  const Toast = (function () {
+    const layer = document.getElementById('toastLayer');
+
+    function show(type, title, body) {
+      if (!layer) return;
+
+      const el = document.createElement('div');
+      el.className = 'toast ' + (type === 'success' ? 'toast-success' : 'toast-error');
+      if (!reduceMotion) el.classList.add('animate-toast-in');
+
+      const dot = document.createElement('span');
+      dot.className = 'toast-dot ' + (type === 'success' ? 'toast-dot-success' : 'toast-dot-error');
+
+      const text = document.createElement('div');
+      const h = document.createElement('p');
+      h.className = 'toast-title';
+      h.textContent = title;
+      text.appendChild(h);
+
+      if (body) {
+        const p = document.createElement('p');
+        p.className = 'toast-body';
+        p.textContent = body;
+        text.appendChild(p);
+      }
+
+      const close = document.createElement('button');
+      close.type = 'button';
+      close.className = 'toast-close';
+      close.setAttribute('aria-label', 'Bildirimi kapat');
+      close.textContent = '✕';
+      close.addEventListener('click', () => dismiss(el));
+
+      el.append(dot, text, close);
+      layer.appendChild(el);
+
+      window.setTimeout(() => dismiss(el), type === 'success' ? 7000 : 9000);
+    }
+
+    function dismiss(el) {
+      if (!el.isConnected) return;
+      if (reduceMotion) { el.remove(); return; }
+      el.classList.remove('animate-toast-in');
+      el.classList.add('animate-toast-out');
+      el.addEventListener('animationend', () => el.remove(), { once: true });
+    }
+
+    return {
+      success: (t, b) => show('success', t, b),
+      error: (t, b) => show('error', t, b),
+    };
+  })();
+
+  /* ------------------------------------------------------------------
+   * Iletisim formu - fetch tabanli, sayfa yenilenmez
+   * ---------------------------------------------------------------- */
+  (function contactForm() {
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+
+    const button = form.querySelector('[data-submit]');
+    const label = form.querySelector('[data-submit-label]');
+    const spinner = form.querySelector('[data-submit-spinner]');
+
+    function clearErrors() {
+      form.querySelectorAll('[data-error-for]').forEach((node) => {
+        node.textContent = '';
+        node.classList.remove('field-error-visible');
+      });
+      form.querySelectorAll('.field-input-invalid').forEach((node) => {
+        node.classList.remove('field-input-invalid');
+        node.removeAttribute('aria-invalid');
+      });
+    }
+
+    function paintErrors(errors) {
+      let first = null;
+      Object.keys(errors || {}).forEach((field) => {
+        const message = form.querySelector('[data-error-for="' + field + '"]');
+        const input = form.elements[field];
+        if (message) {
+          message.textContent = errors[field];
+          message.classList.add('field-error-visible');
+        }
+        if (input) {
+          input.classList.add('field-input-invalid');
+          input.setAttribute('aria-invalid', 'true');
+          if (!first) first = input;
+        }
+      });
+      if (first) first.focus();
+    }
+
+    function busy(state) {
+      button.disabled = state;
+      button.setAttribute('aria-busy', state ? 'true' : 'false');
+      label.textContent = state ? 'Gönderiliyor' : 'Talebi gönder';
+      spinner.classList.toggle('hidden', !state);
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearErrors();
+      busy(true);
+
+      const payload = Object.fromEntries(new FormData(form).entries());
+
+      try {
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (response.ok && result.ok) {
+          form.reset();
+          Toast.success(
+            result.message || 'Talebiniz alındı.',
+            result.reference ? 'Referans numaranız: ' + result.reference : ''
+          );
+        } else {
+          paintErrors(result.errors);
+          Toast.error(result.message || 'Talebiniz gönderilemedi.', '');
+        }
+      } catch (error) {
+        Toast.error('Bağlantı kurulamadı.', 'İnternet bağlantınızı kontrol edip tekrar deneyin.');
+      } finally {
+        busy(false);
+      }
+    });
+  })();
+
+  /* ------------------------------------------------------------------
+   * Oncesi / sonrasi surgusu
+   * ---------------------------------------------------------------- */
+  (function compareSlider() {
+    const roots = document.querySelectorAll('[data-compare]');
+    if (!roots.length) return;
+
+    /*
+     * Hicbir elemana style attribute'u yazilmaz. Konum degeri, sayfaya bir kez
+     * eklenen tek kurallik bir stylesheet uzerinden guncellenir; kirpma ve
+     * konumlandirma kurallari app.css icinde kalir.
+     */
+    const sheetEl = document.createElement('style');
+    document.head.appendChild(sheetEl);
+    sheetEl.sheet.insertRule(':root { --compare-pos: 50%; }', 0);
+    const rule = sheetEl.sheet.cssRules[0];
+
+    roots.forEach((root) => {
+      const range = root.querySelector('[data-compare-range]');
+      if (!range) return;
+
+      const paint = () => rule.style.setProperty('--compare-pos', range.value + '%');
+      range.addEventListener('input', paint);
+      paint();
+    });
+  })();
+
+  /* ------------------------------------------------------------------
+   * Hero arka plan videosu
+   * Veri tasarrufu, hareket azaltma veya dar ekranda hic indirilmez.
+   * ---------------------------------------------------------------- */
+  (function heroVideo() {
+    const bg = document.getElementById('heroBg');
+    const video = document.getElementById('heroVideo');
+    if (!bg || !video) return;
+
+    const conn = navigator.connection || {};
+    // Video kaynagi HTML'de data-src olarak durur. Kosullar saglanmazsa
+    // src hic atanmaz, yani tarayici tek bir bayt bile indirmez.
+    if (reduceMotion || conn.saveData === true || window.innerWidth < 640) {
+      return;
+    }
+
+    video.preload = 'auto';
+    video.src = video.dataset.src;
+    video.addEventListener('canplay', () => {
+      const played = video.play();
+      if (played && played.then) {
+        played.then(() => bg.classList.add('hero-bg-playing')).catch(() => {});
+      } else {
+        bg.classList.add('hero-bg-playing');
+      }
+    }, { once: true });
+  })();
+
+  /* ------------------------------------------------------------------
+   * Scroll ile ilerleyen duzeltme pasosu
+   * scroll dinleyicisi yok: IntersectionObserver bolum gorunurken
+   * bir rAF dongusu acar, bolum cikinca kapatir.
+   * Konum degeri tek kurallik stylesheet uzerinden tasinir.
+   * ---------------------------------------------------------------- */
+  (function scrubSection() {
+    const track = document.getElementById('scrubTrack');
+    const stage = document.getElementById('scrubStage');
+    const video = document.getElementById('scrubVideo');
+    const micron = document.getElementById('gaugeMicron');
+    const gloss = document.getElementById('gaugeGloss');
+    const percent = document.getElementById('scrubPercent');
+    if (!track || !stage) return;
+
+    const sheetEl = document.createElement('style');
+    document.head.appendChild(sheetEl);
+    sheetEl.sheet.insertRule(':root { --scrub-p: 0; }', 0);
+    const rule = sheetEl.sheet.cssRules[0];
+
+    // Ornek olcum araligi. Gercek verilerle degistirilebilir.
+    const MICRON = [138, 129];
+    const GLOSS = [41, 94];
+
+    // Ayni kural: dar ekranda veya veri tasarrufunda src hic atanmaz.
+    const conn2 = navigator.connection || {};
+    const videoIzinli = video && !reduceMotion && conn2.saveData !== true && window.innerWidth >= 640;
+
+    if (videoIzinli) {
+      const enable = () => {
+        if (video.duration > 0) stage.classList.add('scrub-stage-video');
+      };
+      // Yerel dosyada metadata dinleyici baglanmadan once gelebiliyor;
+      // o yuzden hazir olma durumu ayrica kontrol edilir.
+      video.addEventListener('loadedmetadata', enable);
+      video.addEventListener('error', () => stage.classList.remove('scrub-stage-video'));
+      video.preload = 'auto';
+      video.src = video.dataset.src;
+      if (video.readyState >= 1) enable();
+    }
+
+    const lerp = (a, b, p) => Math.round(a + (b - a) * p);
+
+    function apply(p) {
+      rule.style.setProperty('--scrub-p', p.toFixed(4));
+      // Yalnizca sayi guncellenir; birim etiketi sablonda sabit durur.
+      // Boylece istemci tarafinda innerHTML hic kullanilmaz.
+      if (micron) micron.textContent = String(lerp(MICRON[0], MICRON[1], p));
+      if (gloss) gloss.textContent = String(lerp(GLOSS[0], GLOSS[1], p));
+      if (percent) percent.textContent = '%' + Math.round(p * 100);
+      if (stage.classList.contains('scrub-stage-video') && video.duration) {
+        video.currentTime = Math.min(video.duration - 0.05, video.duration * p);
+      }
+    }
+
+    if (reduceMotion) { apply(1); return; }
+
+    let running = false;
+    function frame() {
+      if (!running) return;
+      const r = track.getBoundingClientRect();
+      const span = r.height - window.innerHeight;
+      const p = span > 0 ? -r.top / span : 0;
+      apply(Math.max(0, Math.min(1, p)));
+      requestAnimationFrame(frame);
+    }
+
+    new IntersectionObserver((entries) => {
+      const visible = entries[0].isIntersecting;
+      if (visible && !running) { running = true; requestAnimationFrame(frame); }
+      else if (!visible) { running = false; }
+    }, { threshold: 0 }).observe(track);
+
+    apply(0);
+  })();
+
+  /* ------------------------------------------------------------------
+   * Kampanya geri sayimi
+   * ---------------------------------------------------------------- */
+  (function countdown() {
+    const root = document.querySelector('[data-countdown]');
+    if (!root) return;
+
+    const target = new Date(root.getAttribute('data-countdown')).getTime();
+    if (Number.isNaN(target)) return;
+
+    const cells = root.querySelector('[data-countdown-cells]');
+    const expired = root.querySelector('[data-countdown-expired]');
+    const out = {
+      days: root.querySelector('[data-cd="days"]'),
+      hours: root.querySelector('[data-cd="hours"]'),
+      minutes: root.querySelector('[data-cd="minutes"]'),
+      seconds: root.querySelector('[data-cd="seconds"]'),
+    };
+
+    const pad = (n) => String(n).padStart(2, '0');
+
+    function tick() {
+      const diff = target - Date.now();
+
+      if (diff <= 0) {
+        cells.classList.add('hidden');
+        if (expired) expired.classList.remove('hidden');
+        window.clearInterval(timer);
+        return;
+      }
+
+      const s = Math.floor(diff / 1000);
+      out.days.textContent = pad(Math.floor(s / 86400));
+      out.hours.textContent = pad(Math.floor((s % 86400) / 3600));
+      out.minutes.textContent = pad(Math.floor((s % 3600) / 60));
+      out.seconds.textContent = pad(s % 60);
+    }
+
+    tick();
+    const timer = window.setInterval(tick, 1000);
+  })();
+})();
