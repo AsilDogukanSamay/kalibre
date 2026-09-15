@@ -22,7 +22,7 @@
     --line-strong: 54 61 69;
     --ink:        233 236 239;
     --ink-muted:  139 148 156;
-    --ink-faint:  109 119 128;
+    --ink-faint:  124 135 145;   /* AA icin aciltildi: 4.11 -> 5.06 */
     --warn:       255 154 139;
     --good:        91 208 138;
 
@@ -31,6 +31,9 @@
     --brand-dark:  61 107 240;
     --brand-tint: 122 156 255;
     --brand-alt:   75 123 255;
+    /* Koyu zeminde METIN icin acilmis varyant. Dolgu ve kenarlik --brand
+       kullanmaya devam eder; yalnizca yazi bu token'i kullanir. */
+    --brand-text: 122 156 255;
   }
 
   /* Bosch kurumsal paleti: kirmizi #EA0016, koyu mavi #00509D, acik mavi #008ECF */
@@ -39,6 +42,7 @@
     --brand-dark: 184   0  15;
     --brand-tint: 255  42  60;
     --brand-alt:    0 142 207;
+    --brand-text: 255  42  60;   /* #EA0016 metin olarak 4.03:1, bu 4.93:1 */
   }
 
   :root { color-scheme: dark; }
@@ -127,7 +131,7 @@
   .nav-in   { @apply flex h-full items-center gap-10; }
   .nav-link { @apply text-[0.92rem] text-ink-muted transition hover:text-ink; }
   .wordmark     { @apply text-[1.05rem] tracking-[0.05em] text-ink; font-variation-settings: "wdth" 118, "wght" 800; }
-  .wordmark-sub { @apply mt-0.5 text-[10px] uppercase tracking-[0.18em] text-ink-faint; font-variation-settings: "wdth" 96, "wght" 500; }
+  .wordmark-sub { @apply mt-0.5 text-[11px] uppercase tracking-[0.16em] text-ink-faint; font-variation-settings: "wdth" 96, "wght" 500; }
 
   /* ---------- Hero ---------- */
   .hero-bg    { @apply absolute inset-0 z-0 overflow-hidden bg-surface-800; }
@@ -234,7 +238,15 @@
   /* ---------- Süreç ---------- */
   .step      { @apply glass-card flex flex-col gap-2; }
   .step-rule { @apply h-0.5 w-8 bg-brand; }
-  .step-time { @apply readout mt-auto pt-3 text-sm text-brand; }
+  .step-time { @apply readout mt-auto pt-3 text-sm text-brand-text; }
+
+  /* ---------- SSS ----------
+     Dolgu <summary> uzerinde durur; boylece tiklanabilir alan satir
+     yuksekligi kadar degil, tum satir boyunca ~56px olur. */
+  .faq-item    { @apply glass transition hover:border-white/20; }
+  .faq-summary { @apply flex cursor-pointer list-none items-center justify-between gap-4 p-5 text-base text-ink; font-variation-settings: "wdth" 100, "wght" 600; }
+  .faq-icon    { @apply h-5 w-5 shrink-0 text-brand transition; }
+  .faq-body    { @apply body-sm max-w-[62ch] px-5 pb-5; }
 
   /* ---------- Fiyat ---------- */
   .plan       { @apply glass-card flex flex-col gap-5; }
@@ -269,9 +281,9 @@
   .toast-close { @apply -mr-1 -mt-1 ml-auto rounded-glass p-1 text-ink-faint transition hover:text-ink; }
 
   /* ---------- Geri sayım ---------- */
-  .countdown-cell { @apply glass-soft flex min-w-[4.25rem] flex-col items-center px-3 py-2.5; }
+  .countdown-cell { @apply glass-soft flex flex-col items-center px-2 py-2.5 sm:px-3; }
   .countdown-num  { @apply readout text-2xl text-ink sm:text-3xl; }
-  .countdown-lbl  { @apply text-[10px] uppercase tracking-[0.14em] text-ink-faint; }
+  .countdown-lbl  { @apply text-[11px] uppercase tracking-[0.14em] text-ink-faint; }
 
   /* ---------- WhatsApp ---------- */
   .wa-fab  { @apply fixed bottom-5 right-5 z-50 inline-flex h-14 w-14 items-center justify-center rounded-pill bg-[#25D366] text-white shadow-glass-lg transition hover:brightness-110; }

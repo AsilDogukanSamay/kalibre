@@ -58,9 +58,9 @@ $brandTheme = $brandTheme ?? App\Support\Brand::current();
                 <span><?= e($brand['hours'] ?? '') ?></span>
             </div>
         </div>
-        <p class="body-sm max-w-3xl text-ink-faint"><?= e($brand['address'] ?? '') ?></p>
+        <p class="body-sm max-w-[62ch] text-ink-faint"><?= e($brand['address'] ?? '') ?></p>
         <?php if ($brandTheme['disclaimer']): ?>
-            <p class="glass-soft max-w-4xl p-4 text-xs leading-relaxed text-ink-faint">
+            <p class="glass-soft max-w-[78ch] p-4 text-xs leading-relaxed text-ink-faint">
                 <strong class="text-ink-muted">Bilgilendirme:</strong>
                 Bu sayfa teknik yetkinlik değerlendirmesi için hazırlanmış bağımsız bir prototiptir.
                 <?= e($brandTheme['legal']) ?> ile ticari veya kurumsal bir bağlantısı yoktur; marka adı,

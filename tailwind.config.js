@@ -25,6 +25,7 @@ module.exports = {
           dark:    'rgb(var(--brand-dark) / <alpha-value>)',
           tint:    'rgb(var(--brand-tint) / <alpha-value>)',
           alt:     'rgb(var(--brand-alt) / <alpha-value>)',
+          text:    'rgb(var(--brand-text) / <alpha-value>)',
         },
         surface: {
           900: 'rgb(var(--surface-900) / <alpha-value>)',

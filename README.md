@@ -205,6 +205,32 @@ CAMPAIGN_ENDS_AT=2026-12-31T23:59:59+03:00
 - Klavye erişilebilirliği: `focus-visible` halkası, "İçeriğe atla" bağlantısı,
   hatalı alanlarda `aria-invalid`, toast'ta `aria-live="polite"`.
 
+### Erişilebilirlik denetimi
+
+Sayfadaki her metin, gerçek zemin rengine karşı ölçülerek denetlendi.
+İlk taramada **33 eleman** WCAG AA eşiğinin altındaydı; iki sistematik sebep vardı:
+
+1. **Marka kırmızısı koyu zeminde metin olarak yetersiz.** `#EA0016` grafit üzerinde
+   4,03:1 veriyor. Çözüm renk değiştirmek değil, **ayrı bir metin token'ı** eklemek
+   oldu: `--brand-text`. Dolgu, kenarlık ve ikonlar kurumsal `--brand` rengini
+   kullanmaya devam ediyor; yalnızca yazı açılmış varyanta geçti.
+   Bosch 5,05:1 · Kalibre 7,18:1.
+2. **`--ink-faint` çok koyuydu** (4,11:1) ve 10px etiketlerde kullanılıyordu.
+   5,12:1'e açıldı, en küçük etiket 11px'e çıkarıldı.
+
+Ayrıca düzeltilenler:
+
+| Bulgu | Önce | Sonra |
+|---|---|---|
+| SSS başlığı tıklama alanı | 24 px | 64 px (mobilde 88 px) |
+| En uzun satır | 149 karakter | 66 karakter |
+| Geri sayım, 360 px | 3+1 sarıyordu | tek satır |
+| AA eşiği altındaki metin | 33 | **0** |
+
+Doğrulanan diğer maddeler: tek `h1`, başlık hiyerarşisinde atlama yok, tüm
+görsellerde `alt`, landmark'lar (`header`/`nav`/`main`/`footer`) yerinde,
+360 px'de yatay kaydırma yok.
+
 ### Hero yazısının okunabilirliği
 
 Hero'da yazı hareketli video üzerinde durur. Perde (scrim) göz kararı değil,

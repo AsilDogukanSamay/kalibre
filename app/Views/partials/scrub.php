@@ -35,7 +35,7 @@
         </div>
 
         <aside class="scrub-panel">
-            <p class="text-xs uppercase tracking-[0.14em] text-brand">Kesme pasosu, canlı ölçüm</p>
+            <p class="text-xs uppercase tracking-[0.14em] text-brand-text">Kesme pasosu, canlı ölçüm</p>
 
             <div>
                 <span class="gauge-value"><span id="gaugeMicron">138</span><span class="gauge-unit">µm</span></span>

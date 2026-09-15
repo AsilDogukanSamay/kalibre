@@ -11,7 +11,7 @@
                 <span class="h-0.5 w-8 bg-brand"></span>
                 <h3 class="mt-1 text-lg  tracking-tight"><?= e($step['title']) ?></h3>
                 <p class="body-sm"><?= e($step['body']) ?></p>
-                <span class="mt-auto pt-3 text-sm  tabular-nums text-brand"><?= e($step['time']) ?></span>
+                <span class="mt-auto pt-3 text-sm  tabular-nums text-brand-text"><?= e($step['time']) ?></span>
             </li>
         <?php endforeach; ?>
     </ol>

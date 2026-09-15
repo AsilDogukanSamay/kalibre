@@ -27,7 +27,7 @@
 
         <div class="lg:col-span-5">
             <div class="glass-strong glass-sheen flex flex-col gap-4 p-5">
-                <p class="text-xs uppercase tracking-[0.14em] text-brand">Son işlemden ölçüm</p>
+                <p class="text-xs uppercase tracking-[0.14em] text-brand-text">Son işlemden ölçüm</p>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div class="glass-soft px-4 py-3">

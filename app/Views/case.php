@@ -8,7 +8,7 @@
 ?>
 <section class="shell pb-6 pt-14 sm:pt-20">
     <div class="flex max-w-3xl flex-col gap-5">
-        <span class="text-xs uppercase tracking-[0.16em] text-brand">Vaka çalışması</span>
+        <span class="text-xs uppercase tracking-[0.16em] text-brand-text">Vaka çalışması</span>
         <h1 class="h-display text-balance">Ölçülebilir bir hizmeti ölçülebilir bir arayüze çevirmek.</h1>
         <p class="body-text"><?= e($intro['summary']) ?></p>
     </div>
@@ -29,7 +29,7 @@
     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <?php foreach ($metrics as $m): ?>
             <div class="glass-card flex flex-col gap-2">
-                <span class="readout text-[2.5rem] leading-none text-brand"><?= e($m['value']) ?></span>
+                <span class="readout text-[2.5rem] leading-none text-brand-text"><?= e($m['value']) ?></span>
                 <span class="text-sm text-ink"><?= e($m['label']) ?></span>
                 <p class="body-sm text-xs"><?= e($m['note']) ?></p>
             </div>
@@ -65,7 +65,7 @@
         <?php foreach ($decisions as $d): ?>
             <article class="glass-card grid gap-5 lg:grid-cols-12">
                 <div class="lg:col-span-4">
-                    <span class="readout text-sm text-brand"><?= e($d['n']) ?></span>
+                    <span class="readout text-sm text-brand-text"><?= e($d['n']) ?></span>
                     <h3 class="h-card mt-2"><?= e($d['title']) ?></h3>
                 </div>
                 <div class="flex flex-col gap-4 lg:col-span-8">
@@ -161,7 +161,7 @@
     <ol class="flex flex-col gap-2">
         <?php foreach ($architecture as $i => $a): ?>
             <li class="glass-soft flex flex-col gap-1 p-4 sm:flex-row sm:items-center sm:gap-6">
-                <span class="readout w-8 shrink-0 text-xs text-brand"><?= e(str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT)) ?></span>
+                <span class="readout w-8 shrink-0 text-xs text-brand-text"><?= e(str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT)) ?></span>
                 <span class="readout w-56 shrink-0 text-sm text-ink"><?= e($a['layer']) ?></span>
                 <span class="body-sm text-xs"><?= e($a['role']) ?></span>
             </li>

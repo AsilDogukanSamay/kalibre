@@ -11,11 +11,11 @@
             <dl class="flex flex-col gap-4">
                 <div>
                     <dt class="text-xs uppercase tracking-[0.14em] text-ink-faint">Atölye</dt>
-                    <dd class="mt-1 text-sm text-ink"><?= e($brand['address']) ?></dd>
+                    <dd class="mt-1 max-w-[42ch] text-sm text-ink"><?= e($brand['address']) ?></dd>
                 </div>
                 <div>
                     <dt class="text-xs uppercase tracking-[0.14em] text-ink-faint">Telefon</dt>
-                    <dd class="mt-1"><a class="text-sm text-ink transition hover:text-brand" href="tel:<?= e(str_replace(' ', '', $brand['phone'])) ?>"><?= e($brand['phone']) ?></a></dd>
+                    <dd class="mt-1"><a class="text-sm text-ink transition hover:text-brand-text" href="tel:<?= e(str_replace(' ', '', $brand['phone'])) ?>"><?= e($brand['phone']) ?></a></dd>
                 </div>
                 <div>
                     <dt class="text-xs uppercase tracking-[0.14em] text-ink-faint">Çalışma saatleri</dt>
@@ -67,7 +67,7 @@
                     </svg>
                 </button>
 
-                <p class="field-hint">Gönderdiğiniz bilgiler yalnızca randevu için kullanılır, üçüncü taraflarla paylaşılmaz.</p>
+                <p class="field-hint max-w-[62ch]">Gönderdiğiniz bilgiler yalnızca randevu için kullanılır, üçüncü taraflarla paylaşılmaz.</p>
             </form>
         </div>
 
