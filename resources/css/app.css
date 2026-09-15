@@ -164,13 +164,18 @@
   /* ---------- Öncesi / sonrası sürgüsü ----------
      Konum tek bir custom property ile taşınır; JS yalnızca o değeri günceller,
      kırpma ve konumlandırma kuralları burada kalır. */
-  .compare        { @apply relative aspect-video overflow-hidden rounded-glass border border-line; }
+  /* Tam ekran gorsel. Yukseklik kapatilmazsa 16:9 genis ekranda ekrandan
+     tasiyor (1880px'te 1057px), o yuzden ust sinir var. */
+  /* Dar ekranda 16:9 yalnizca ~220px yukseklik birakiyor, iki kareyi
+     karsilastirmak icin yetersiz. Mobilde 3:2, sm ustunde 16:9. */
+  .compare        { @apply relative aspect-[3/2] max-h-[80dvh] w-full overflow-hidden border-y border-line sm:aspect-video; }
   .compare-img    { @apply absolute inset-0 h-full w-full object-cover; }
   .compare-after  { clip-path: inset(0 0 0 var(--compare-pos, 50%)); }
   .compare-handle { @apply absolute inset-y-0 w-0.5 -translate-x-1/2 bg-brand; left: var(--compare-pos, 50%); }
   .compare-grip   { @apply absolute left-1/2 top-1/2 grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-glass bg-brand shadow-brand; }
   .compare-range  { @apply absolute inset-0 h-full w-full cursor-ew-resize opacity-0; }
-  .compare-tag    { @apply glass-soft pointer-events-none absolute bottom-3 px-2.5 py-1 text-xs; }
+  .compare-tag    { @apply glass-soft pointer-events-none absolute bottom-4 px-2.5 py-1 text-xs; }
+  .compare-meta   { @apply mt-6 flex max-w-[86ch] flex-wrap gap-x-7 gap-y-1 text-sm text-ink-muted; }
 
   /* ---------- Scroll ile ilerleyen paso ---------- */
   .scrub-track { @apply relative; height: 280vh; }

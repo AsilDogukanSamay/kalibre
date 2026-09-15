@@ -1,30 +1,39 @@
-<section id="calismalar" class="section shell">
-    <div class="section-head">
-        <span class="eyebrow">Aynı kaput, iki paso</span>
-        <h2 class="h-section text-balance">Önce ve sonra, aynı kadrajdan.</h2>
-        <p class="body-text">Sürgüyü kaydırın. Soldaki kayıt işlem öncesi ölçümde, sağdaki iki kademeli düzeltme ve seramik uygulamasından sonra çekildi.</p>
-    </div>
+<?php /**
+ * Editoryal kural: METIN okunabilir genislikte (.shell) kalir,
+ * GORSEL tam ekrana tasar. Hemen altindaki scroll bolumu de tam ekran
+ * oldugu icin iki gosterim bolumu ayni dili konusur.
+ */ ?>
+<section id="calismalar" class="section">
 
-    <div class="glass glass-sheen p-2">
-        <div class="compare" data-compare>
-            <img class="compare-img" src="<?= e(asset('img/kaput-oncesi.webp')) ?>" alt="Düzeltme öncesi, hologram izleriyle dağılmış yansıma" width="1600" height="894" loading="lazy" decoding="async">
-            <img class="compare-img compare-after" src="<?= e(asset('img/kaput-sonrasi.webp')) ?>" alt="Düzeltme sonrası, keskin ve kesintisiz yansıma" width="1600" height="894" loading="lazy" decoding="async">
-            <div class="compare-handle" data-compare-handle aria-hidden="true">
-                <span class="compare-grip">
-                    <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
-                        <path d="M9 6 4 12l5 6M15 6l5 6-5 6"/>
-                    </svg>
-                </span>
-            </div>
-            <span class="compare-tag left-3">İşlem öncesi</span>
-            <span class="compare-tag right-3">İşlem sonrası</span>
-            <input class="compare-range" type="range" min="0" max="100" value="50" step="0.5" aria-label="Öncesi ve sonrası karşılaştırma sürgüsü" data-compare-range>
+    <div class="shell">
+        <div class="section-head">
+            <span class="text-xs uppercase tracking-[0.16em] text-brand-text">Aynı kaput, iki paso</span>
+            <h2 class="h-section">Önce ve sonra, aynı kadrajdan.</h2>
+            <p class="body-text">Sürgüyü kaydırın. Soldaki kayıt işlem öncesi ölçümde, sağdaki iki kademeli düzeltme ve seramik uygulamasından sonra çekildi.</p>
         </div>
     </div>
 
-    <p class="body-sm mt-5 flex flex-wrap gap-x-7 gap-y-1">
-        <span>Boya kalınlığı öncesi <strong class=" tabular-nums text-ink">138 &micro;m</strong></span>
-        <span>Sonrası <strong class=" tabular-nums text-ink">129 &micro;m</strong></span>
-        <span>Ölçülen parlaklık <strong class=" tabular-nums text-ink">41 GU</strong> yerine <strong class=" tabular-nums text-ink">94 GU</strong></span>
-    </p>
+    <div class="compare" data-compare>
+        <img class="compare-img" src="<?= e(asset('img/kaput-oncesi.webp')) ?>" alt="Düzeltme öncesi, hologram izleriyle dağılmış yansıma" width="1600" height="894" loading="lazy" decoding="async">
+        <img class="compare-img compare-after" src="<?= e(asset('img/kaput-sonrasi.webp')) ?>" alt="Düzeltme sonrası, keskin ve kesintisiz yansıma" width="1600" height="894" loading="lazy" decoding="async">
+        <div class="compare-handle" data-compare-handle aria-hidden="true">
+            <span class="compare-grip">
+                <svg class="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                    <path d="M9 6 4 12l5 6M15 6l5 6-5 6"/>
+                </svg>
+            </span>
+        </div>
+        <span class="compare-tag left-4 sm:left-6">İşlem öncesi</span>
+        <span class="compare-tag right-4 sm:right-6">İşlem sonrası</span>
+        <input class="compare-range" type="range" min="0" max="100" value="50" step="0.5" aria-label="Öncesi ve sonrası karşılaştırma sürgüsü" data-compare-range>
+    </div>
+
+    <div class="shell">
+        <p class="compare-meta">
+            <span>Boya kalınlığı öncesi <strong class="readout text-ink">138 &micro;m</strong></span>
+            <span>Sonrası <strong class="readout text-ink">129 &micro;m</strong></span>
+            <span>Ölçülen parlaklık <strong class="readout text-ink">41 GU</strong> yerine <strong class="readout text-ink">94 GU</strong></span>
+        </p>
+    </div>
+
 </section>

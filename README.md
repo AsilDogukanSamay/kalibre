@@ -231,6 +231,25 @@ Doğrulanan diğer maddeler: tek `h1`, başlık hiyerarşisinde atlama yok, tüm
 görsellerde `alt`, landmark'lar (`header`/`nav`/`main`/`footer`) yerinde,
 360 px'de yatay kaydırma yok.
 
+### Yerleşim kuralı: kısıtlı metin, taşan görsel
+
+Öncesi/sonrası bölümü önce `.shell` içindeydi (1320 px), hemen altındaki scroll
+bölümü ise tam ekrandı. İki gösterim bölümü farklı dil konuşuyordu ve asıl
+fotoğraf küçük kalan taraftaydı. 1880 px'lik ekranda ölçüldü: görsel 1254 px,
+kenarlarda 570 px boşluk.
+
+Editoryal kurala geçildi: **metin okunabilir genişlikte kalır, görsel tam ekrana
+taşar.** Başlık ve alt bilgi `.shell` içinde, görsel `.shell` dışında.
+
+| | Önce | Sonra |
+|---|---|---|
+| Görsel genişliği (1880 px ekran) | 1254 px | 1865 px |
+| Scroll bölümüyle tutarlılık | yok | ikisi de tam ekran |
+| Mobilde karşılaştırma yüksekliği | 220 px (16:9) | 260 px (3:2) |
+
+Yükseklik `max-h-[80dvh]` ile sınırlandı; aksi halde geniş ekranda 16:9 oran
+1057 px'e çıkıp görünüm alanını aşıyordu.
+
 ### Hero yazısının okunabilirliği
 
 Hero'da yazı hareketli video üzerinde durur. Perde (scrim) göz kararı değil,
