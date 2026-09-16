@@ -6,8 +6,18 @@ namespace App\Core;
 abstract class Controller
 {
     /** @param array<string,mixed> $data */
-    protected function view(string $template, array $data = []): void
+    protected function view(
+        string $template,
+        array $data = [],
+        int $status = 200,
+        ?string $layout = 'layouts/main'
+    ): void {
+        Response::html(View::render($template, $data, $layout), $status);
+    }
+
+    /** Denetleyici icinden 404 dondurmek icin (rota var, kaynak yok). */
+    protected function notFound(): void
     {
-        Response::html(View::render($template, $data));
+        $this->view('errors/404', [], 404);
     }
 }

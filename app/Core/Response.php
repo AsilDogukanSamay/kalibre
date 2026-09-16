@@ -33,8 +33,27 @@ final class Response
     {
         http_response_code($status);
         header('Content-Type: text/html; charset=utf-8');
-        header('X-Content-Type-Options: nosniff');
-        header('Referrer-Policy: strict-origin-when-cross-origin');
+
+        foreach (Security::htmlHeaders() as $name => $value) {
+            header($name . ': ' . $value);
+        }
+
         echo $body;
+    }
+
+    /** Duz metin cikti (robots.txt) ve XML cikti (sitemap.xml) icin. */
+    public static function text(string $body, string $contentType = 'text/plain; charset=utf-8'): void
+    {
+        http_response_code(200);
+        header('Content-Type: ' . $contentType);
+        header('X-Content-Type-Options: nosniff');
+        echo $body;
+    }
+
+    /** Post/Redirect/Get: form gonderiminden sonra tazeleme kaydi tekrarlamaz. */
+    public static function redirect(string $path, int $status = 303): void
+    {
+        http_response_code($status);
+        header('Location: ' . $path);
     }
 }
