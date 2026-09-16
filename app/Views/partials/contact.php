@@ -4,6 +4,7 @@
 
         <div class="flex flex-col gap-6 lg:col-span-5" data-reveal>
             <div class="section-head mb-0" data-reveal>
+                <span class="eyebrow-label">Randevu</span>
                 <h2 class="h-section text-balance" data-satir>Önce aracı görelim.</h2>
                 <p class="body-text">Ölçüm ve durum tespiti ücretsiz, yaklaşık 45 dakika sürüyor. Formu bırakın, aynı gün içinde arıyoruz.</p>
             </div>

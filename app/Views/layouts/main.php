@@ -66,23 +66,30 @@ $pageDescription = $pageDescription
     <?= $content ?>
 </main>
 
-<footer class="border-t border-line py-9">
-    <div class="shell flex flex-col gap-5">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-            <?= partial($brandTheme['logo'], ['size' => 'h-7 w-7']) ?>
-            <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-ink-muted">
-                <a class="nav-link" href="tel:<?= e(str_replace(' ', '', (string) ($brand['phone'] ?? ''))) ?>"><?= e($brand['phone'] ?? '') ?></a>
-                <span><?= e($brand['hours'] ?? '') ?></span>
-            </div>
-        </div>
-        <p class="body-sm max-w-[62ch]"><?= e($brand['address'] ?? '') ?></p>
+<footer class="foot">
+    <div class="shell flex flex-col gap-8">
 
-        <nav class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm" aria-label="Yasal">
-            <?php foreach ($legalPages as $legalPage): ?>
-                <a class="nav-link" href="<?= e($legalPage['path']) ?>"><?= e($legalPage['nav']) ?></a>
-            <?php endforeach; ?>
-            <a class="nav-link" href="/case">Vaka çalışması</a>
-        </nav>
+        <div class="foot-grid">
+            <div class="flex flex-col gap-3">
+                <?= partial($brandTheme['logo'], ['size' => 'h-7 w-7']) ?>
+                <p class="body-sm max-w-[34ch]"><?= e($brand['address'] ?? '') ?></p>
+                <a class="foot-harita" href="<?= e($brand['maps'] ?? '#') ?>" target="_blank" rel="noopener">Haritada gör</a>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <span class="foot-key">İletişim</span>
+                <a class="foot-tel" href="tel:<?= e(str_replace(' ', '', (string) ($brand['phone'] ?? ''))) ?>"><?= e($brand['phone'] ?? '') ?></a>
+                <span class="body-sm"><?= e($brand['hours'] ?? '') ?></span>
+            </div>
+
+            <nav class="flex flex-col gap-2" aria-label="Yasal">
+                <span class="foot-key">Bilgi</span>
+                <?php foreach ($legalPages as $legalPage): ?>
+                    <a class="nav-link" href="<?= e($legalPage['path']) ?>"><?= e($legalPage['nav']) ?></a>
+                <?php endforeach; ?>
+                <a class="nav-link" href="/case">Vaka çalışması</a>
+            </nav>
+        </div>
 
         <?php if ($brandTheme['disclaimer']): ?>
             <p class="note-box max-w-[78ch]">
@@ -94,6 +101,10 @@ $pageDescription = $pageDescription
                 Sayfadaki atölye bilgileri, çalışma görselleri ve referanslar temsilidir.
             </p>
         <?php endif; ?>
+
+        <p class="foot-telif">
+            &copy; <?= e(date('Y')) ?> <?= e($brandTheme['name']) ?> &middot; İstanbul Maslak
+        </p>
     </div>
 </footer>
 

@@ -14,7 +14,7 @@ altında bu bilgilendirme görünür.
 | Frontend | Tailwind CSS 3.4, glassmorphic bileşenler, vanilla JS |
 | Backend | PHP 8.4, framework yok, OOP + MVC, kendi PSR-4 autoloader'ı |
 | Veritabanı | MySQL / MariaDB, PDO prepared statements |
-| Test | 184 test + 3 tarayıcı denetimi, hepsi geçiyor |
+| Test | 198 test + 3 tarayıcı denetimi, hepsi geçiyor |
 
 > **Ayrıntılı gerekçeler:** [`docs/KARARLAR.md`](docs/KARARLAR.md) — her kararın
 > nedeni, denenip bırakılan alternatifler ve ölçüm sonuçları.
@@ -37,7 +37,7 @@ npm run start                     # CSS derle + sunucu -> http://127.0.0.1:5174
 |---|---|
 | `npm run start` | CSS derler ve sunucuyu başlatır |
 | `npm run dev` | Geliştirirken CSS'i izler |
-| `npm test` | 184 test (harici bağımlılık yok) |
+| `npm test` | 198 test (harici bağımlılık yok) |
 | `npm run denetim` | Testler + yerleşim + kontrast + hero denetimi |
 
 Yerleşim denetimi **tanımsız sınıf** da arar: işaretlemede kullanılıp hiçbir stylesheet'te karşılığı olmayan sınıf sessizce hiçbir şey yapmaz. Üç tane buldu; ayrıntı [`docs/KARARLAR.md`](docs/KARARLAR.md).
@@ -292,6 +292,8 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 | **Süreç şeridi** | Kartlar yan yana duruyordu ama aralarındaki sıra görünmüyordu. Artık bir şeride diziliyorlar: her adımın noktası, noktalar arasında görüşe girince dolan bir çizgi. Her adım "elinize geçen" bilgisini de taşıyor ve bölümün sonunda toplam süre duruyor — müşterinin ilk sorduğu şey aracın kaç gün atölyede kalacağı |
 | **Sonuç kutusu** | Çerçeve sayfada **ender** kullanılır ve yalnızca bir sonucu sarar: ölçülmüş bir değer ya da bir taahhüt. Başlıklara uygulanmaz — her şey çerçeveliyse hiçbiri önemli görünmez. İki yerde var: sürecin toplam süresi ve öncesi/sonrası ölçümleri |
 | **Satır satır başlık açılışı** | Başlık, satırları maskenin altından yukarı kayarak geliyor. Satırlara bölme `Range` API ile yapılır — tarayıcının gerçekte nereye sardığı ölçülür, genişlik tahmin edilmez. `innerHTML` kullanılmaz. Animasyon bitince metin eski haline döner, kalıcı DOM değişikliği bırakmaz |
+| **Ölçüm sayaçları** | İstatistikler görüşe girince sıfırdan hedefe sayar. Sayfanın dili ölçüm olduğu için dekoratif değil: rakam "yazılmış" değil "okunmuş" gibi geliyor. Türkçe binlik ayracı korunur |
+| **SSS akordeonu** | `<details>` kapalıyken içeriği hiç render etmediği için saf CSS geçişi çalışmaz; açılma/kapanma yönetilir. Yükseklik inline stille değil, her panel için eklenen tek kurallık stylesheet üzerinden taşınır. Geçiş bitmezse zaman aşımı devreye girer |
 | **Görünüme giriş** | Bölümler ve kartlar görüşe girince bir kez açılıyor, grup içinde sırayla. Gecikme JavaScript'ten inline stille değil, sıraya göre CSS'te tanımlı. Tek seferlik: açılan eleman gözlemden çıkarılıyor |
 | **Ölçüm nişangahı (imleç)** | Jenerik bir takip noktası değil: ince halka + artı biçiminde iki tik, parlaklık ölçerin nişangahı. Tıklanabilir hedefte halka açılır, tikler çekilir. Yerli imleç gizlenmez. Konum inline stille değil, sürgüyle aynı CSS-değişkeni yöntemiyle taşınır. Dokunmatik ekranda ve `prefers-reduced-motion` tercihinde hiç çalışmaz; boşta `requestAnimationFrame` döngüsü kapanır |
 | **SEO** | Schema.org `AutoDetailing` JSON-LD, canonical/og etiketleri, favicon, `robots.txt`, `sitemap.xml` |
@@ -301,7 +303,7 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 ## 9. Testler ve denetimler
 
 ```bash
-npm test          # 184 test (php tests/run.php) - harici bagimlilik yok
+npm test          # 198 test (php tests/run.php) - harici bagimlilik yok
 npm run yerlesim  # 6 genislik x 5 sayfa: yatay tasma, h1, baslik atlamasi, alt metni
 npm run kontrast  # WCAG AA, duz zeminler ve cam yuzeyler
 npm run hero      # hero kontrasti, piksel yontemi (video uzerinde)
@@ -313,7 +315,7 @@ prepared statement kullanıldığı ve kullanıcı girdisinin SQL metnine
 birleştirilmediği doğrulanabilir. `.mjs` denetimleri `playwright-core` ve yerel
 bir Chrome ister, sunucu açıkken çalışır.
 
-**Mevcut durum:** 184 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0 ·
+**Mevcut durum:** 198 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0 ·
 hero eşik altı 0.
 
 ### API sözleşmesi

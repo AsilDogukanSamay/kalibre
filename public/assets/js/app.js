@@ -65,6 +65,145 @@
   })();
 
   /* ------------------------------------------------------------------
+   * Olcum sayaclari
+   * Istatistik rakamlari goruse girince sifirdan hedefe sayar. Sayfanin dili
+   * olcum oldugu icin bu dekoratif degil: rakam "yazilmis" degil "okunmus"
+   * gibi geliyor.
+   * ---------------------------------------------------------------- */
+  (function olcumSayaclari() {
+    const hedefler = document.querySelectorAll('[data-sayac]');
+    if (!hedefler.length) return;
+    if (reduceMotion || !('IntersectionObserver' in window)) return; // deger oldugu gibi kalir
+
+    // "1.480", "11 nokta", "36 ay" -> sayi + kalan metin
+    const coz = (metin) => {
+      const esleme = metin.match(/^([\d.,]+)(.*)$/);
+      if (!esleme) return null;
+      const sayi = Number(esleme[1].replace(/\./g, '').replace(',', '.'));
+      return Number.isFinite(sayi) ? { sayi, ek: esleme[2], binlik: esleme[1].includes('.') } : null;
+    };
+
+    const bicim = (deger, binlik) => (binlik
+      ? Math.round(deger).toLocaleString('tr-TR')
+      : String(Math.round(deger)));
+
+    const say = (el, hedef) => {
+      const sure = 1100;
+      const basla = performance.now();
+
+      const kare = (an) => {
+        const t = Math.min(1, (an - basla) / sure);
+        // Sona dogru yavaslayan egri; sayac "yerine oturuyor" hissi verir.
+        const yumusak = 1 - Math.pow(1 - t, 3);
+        el.textContent = bicim(hedef.sayi * yumusak, hedef.binlik) + hedef.ek;
+        if (t < 1) requestAnimationFrame(kare);
+      };
+
+      requestAnimationFrame(kare);
+    };
+
+    const gozlemci = new IntersectionObserver((girisler) => {
+      girisler.forEach((giris) => {
+        if (!giris.isIntersecting) return;
+        gozlemci.unobserve(giris.target);
+
+        const hedef = coz(giris.target.textContent.trim());
+        if (hedef) say(giris.target, hedef);
+      });
+    }, { threshold: 0.4 });
+
+    hedefler.forEach((el) => gozlemci.observe(el));
+  })();
+
+  /* ------------------------------------------------------------------
+   * SSS panelinin yumusak acilisi
+   * <details> kapaliyken icerigi hic render etmedigi icin saf CSS gecisi
+   * calismaz; acilma/kapanma burada yonetilir.
+   *
+   * Yukseklik inline stille yazilmaz: her panel icin sayfaya bir kez eklenen
+   * stylesheet'e bir kural konur ve o kuralin height degeri guncellenir.
+   * Surgu ve nisangahla ayni yontem.
+   * ---------------------------------------------------------------- */
+  (function sssAcilisi() {
+    const ogeler = document.querySelectorAll('[data-faq]');
+    if (!ogeler.length || reduceMotion) return;
+
+    const sheetEl = document.createElement('style');
+    document.head.appendChild(sheetEl);
+
+    const kurallar = new Map();
+    ogeler.forEach((oge) => {
+      const no = oge.dataset.faq;
+      const i = sheetEl.sheet.insertRule(`[data-faq="${no}"] .faq-panel { height: auto; }`, sheetEl.sheet.cssRules.length);
+      kurallar.set(oge, sheetEl.sheet.cssRules[i]);
+    });
+
+    ogeler.forEach((oge) => {
+      const ozet = oge.querySelector('.faq-summary');
+      const panel = oge.querySelector('.faq-panel');
+      const kural = kurallar.get(oge);
+      if (!ozet || !panel || !kural) return;
+
+      // Kapali baslar; acilinca yukseklik olculur.
+      kural.style.height = oge.open ? 'auto' : '0px';
+
+      let kapaniyor = false;
+
+      /*
+       * Gecis bitmezse (ornegin sekme arka planda ve transitionend hic
+       * tetiklenmezse) oge asili kalirdi; bu yuzden her animasyonun bir de
+       * zaman asimi var. Ikisinden hangisi once gelirse bitiris onun.
+       */
+      const bitirici = (isle) => {
+        let calisti = false;
+        const bir = () => {
+          if (calisti) return;
+          calisti = true;
+          panel.classList.remove('faq-panel-gecis');
+          isle();
+        };
+        panel.addEventListener('transitionend', bir, { once: true });
+        window.setTimeout(bir, 500);
+      };
+
+      ozet.addEventListener('click', (olay) => {
+        olay.preventDefault();
+        if (kapaniyor) return;
+
+        if (!oge.open) {
+          oge.open = true;
+          kural.style.height = '0px';
+          const yukseklik = panel.scrollHeight;
+
+          requestAnimationFrame(() => {
+            panel.classList.add('faq-panel-gecis');
+            kural.style.height = yukseklik + 'px';
+          });
+
+          // Acildiktan sonra auto'ya birakilir: icerik degisirse yukseklik
+          // sabit kalmasin.
+          bitirici(() => { kural.style.height = 'auto'; });
+        } else {
+          kapaniyor = true;
+          kural.style.height = panel.scrollHeight + 'px';
+
+          requestAnimationFrame(() => {
+            panel.classList.add('faq-panel-gecis');
+            kural.style.height = '0px';
+          });
+
+          // open niteligi ancak animasyon bitince kalkar; erken kalkarsa
+          // tarayici icerigi aninda gizler ve gecis gorunmez.
+          bitirici(() => {
+            oge.open = false;
+            kapaniyor = false;
+          });
+        }
+      });
+    });
+  })();
+
+  /* ------------------------------------------------------------------
    * Satir satir baslik acilisi
    * Baslik, satirlari maskenin altindan yukari kayarak geliyor.
    * innerHTML kullanilmaz: elemanlar createElement + textContent ile kurulur.

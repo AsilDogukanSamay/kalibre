@@ -578,7 +578,51 @@ gönderilemezse talep yine de kaydedilmiştir ve kullanıcı başarı yanıtın�
 
 ---
 
-## 7c. Sessizce hiçbir şey yapmayan üç sınıf
+## 7c. Baştan sona geçiş: tutarlılık ve etkileşim
+
+Sayfa baştan sona, bölüm bölüm gözden geçirildi. İki tür bulgu çıktı.
+
+### Tutarsızlıklar
+
+Bölüm başlıkları aynı dili konuşmuyordu. Karşılaştırma, süreç ve referanslarda
+etiket (eyebrow) vardı; hizmetler, fiyat, canlı ölçüm, randevu ve SSS'te yoktu.
+SSS ayrıca `.section-head` bileşenini hiç kullanmıyordu, bu yüzden aksan çizgisi
+de almıyordu. Hepsi aynı yapıya alındı: **aksan çizgisi + etiket + başlık +
+destek paragrafı.** Test artık sayarak değil, *etiketin kendisine bakarak*
+doğruluyor — sınıf dizisi bölümden bölüme değiştiği için sayma kırılgandı.
+
+Alt bilgi tek sütun halinde akıyor, sağ tarafı boş kalıyordu. Üç sütuna
+ayrıldı (kim · nasıl ulaşılır · ne okunabilir) ve telif satırı eklendi.
+
+### Ekleneni ölçülen etkileşim
+
+| Ne | Neden bu |
+|---|---|
+| Ölçüm sayaçları | Sayfanın dili ölçüm. Rakamın sayarak yerine oturması "yazılmış" değil "okunmuş" hissi veriyor |
+| SSS akordeonu | Açılış/kapanış animasyonu, listenin canlı olduğunu söylüyor |
+| Kart derinliği | Bento ve fiyat kartları hover'da 4 piksel kalkıyor, fotoğraf hafifçe yakınlaşıyor |
+| Buton ışık geçişi | Birincil butonda hover'da ince bir ışık geçiyor; "bu tıklanabilir" sinyalini güçlendiriyor |
+
+**SSS akordeonunda saf CSS yetmedi.** `<details>` kapalıyken içeriği hiç render
+etmiyor; yükseklik geçişi için bir şey yok. Açılma/kapanma JavaScript'te
+yönetiliyor ve `open` niteliği ancak animasyon bittikten sonra kalkıyor — erken
+kalkarsa tarayıcı içeriği anında gizliyor ve geçiş görünmüyor. Yükseklik yine
+inline stille yazılmıyor: her panel için stylesheet'e bir kural konuyor ve o
+kuralın değeri güncelleniyor (sürgü ve nişangahla aynı yöntem). Geçiş hiç
+bitmezse öğe asılı kalmasın diye her animasyonun bir de zaman aşımı var.
+
+### Ekran görüntüsü bir hata sanılabilir
+
+İnceleme sırasında SSS bölümünün solunda havada duran üç kırmızı "+" görüldü.
+Sayfada böyle bir şey yoktu: nişangah `position: fixed` ve Playwright uzun bir
+bölümü parça parça çekerken her parçaya bir kez basıyordu. Ölçüm ve görüntü
+alan betiklerde nişangah artık gizleniyor. Aynı şekilde "şeffaf koruma filmi
+kartında fotoğraf yok" sanıldı; fotoğraf tembel yüklendiği için ekran
+görüntüsü alınırken henüz inmemişti. **İkisi de düzeltilmeden önce ölçüldü.**
+
+---
+
+## 7d. Sessizce hiçbir şey yapmayan üç sınıf
 
 Referans bölümündeki yıldızlar siyah ve kocaman çiziliyordu. Sebep basitti:
 **`.star` sınıfı hiçbir yerde tanımlı değildi.** SVG ne boyut ne dolgu alıyordu,
@@ -620,7 +664,7 @@ kontrol ediyor**: toplayıcı yüzden az sınıf bulursa bunu kusur olarak bildi
 
 ---
 
-## 7d. Yazı zayıf görünüyordu; sebep font değil ağırlıktı
+## 7e. Yazı zayıf görünüyordu; sebep font değil ağırlıktı
 
 "Yazı karakterleri zayıf geliyor" denince önce fontun yüklenip yüklenmediği
 ölçüldü, çünkü en olası açıklama oydu: değişken font yüklenmezse tarayıcı yedek
@@ -661,7 +705,7 @@ Ağırlık ekseni gerçek bir font ekseni olduğu için her yerde aynı sonucu v
 
 ---
 
-## 7e. Çerçeve başlığa değil sonuca
+## 7f. Çerçeve başlığa değil sonuca
 
 Bölüm başlıklarının düz durduğu, çerçeveye alınabileceği önerildi. Yarısına
 katılıp yarısına katılmadım ve sebebini yazmak gerekiyor.
@@ -703,7 +747,7 @@ ve metin seçildiğinde parça parça kopyalanmasına yol açardı.
 
 ---
 
-## 7f. Tailwind katmanı bir kuralı sessizce yuttu
+## 7g. Tailwind katmanı bir kuralı sessizce yuttu
 
 Görünüme giriş animasyonu ilk yazıldığında `@layer components` içindeydi.
 Sayfa açıldı, bölümlerin yarısı görünmedi. Derlenmiş çıktıya bakınca sebep
@@ -734,7 +778,7 @@ geçerse testin bir değeri kalmaz.
 
 ---
 
-## 7g. SEO ve yerel işletme verisi
+## 7h. SEO ve yerel işletme verisi
 
 | Ne | Nerede |
 |---|---|
@@ -803,7 +847,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 184 birim/duman testi  (php tests/run.php)
+npm test          # 198 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -823,7 +867,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **184 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **198 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin**.
 
 | Katman | Test sayısı | Ne doğrulanıyor |

@@ -474,8 +474,18 @@ Baslik ve sonuc kutusu
 // cercevenin baslik bileseninde bitmedigini dogrular.
 check('bolum basligi cerceveli degil', !str_contains($css, '.section-head { @apply glass'));
 check('bolum basliginda cizilen aksan cizgisi var', str_contains($css, '.section-head::before'));
-check('her bolum basligi acilisa bagli', substr_count($home, 'class="section-head') === substr_count($home, 'section-head" data-reveal')
-    + substr_count($home, 'section-head mb-0" data-reveal'));
+/*
+ * Her bolum basligi acilisa bagli olmali: aksan cizgisi .is-in ile ciziliyor,
+ * data-reveal yoksa cizgi hic gorunmez. Sinif dizisi bolumden bolume degistigi
+ * icin sayarak degil, ETIKETIN kendisine bakarak dogrulanir.
+ */
+preg_match_all('/<[^>]*class="[^"]*section-head[^"]*"[^>]*>/', $home, $basliklar);
+$acilissiz = array_values(array_filter(
+    $basliklar[0],
+    static fn (string $etiket): bool => !str_contains($etiket, 'data-reveal')
+));
+check('her bolum basligi acilisa bagli', $acilissiz === [], implode(' | ', $acilissiz));
+check('sayfada en az bes bolum basligi var', count($basliklar[0]) >= 5, 'adet: ' . count($basliklar[0]));
 
 check('sonuc kutusu cam yuzeyden turer', str_contains($css, '.verdict      { @apply glass '));
 // Yalnizca kapsayici sayilir; verdict-key/val/note ayni onekle basliyor.
@@ -536,3 +546,40 @@ check('bilesenler olcegi okuyor', substr_count($derlenmisCss, 'var(--wght-') >= 
 check('olcek disinda en fazla iki sabit deger var',
     preg_match_all('/"wght" \d/', $css) <= 2,
     'sabit: ' . preg_match_all('/"wght" \d/', $css));
+
+// ---------------------------------------------------------------- Etkilesim katmani
+echo "
+Etkilesim katmani
+";
+
+// Her bolum ayni dili konusmali: etiket + aksan cizgisi + baslik.
+preg_match_all('/<[^>]*class="[^"]*section-head[^"]*"[^>]*>(.*?)<h2/s', $home, $bloklar);
+$etiketsiz = 0;
+foreach ($bloklar[1] as $blok) {
+    if (!str_contains($blok, 'eyebrow-label')) {
+        $etiketsiz++;
+    }
+}
+check('her bolum basliginda etiket var', $etiketsiz === 0, 'etiketsiz: ' . $etiketsiz);
+
+// Olcum sayaclari
+check('istatistikler sayaca bagli', substr_count($home, 'data-sayac') === 3);
+check('sayac hareket azaltmada calismaz',
+    (bool) preg_match('/olcumSayaclari[\s\S]{0,600}?if \(reduceMotion/', $js));
+check('sayac bicimi Turkce binlik ayraci kullanir', str_contains($js, "toLocaleString('tr-TR')"));
+
+// SSS acilisi
+check('sss panelleri sarmalanmis', substr_count($home, 'class="faq-panel"') === 4);
+check('sss yuksekligi inline stille yazilmaz',
+    str_contains($js, 'insertRule(`[data-faq=') && !preg_match('/panel\.style\.height/', $js));
+check('gecis bitmezse zaman asimi devreye girer', str_contains($js, 'window.setTimeout(bir, 500)'));
+check('open niteligi animasyon bitince kalkar', str_contains($js, 'oge.open = false;'));
+
+// Hover derinligi ve isik gecisi
+check('birincil butonda isik gecisi var', str_contains($css, '.btn-primary::after'));
+check('kartlarda hover derinligi var', str_contains($css, '.cell:hover') && str_contains($css, '.plan:hover'));
+check('bento fotograflari hoverda yakinlasir', str_contains($css, '.cell:hover .cell-photo'));
+
+// Alt bilgi
+check('alt bilgi uc sutuna ayrildi', str_contains($home, 'foot-grid'));
+check('telif satiri var', str_contains($home, 'foot-telif') && str_contains($home, date('Y')));
