@@ -13,8 +13,9 @@
     "start": "npm run build && npm run serve",
     "kontrast": "node tests/kontrast.mjs",
     "yerlesim": "node tests/yerlesim.mjs",
-    "denetim": "npm test && npm run yerlesim && npm run kontrast && npm run hero",
-    "hero": "node tests/hero-kontrast.mjs"
+    "denetim": "npm test && npm run yerlesim && npm run kontrast && npm run hero && npm run hareket",
+    "hero": "node tests/hero-kontrast.mjs",
+    "hareket": "node tests/hareket.mjs"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.17"

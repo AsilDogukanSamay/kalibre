@@ -205,14 +205,53 @@ check('bozuk baslik yok sayilir',        $coz('bytes=abc', 1000)   === [0, 999])
 // ---------------------------------------------------------------- Sablonlar
 echo "\nSablonlar\n";
 
-$html = View::render('home', App\Support\SiteContent::all() + ['campaignEndsAt' => '', 'appName' => 'Test']);
+$html = View::render('home', App\Support\SiteContent::all() + ['appName' => 'Test']);
 check('ana sayfa render edilir', str_contains($html, 'Boyayı ölçerek düzeltiyoruz.'));
 check('hicbir etikette style attribute yok', !preg_match('/<[^>]+\sstyle\s*=/i', $html));
 check('hero videosu bagli', str_contains($html, 'video/hero.mp4'));
 check('scroll videosu bagli', str_contains($html, 'video/paso.mp4'));
-check('cam yuzey siniflari kullanilir', substr_count($html, 'glass') > 10);
+/*
+ * Cam yuzey dili sayfanin tamaminda gecerli olmali (kural 5).
+ *
+ * Sayim yalnizca markup'ta gecen 'glass' kelimesine bakamaz: .cell, .plan,
+ * .faq-item, .verdict ve .note-box cam yuzeylerden @apply ile TUREYEN
+ * bilesenler; markup'ta 'glass' yazmiyor olmasi o yuzeyin cam olmadigi
+ * anlamina gelmez. Eski sayim bunlari gormuyordu ve referans kartlari
+ * editoryal sutuna donunce esigin altina dustu - halbuki cam yuzey sayisi
+ * degil, referanslarin bicimi degismisti.
+ *
+ * Sinif adi tam eslesme ile aranir: 'cell' arayisi 'cell-photo' ile eslesmez.
+ */
+$camTureyen = ['glass', 'glass-strong', 'glass-soft', 'glass-card', 'cell', 'plan', 'faq-item', 'verdict', 'note-box'];
+$camSayisi  = 0;
+foreach ($camTureyen as $sinif) {
+    $camSayisi += preg_match_all('/class="[^"]*(?<![-\w])' . preg_quote($sinif, '/') . '(?![-\w])/', $html);
+}
+check('cam yuzey siniflari kullanilir', $camSayisi > 10, 'sayim: ' . $camSayisi);
 
 require __DIR__ . '/yeni-katmanlar.php';
+
+// ---------------------------------------------------------------- Beyan edilen sayi
+echo "
+Beyan edilen sayilar
+";
+
+/*
+ * Vaka calismasi sayfasi "kac test geciyor" diye bir rakam gosteriyor ve bu
+ * rakam elle yaziliydi: her yeni testle sessizce eskiyordu (bu turda 202'de
+ * kalmisti). Artik testin kendisi dogruluyor - beyan, BU KONTROL DAHIL toplam
+ * test sayisina esit olmak zorunda. Rakami guncellemeden yeni test eklemek
+ * artik mumkun degil.
+ */
+$gecenTest = null;
+foreach (App\Support\CaseStudy::all()['metrics'] ?? [] as $olcum) {
+    if (($olcum['label'] ?? '') === 'Geçen test') {
+        $gecenTest = (int) $olcum['value'];
+    }
+}
+$toplamTest = $pass + $fail + 1;   // +1: bu kontrolun kendisi
+check('vaka sayfasindaki test sayisi guncel', $gecenTest === $toplamTest,
+    'beyan: ' . var_export($gecenTest, true) . ' gercek: ' . $toplamTest);
 
 printf("\n%d gecti, %d kaldi\n\n", $pass, $fail);
 exit($fail === 0 ? 0 : 1);

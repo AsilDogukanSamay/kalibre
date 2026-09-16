@@ -3,8 +3,8 @@
     <div class="grid gap-8 lg:grid-cols-12 lg:gap-14">
         <div class="section-head mb-0 lg:col-span-4" data-reveal>
             <span class="eyebrow-label">Sık sorulanlar</span>
-            <h2 class="h-section text-balance" data-satir>Merak edilenler</h2>
-            <p class="body-text">Ölçümden önce en çok sorulan dört soru. Cevaplar kısa; ayrıntısını telefonda konuşuyoruz.</p>
+            <h2 class="h-section text-balance" data-satir>Cevapların hepsi &ldquo;evet&rdquo; değil.</h2>
+            <p class="body-text">Ölçümden önce en çok sorulan dört soru. Kaplamanın yapamadığını da yazıyoruz; ayrıntısını telefonda konuşuyoruz.</p>
         </div>
 
         <div class="flex flex-col gap-3 lg:col-span-8" data-reveal-group>
@@ -23,7 +23,7 @@
             <?php endforeach; ?>
             <p class="body-sm mt-3">
                 Aradığınız soruyu bulamadıysanız
-                <a class="text-brand-text underline decoration-brand/40 underline-offset-4 transition hover:decoration-brand" href="#iletisim">formu bırakın</a>,
+                <a class="link-ic" href="#iletisim">formu bırakın</a>,
                 aynı gün içinde arıyoruz.
             </p>
         </div>

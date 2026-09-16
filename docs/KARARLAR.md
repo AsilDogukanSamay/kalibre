@@ -195,7 +195,6 @@ DB_CHARSET=utf8mb4
 CONTACT_RATE_LIMIT=5
 CONTACT_RATE_WINDOW_MINUTES=10
 
-CAMPAIGN_ENDS_AT=2026-12-31T23:59:59+03:00
 ```
 
 ```ini
@@ -209,7 +208,8 @@ NOTIFY_TO=randevu@ornek.com
 NOTIFY_FROM=no-reply@ornek.com
 ```
 
-`CAMPAIGN_ENDS_AT` boş bırakılırsa geri sayım bölümü hiç render edilmez.
+Kampanya geri sayımı bu turda kaldırıldı; `CAMPAIGN_ENDS_AT` anahtarı artık
+yok. Gerekçesi 7j'de.
 `ADMIN_PASSWORD_HASH` boşsa panel hiçbir parolayı kabul etmez.
 `NOTIFY_TO` boşsa bildirim adımı sessizce atlanır.
 
@@ -842,6 +842,173 @@ og etiketleri otomatik olarak ona göre üretilir.
 
 ---
 
+## 7j. Ritim, ton ve hareket: sayfa tek nefeste okunuyordu
+
+Bu tur tek bir teşhisle başladı. Sayfa güzel görünüyordu ama **11.000 piksel
+boyunca tek bir nefeste** okunuyordu: altı bölüm üst üste aynı iskelete
+oturuyordu (kırmızı etiket → iki satır başlık → paragraf → kart ızgarası),
+yüzey tonu hiç değişmiyordu ve kırmızı her bölümde tekrar ettiği için vurgu
+olmaktan çıkmıştı.
+
+Aşağıdakiler bunun için yapıldı. Palet, tipografi ölçeği ve on kural
+değişmedi; değişen şey **ritim**.
+
+### Tonal bölüm (chapter)
+
+Yüzey ölçeğine üçüncü bir kademe eklendi (`--surface-950`, `11 12 14`) ve ton
+artık tek tek bölüme değil **bölüm grubuna** uygulanıyor:
+
+| Bölüm | İçerik | Ton |
+|---|---|---|
+| Açılış | hero | video |
+| Kanıt | ölçü şeridi, sürgü, scroll pasosu | varsayılan (900) |
+| Teklif | hizmetler, süreç, fiyat | yükseltilmiş (800) |
+| Manifesto | tek cümle | sessiz (950) |
+| Güven | referanslar, SSS | varsayılan (900) |
+| Eylem | iletişim | yükseltilmiş (800) |
+
+Her bölüme sırayla ton vermek denendi ve **şerit etkisi** yaptı: sayfa
+çizgili bir kumaşa benziyordu. Gruplayınca ton değişimi "yeni bölüm başladı"
+demeye başladı. Bant yalnızca **üst** kenarda çizgi taşır; altta da olsaydı
+ardışık iki bantta çift çizgi oluşuyordu (alt bilgi kendi `border-t`'sini
+zaten getiriyor).
+
+Ölçek yalnızca **koyulaşma** yönünde genişledi, yani kontrast eşikleri
+bozulmadı. Denetim doğruladı: 12 sayfa/genişlik kombinasyonunda eşik altı
+metin **0** (panel dahil).
+
+### Kırmızı üç durağa indi
+
+Önceki halde **on** bölümün üst etiketi ve bölüm çizgisi marka kırmızısıydı.
+Her yerde olan bir vurgu vurgu değildir. Etiket ve çizgi varsayılan olarak
+nötre çekildi, marka rengi anlatının üç durak noktasında bırakıldı:
+hero'daki ölçüm kanıtı, fiyat ve randevu.
+
+Süreç bölümünde iki ayrı kırmızı sistem vardı (ray noktaları, adım numaraları
+ve süre değerleri). Ray kırmızı kaldı, numara ve süre nötrleşti. Fonksiyonel
+kırmızı (buton, sürgü tutamağı, ray) olduğu gibi duruyor: kırmızı artık
+**eylem** rengi, dekorasyon değil.
+
+Test bunu koruyor: `eyebrow-brand` sayfada en fazla üç kez geçebilir.
+
+### Kampanya geri sayımı kaldırıldı
+
+Hero'nun altında "106 GÜN 07 SAAT 51 DAKİKA 27 SANİYE" yazan bir indirim
+sayacı duruyordu. Sayfanın geri kalanı ölçüm ve dürüstlük üzerine kurulu;
+indirim sayacı estetiği bu tonu zayıflatıyordu. Şablon, JavaScript modülü,
+CSS sınıfları ve `.env` anahtarı **birlikte** gitti; testler kalıntı
+olmadığını doğruluyor.
+
+Boşalan yer ölçüm kartına verildi. Kart artık her satırda üç soruyu
+cevaplıyor: ne ölçüldü, kaç oldu, **ne kadar değişti**. Delta rakamları
+uydurulmuş değil, yanlarındaki iki değerin farkı. Yön rengi ölçüm dilinden
+geliyor: eksilen vernik mavi (skala), artan parlaklık yeşil (kazanım);
+kırmızı eylem rengi olarak dışarıda kaldı.
+
+### Manifesto: kalıba uymayan tek bölüm
+
+Teklif bölümünün bitişi ile güven bölümünün başlangıcı arasına bir duraklama
+kondu. Etiketi yok, kartı yok, ızgarası yok — ve bu bilinçli. Başlık sesi de
+farklı: bölüm başlıkları `wdth 112 / wght 730` ile sıkı ve kararlı konuşuyor,
+bu cümle `wdth 106 / wght 600` ile daha yavaş. Aynı aile, farklı ton.
+
+Cümle dekoratif değil; sayfanın her yerinde geçen "ölçüp duruyoruz"
+davranışının gerekçesi tek yerde burada yazıyor:
+
+> Nerede duracağımıza cila değil, kalan vernik karar verir.
+
+### Referanslar: beş yıldız yerine ölçüm
+
+Beş kırmızı yıldız her sitede aynı şekilde duruyor ve hiçbir şey ölçmüyor.
+Yıldızlar kaldırıldı, her referansın altına o araca ait **ölçüm sonucu**
+geldi. Üç ayrı büyüklük seçildi (kalınlık, su temas açısı, parlaklık) ki
+bölüm "aynı rakamın üç kez tekrarı" gibi okunmasın.
+
+Kart da değil: sayfada zaten dört ayrı kart ızgarası vardı. Referanslar artık
+üstten çizgili editoryal sütun. Bölümün altında, öncesi/sonrası bölümüyle
+aynı bilgilendirme duruyor — içerik kurgu ve sayfa bunu gizlemiyor.
+
+### SSS başlığı cümleye döndü
+
+Sayfadaki bütün bölüm başlıkları cümle kuruyordu; "Merak edilenler" tek
+istisnaydı ve üstündeki "Sık sorulanlar" etiketiyle aynı şeyi iki kez
+söylüyordu. Yerine bölümün gerçekten yaptığı işi söyleyen bir cümle geldi:
+dört sorudan ikisinin cevabı olumsuz.
+
+### Okuma ilerlemesi
+
+Menü şeridinin altında 1 piksellik bir çizgi okunan mesafeyi gösteriyor.
+Sayfanın dili ölçüm; bu da okunan mesafenin ölçümü. Rengi bu yüzden
+**accent** (canlı ölçüm değeri), marka kırmızısı değil. Değer, sayfaya bir
+kez eklenen tek kurallık bir stylesheet üzerinden taşınıyor — sürgü, nişangâh
+ve scroll pasosuyla aynı yöntem, hiçbir elemana `style` yazılmıyor.
+
+Şerit ayrıca kaydırıldığında matlaşıyor: hero'nun üzerinde yarı saydamdı ve
+açık bir kartın üzerinden geçerken bağlantılar okunmuyordu.
+
+### Scroll'a bağlı paralaks: üç deneme, iki yanlış teşhis
+
+Fotoğraflar scroll ile kendi kutularının içinde kayıyor ve **JavaScript
+kullanmıyor**: `animation-timeline: view()`. Buraya gelmesi üç tur sürdü.
+
+**1. deneme, animasyon %50'de dondu.** `view()` bir elemanın görünürlüğünü en
+yakın **kaydırma kabına** göre ölçer. `.cell` üzerindeki `overflow: hidden` o
+kartı bir kaydırma kabı yapıyor; fotoğraf kartın içinde her zaman tam görünür
+olduğu için ilerleme sabit **0,4999**'da kalıyordu. CSS doğru görünüyordu,
+hiçbir şey kımıldamıyordu.
+
+**2. deneme, adlandırılmış zaman çizgisi.** Çizgi karta `view-timeline-name`
+ile tanımlandı, fotoğraf onu okudu. Bu sefer çizgi çözülüyor ama
+`currentTime` **null** dönüyordu: aynı adı sayfadaki her kart tanımladığı için
+ad belirsiz kalıyor ve çizgi etkisiz oluyor.
+
+**3. deneme, çalışan çözüm.** Kırpmanın kendisi değişti: `overflow: clip` aynı
+görsel kırpmayı yapar ama **kaydırma kabı oluşturmaz**. Kural `@supports`
+içinde durduğu için scroll animasyonunu desteklemeyen tarayıcıda kırpma da
+değişmiyor; orada hiçbir şey eksilmiyor, sadece paralaks yok.
+
+Animasyon `transform` değil **`translate`** özelliğini kullanıyor.
+`.cell:hover .cell-photo` zaten `transform: scale(1.05)` kullanıyor; aynı
+özellik olsaydı animasyon hover'ı ezerdi. `translate` bağımsız bir özellik
+olduğu için ikisi çakışmadan birlikte çalışıyor.
+
+### Bu turda ÜÇÜNCÜ yanlış alarm
+
+Paralaks ilk ölçüldüğünde her değer `none` okunuyordu ve "çalışmıyor" gibi
+duruyordu. Sebep koddaki bir hata değildi: ölçüm **gizli bir tarayıcı
+panelinde** yapılıyordu ve `document.hidden` true iken tarayıcı scroll'a bağlı
+animasyonları askıya alır. Görünür bir sayfada ölçülünce üçü de çalışıyordu.
+
+Bu projede daha önce iki yanlış alarm yaşanmıştı (nişangâh artefaktı ve tembel
+yükleme). Sonuç aynı ve bir kademe daha keskin: **bir şeyi düzeltmeden önce
+ölç, ve ölçüm ortamının kendisini de sorgula.**
+
+Bunun için `tests/hareket.mjs` eklendi (`npm run hareket`). Kuralın dosyada
+durması çalıştığı anlamına gelmiyor; denetim sayfayı baştan sona on üç
+duraklda gezip değerlerin gerçekten değiştiğini ölçüyor, hareket azaltma
+tercihinde de **değişmediğini** doğruluyor.
+
+### Yol üstünde bulunan iki sessiz kusur
+
+**Fiyat kartları `.plan` bileşenlerini hiç kullanmıyordu.** `.plan`,
+`.plan-best`, `.plan-price` ve `.plan-badge` CSS'te tanımlıydı; şablon ham
+utility sınıfları yazıyordu. Sonuç: dört sınıf sessizce hiçbir şey yapmıyordu
+ve daha kötüsü, **fiyat rakamı sayfanın ölçüm sesinde değildi** (`text-4xl`,
+readout değil). Şablon bileşenlere geçirildi.
+
+**Metin içi bağlantı stili dört yerde tekrar ediyordu:** iki şablonda ham
+sınıf listesi, CSS'te iki ayrı bileşen içinde. Marka renginin alt çizgi
+yoğunluğunu değiştirmek dört yerde düzeltme gerektiriyordu. Tek kaynak
+`.link-ic` oldu, diğer ikisi ondan türüyor.
+
+### Vaka sayfasındaki test sayısı artık kendini doğruluyor
+
+Sayfa "202 test geçiyor" diyordu ve bu rakam elle yazılmıştı: her yeni testte
+sessizce eskiyordu. Artık `tests/run.php` sonunda kendi toplamıyla
+karşılaştırılıyor; rakamı güncellemeden yeni test eklemek mümkün değil.
+
+---
+
 ## 8. Kurulum
 
 ```bash
@@ -894,28 +1061,34 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 202 birim/duman testi  (php tests/run.php)
+npm test          # 246 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
-npm run denetim   # dordu birden
+npm run hareket   # hareket denetimi       (scroll'a bagli animasyonlar)
+npm run denetim   # besi birden
 ```
 
 `npm test` harici bağımlılık gerektirmez. Veri erişim katmanı sahte bir PDO ile
 test edilir, böylece **MySQL kurulu olmadan da** prepared statement kullanıldığı ve
 kullanıcı girdisinin SQL metnine birleştirilmediği doğrulanabilir.
 
-İki denetim betiği (`../tests/yerlesim.mjs`, `../tests/kontrast.mjs`) `playwright-core`
-ve yerel bir Chrome ister; ölçüm yapmak için sayfanın gerçekten render edilmesi
-gerekir. Sunucu açıkken çalıştırılırlar. Panel denetimi için kimlik bilgisi
+Dört denetim betiği (`../tests/yerlesim.mjs`, `../tests/kontrast.mjs`,
+`../tests/hero-kontrast.mjs`, `../tests/hareket.mjs`) `playwright-core` ve yerel
+bir Chrome ister; ölçüm yapmak için sayfanın gerçekten render edilmesi gerekir.
+Sunucu açıkken çalıştırılırlar. `hareket` denetimi ayrıca sayfanın **görünür**
+olmasına bağlıdır: `document.hidden` true iken tarayıcı scroll'a bağlı
+animasyonları askıya alır (bkz. 7j, üçüncü yanlış alarm). Panel denetimi için kimlik bilgisi
 ortam değişkeninden verilir:
 
 ```bash
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **202 test geçiyor**, yerleşim denetiminde **0 kusur**,
-kontrast denetiminde **eşik altı 0 metin**.
+Mevcut durum: **246 test geçiyor**, yerleşim denetiminde **0 kusur**,
+kontrast denetiminde **eşik altı 0 metin** (panel dahil 12 sayfa/genişlik
+kombinasyonu), hero kontrastında **eşik altı 0 metin**, hareket denetiminde
+**8/8**.
 
 | Katman | Test sayısı | Ne doğrulanıyor |
 |---|---|---|

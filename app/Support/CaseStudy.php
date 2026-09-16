@@ -128,7 +128,9 @@ final class CaseStudy
                     'note'  => '390 pikselde ilk yükleme, ham gövde boyutu; gzip ile 382 KB. Video isteği sıfır. Hero posteri de dar ekranda 960 piksellik sürümüyle iniyor.',
                 ],
                 [
-                    'value' => '202',
+                    // Bu rakam elle guncellenmez: tests/run.php sonunda kendi
+                    // toplamiyla karsilastiriliyor, eskirse test kaliyor.
+                    'value' => '246',
                     'label' => 'Geçen test',
                     'note'  => 'Doğrulama, kurumsal kimlik, güvenlik başlıkları, CSRF, giriş freni, prepared statement ve şablon katmanları. Harici bağımlılık yok.',
                 ],

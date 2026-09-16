@@ -279,7 +279,7 @@ check('giris ekraninda style attribute yok', !preg_match('/<[^>]+\sstyle\s*=/i',
 // ---------------------------------------------------------------- Ana sayfa eklentileri
 echo "\nAna sayfa: yeni bolumler\n";
 
-$home = View::render('home', SiteContent::all() + ['campaignEndsAt' => '', 'appName' => 'Test']);
+$home = View::render('home', SiteContent::all() + ['appName' => 'Test']);
 check('onay kutusu formda', str_contains($home, 'name="consent"'));
 check('KVKK metnine bag var', str_contains($home, 'href="/kvkk"'));
 check('gizlilik metnine bag var', str_contains($home, 'href="/gizlilik"'));
@@ -599,3 +599,153 @@ check('bento fotograflari hoverda yakinlasir', str_contains($css, '.cell:hover .
 // Alt bilgi
 check('alt bilgi uc sutuna ayrildi', str_contains($home, 'foot-grid'));
 check('telif satiri var', str_contains($home, 'foot-telif') && str_contains($home, date('Y')));
+
+// ---------------------------------------------------------------- Tasarim yukseltmesi
+echo "\nTasarim yukseltmesi\n";
+
+/*
+ * TONAL BOLUM (chapter)
+ * Sayfa 11.000 piksel boyunca tek bir koyulukta akiyordu. Ton artik bolum
+ * GRUBUNA uygulaniyor; tek tek her bolume sirayla vermek serit etkisi
+ * yapiyordu. Uc bant bekleniyor: teklif, manifesto, eylem.
+ */
+check('yuzey olcegi ucuncu kademeyi tanimliyor', str_contains($css, '--surface-950'));
+check('bolum tonu bilesenleri tanimli',
+    str_contains($css, '.band-raise') && str_contains($css, '.band-deep'));
+check('sayfa tonal bolumlere ayrilmis',
+    substr_count($home, 'class="band-raise"') === 2 && substr_count($home, 'class="band-deep"') === 1,
+    'raise: ' . substr_count($home, 'class="band-raise"') . ' deep: ' . substr_count($home, 'class="band-deep"'));
+
+/*
+ * KIRMIZI DISIPLINI
+ * Onceki halde sayfadaki ON bolumun ust etiketi de marka kirmizisiydi; her
+ * yerde olan bir vurgu vurgu olmaktan cikiyordu. Kirmizi artik anlatinin uc
+ * durak noktasinda: hero'daki olcum kaniti, fiyat ve randevu.
+ */
+check('bolum etiketi varsayilan olarak notur',
+    (bool) preg_match('/\.eyebrow-label \{[^}]*text-ink-faint/', $css));
+check('marka renkli etiket ayri bir degistirici',
+    str_contains($css, '.eyebrow-brand'));
+check('marka renkli etiket en fazla uc yerde',
+    substr_count($home, 'eyebrow-brand') <= 3,
+    'sayim: ' . substr_count($home, 'eyebrow-brand'));
+check('bolum cizgisi de varsayilan olarak notur',
+    (bool) preg_match('/\.section-head::before \{[^}]*bg-line-strong/', $css));
+
+/*
+ * KAMPANYA GERI SAYIMI KALDIRILDI
+ * Indirim sayaci, sayfanin geri kalaninin kazandigi olcum tonuyla
+ * celisiyordu. Kalinti birakmadigini dogruluyoruz: sablon, JS, CSS ve
+ * .env anahtari birlikte gitti.
+ */
+check('geri sayim sablonu kalmadi', !is_file($root . '/app/Views/partials/countdown.php'));
+check('geri sayim isaretleri kalmadi', !str_contains($home, 'data-countdown'));
+check('geri sayim davranisi kalmadi', !str_contains($js, 'data-cd'));
+check('geri sayim stilleri kalmadi', !str_contains($css, '.countdown-'));
+check('geri sayim yapilandirmasi kalmadi',
+    !str_contains((string) file_get_contents($root . '/.env.example'), 'CAMPAIGN_ENDS_AT'));
+
+/*
+ * REFERANSLAR: YILDIZ YERINE OLCUM
+ * Bes kirmizi yildiz her sitede ayni sekilde duruyor ve hicbir sey olcmuyor.
+ * Her referansin altinda artik o araca ait olcum sonucu var.
+ */
+$referanslar = SiteContent::all()['testimonials'];
+check('referanslarda yildiz derecelendirmesi yok',
+    !str_contains($home, 'class="star"') && !str_contains($css, '.star {'));
+check('her referansta olcum sonucu var',
+    count(array_filter($referanslar, static fn ($r) => isset($r['olcum']['value']) && $r['olcum']['value'] !== '')) === count($referanslar));
+check('olcumler birbirinden farkli buyuklukler',
+    count(array_unique(array_column(array_column($referanslar, 'olcum'), 'key'))) === count($referanslar));
+check('referans kart degil editoryal sutun',
+    str_contains($home, 'class="referans"') && !str_contains($home, 'referans glass'));
+check('referans bolumu kurgu oldugunu soyluyor',
+    (bool) preg_match('/referans[\s\S]{0,4000}?temsilidir/u', $home));
+
+/*
+ * MANIFESTO
+ * Editoryal kesinti: sayfanin kalibina UYMAYAN tek bolum. Etiketi ve karti
+ * olmamasi bilincli; testin korudugu sey de bu.
+ */
+check('manifesto bolumu var', str_contains($home, 'class="manifesto"'));
+
+// Bolumun KENDI govdesini ayiklayip icinde ariyoruz: tum sayfada arayan bir
+// desen, manifestodan sonraki bolumlerin etiketlerini de gorup yaniltir.
+$manifestoBlok = preg_match('/<section class="manifesto">([\s\S]*?)<\/section>/u', $home, $mEs) ? $mEs[1] : '';
+check('manifesto govdesi ayiklanabiliyor', $manifestoBlok !== '');
+check('manifesto etiket tasimiyor',
+    $manifestoBlok !== '' && !str_contains($manifestoBlok, 'eyebrow-label'));
+check('manifesto kart degil',
+    $manifestoBlok !== '' && !str_contains($manifestoBlok, 'glass'));
+check('manifesto cumlesi satir acilisina bagli',
+    (bool) preg_match('/manifesto-quote[^>]*data-satir/', $home));
+check('manifesto baslik sesinden farkli konusuyor',
+    (bool) preg_match('/\.manifesto-quote \{[\s\S]*?"wdth" 106/', $css));
+
+/*
+ * OKUMA ILERLEMESI
+ * Sayfanin dili olcum; serit altindaki cizgi de okunan mesafenin olcumu.
+ * Rengi olcum skalasindan gelir, marka kirmizisindan degil.
+ */
+check('okuma ilerlemesi seritte duruyor', str_contains($home, 'class="nav-progress"'));
+check('ilerleme degeri CSS degiskeninden okunur',
+    str_contains($css, 'var(--okuma-p'));
+check('ilerleme degeri inline stille yazilmaz',
+    str_contains($js, "insertRule(':root { --okuma-p: 0; }'") && !preg_match('/nav\.style\./', $js));
+check('ilerleme cizgisi olcum renginde, marka renginde degil',
+    (bool) preg_match('/\.nav-progress \{[^}]*bg-brand-accent/', $css));
+check('serit kaydirilinca matlasir', str_contains($js, "'nav-kaydirildi'"));
+
+/*
+ * SCROLL'A BAGLI HAREKET
+ * JavaScript yok: `animation-timeline: view()`. Desteklemeyen tarayicida
+ * hicbir sey degismez, cunku kurallar @supports icinde duruyor.
+ */
+check('paralaks scroll zaman cizgisiyle calisir',
+    str_contains($css, 'animation-timeline: view()'));
+check('paralaks destek sorgusuyla korunuyor',
+    (bool) preg_match('/@supports \(animation-timeline: view\(\)\)/', $css));
+check('paralaks hareket azaltmada calismaz',
+    (bool) preg_match('/@supports \(animation-timeline: view\(\)\) \{\s*@media \(prefers-reduced-motion: no-preference\)/', $css));
+/*
+ * Paralaks `translate` ozelligini kullanir, `transform` degil: `.cell:hover
+ * .cell-photo` zaten transform: scale kullaniyor, ayni ozellik olsaydi
+ * animasyon hover'i ezerdi.
+ */
+check('paralaks hover buyutmesini ezmiyor',
+    (bool) preg_match('/@keyframes foto-paralaks \{[^}]*translate:/', $css));
+check('kaydirma kurallari katman disinda',
+    strrpos($css, '.nav-bar.nav-kaydirildi') > strrpos($css, '@layer utilities'));
+
+/*
+ * OLU SINIF KALMADI
+ * .plan, .plan-best, .plan-price ve .plan-badge CSS'te tanimliydi ama fiyat
+ * kartlari onlari hic kullanmiyordu: fiyat rakami sayfanin olcum sesinde
+ * degildi ve dort sinif sessizce hicbir sey yapmiyordu.
+ */
+foreach (['plan', 'plan-best', 'plan-price', 'plan-badge'] as $sinif) {
+    check("tanimli sinif kullaniliyor: .$sinif",
+        str_contains($css, '.' . $sinif) && str_contains($home, $sinif));
+}
+check('fiyat rakami olcum sesinde',
+    (bool) preg_match('/\.plan-price \{[^}]*readout/', $css));
+
+// Hero: olcum karti
+check('hero olcum karti degisim miktarini gosteriyor',
+    substr_count($home, 'olcum-delta') === 4,
+    'sayim: ' . substr_count($home, 'olcum-delta'));
+check('kaydirma isareti hero icinde', str_contains($home, 'class="hero-cue"'));
+
+/*
+ * METIN ICI BAGLANTI TEK KAYNAKTAN TURER
+ * Ayni utility zinciri dort yerde tekrar ediyordu: iki sablonda ham sinif
+ * listesi, CSS'te iki ayri bilesen icinde. Marka renginin alt cizgi
+ * yogunlugunu degistirmek dort yerde duzeltme gerektiriyordu.
+ */
+check('baglanti stili tek yerde tanimli',
+    substr_count($css, 'decoration-brand/40 underline-offset-4') === 1,
+    'sayim: ' . substr_count($css, 'decoration-brand/40 underline-offset-4'));
+check('sablonlarda ham baglanti zinciri yok',
+    !str_contains($home, 'decoration-brand/40'));
+check('turemis baglanti bilesenleri tek kaynagi okuyor',
+    str_contains($css, '.legal-link    { @apply link-ic; }') && str_contains($css, '.foot-harita { @apply link-ic'));

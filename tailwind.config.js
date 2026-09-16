@@ -49,6 +49,7 @@ module.exports = {
           text:    'rgb(var(--brand-text) / <alpha-value>)',
         },
         surface: {
+          950: 'rgb(var(--surface-950) / <alpha-value>)',
           900: 'rgb(var(--surface-900) / <alpha-value>)',
           800: 'rgb(var(--surface-800) / <alpha-value>)',
           700: 'rgb(var(--surface-700) / <alpha-value>)',
@@ -76,7 +77,10 @@ module.exports = {
       boxShadow: {
         glass:      '0 8px 32px rgba(4, 8, 14, 0.42), inset 0 1px 0 rgba(255,255,255,0.08)',
         'glass-lg': '0 24px 64px rgba(4, 8, 14, 0.55), inset 0 1px 0 rgba(255,255,255,0.12)',
-        brand:      '0 10px 30px rgb(var(--brand) / 0.26)',
+        // Negatif yayilim bilincli: 0 10px 30px hicbir yayilim kisitlamasi
+        // olmadan butonun DORT YANINDA kirmizi bir hale birakiyordu.
+        // Eksi yayilim golgeyi iceri ceker, asagi yonlu ve olculu kalir.
+        brand:      '0 8px 20px -6px rgb(var(--brand) / 0.45)',
       },
       backdropBlur: {
         glass: '16px',
@@ -93,6 +97,7 @@ module.exports = {
         'rise-1':    'rise 750ms cubic-bezier(0.16,1,0.3,1) 0.05s forwards',
         'rise-2':    'rise 750ms cubic-bezier(0.16,1,0.3,1) 0.14s forwards',
         'rise-3':    'rise 750ms cubic-bezier(0.16,1,0.3,1) 0.23s forwards',
+        'rise-4':    'rise 750ms cubic-bezier(0.16,1,0.3,1) 0.34s forwards',
         'pulse-ring':'pulse-ring 2.4s cubic-bezier(0.4,0,0.6,1) infinite',
       },
     },

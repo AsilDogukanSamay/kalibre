@@ -8,3 +8,6 @@ Thumbs.db
 /storage/*.json
 /storage/logs/*
 !/storage/logs/.gitignore
+
+# Denetim ekran goruntuleri (gecici cikti)
+.cikti/

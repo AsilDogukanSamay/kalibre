@@ -1,7 +1,7 @@
 <?php /** @var array<int,array<string,mixed>> $plans */ ?>
 <section id="fiyat" class="section shell">
-    <div class="section-head" data-reveal>
-        <span class="eyebrow-label">Fiyat</span>
+    <div class="section-head section-head-brand" data-reveal>
+        <span class="eyebrow-label eyebrow-brand">Fiyat</span>
         <h2 class="h-section text-balance" data-satir>İki paket, ikisi de ölçümle başlıyor.</h2>
         <p class="body-text">Fiyatlar orta sınıf sedan içindir. SUV ve ticari araçlarda yüzey alanına göre fark uygulanır, ölçüm sonrası net fiyat verilir.</p>
         <p class="body-sm">İç detaylı temizlik ve şeffaf koruma filmi paket dışında, tek tek de alınabilir. Başlangıç fiyatları hizmetler bölümünde.</p>
@@ -10,18 +10,18 @@
 
     <div class="grid gap-4 lg:grid-cols-2" data-reveal-group>
         <?php foreach ($plans as $plan): ?>
-            <article class="glass-card flex flex-col gap-5 <?= $plan['featured'] ? 'border-brand/40 bg-brand/[0.07]' : '' ?>" data-reveal>
+            <article class="plan <?= $plan['featured'] ? 'plan-best' : '' ?>" data-reveal>
                 <div class="flex items-start justify-between gap-4">
                     <h3 class="h-card"><?= e($plan['name']) ?></h3>
                     <?php if ($plan['featured']): ?>
-                        <span class="rounded-full bg-brand px-3 py-1 text-xs  text-white">En çok tercih edilen</span>
+                        <span class="plan-badge">En çok tercih edilen</span>
                     <?php endif; ?>
                 </div>
 
                 <p class="body-sm"><?= e($plan['intro']) ?></p>
 
                 <p class="flex items-baseline gap-1.5">
-                    <span class="text-4xl  tabular-nums tracking-tight text-ink"><?= e($plan['price']) ?></span>
+                    <span class="plan-price"><?= e($plan['price']) ?></span>
                     <span class="text-sm text-ink-muted"><?= e($plan['currency']) ?></span>
                 </p>
 

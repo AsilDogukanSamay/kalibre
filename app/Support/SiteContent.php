@@ -150,24 +150,33 @@ final class SiteContent
                 ],
             ],
 
+            /*
+             * Referanslar. 'rating' anahtari kaldirildi: bes kirmizi yildiz her
+             * sitede ayni sekilde duruyor ve hicbir sey olcmuyor. Yerine o araca
+             * ait OLCUM sonucu geldi ('olcum'). Sayfanin geri kalani neyi
+             * yapiyorsa - iddiayi rakama baglamak - sosyal kanit da onu yapiyor.
+             *
+             * Uc ayri olcum turu bilincli: kalinlik, su temas acisi ve parlaklik.
+             * Boylece bolum "ayni rakamin uc kez tekrari" gibi okunmuyor.
+             */
             'testimonials' => [
                 [
-                    'quote'  => 'Teslimde elime bir rapor verdiler. Hangi panelde kaç mikron kaldığını görünce ikinci pasoyu neden yapmadıklarını anladım.',
-                    'name'   => 'Deniz Ülgen',
-                    'role'   => 'Porsche 911, 2019 model',
-                    'rating' => 5,
+                    'quote' => 'Teslimde elime bir rapor verdiler. Hangi panelde kaç mikron kaldığını görünce ikinci pasoyu neden yapmadıklarını anladım.',
+                    'name'  => 'Deniz Ülgen',
+                    'role'  => 'Porsche 911, 2019 model',
+                    'olcum' => ['key' => 'Kaput, kalan vernik', 'value' => '152 → 141', 'unit' => 'µm'],
                 ],
                 [
-                    'quote'  => 'Üç yıldır aynı yerdeyim. Kaplama hâlâ su tutmuyor, yıkama süresi yarıya indi.',
-                    'name'   => 'Melis Arıkan',
-                    'role'   => 'BMW M340i, 2022 model',
-                    'rating' => 5,
+                    'quote' => 'Üç yıldır aynı yerdeyim. Kaplama hâlâ su tutmuyor, yıkama süresi yarıya indi.',
+                    'name'  => 'Melis Arıkan',
+                    'role'  => 'BMW M340i, 2022 model',
+                    'olcum' => ['key' => 'Su temas açısı, 3. yıl', 'value' => '104° → 98°', 'unit' => ''],
                 ],
                 [
-                    'quote'  => 'Fiyatı önceden net söylediler, teslimde değişmedi. Randevu talebime de aynı gün içinde döndüler.',
-                    'name'   => 'Kerem Batur',
-                    'role'   => 'Volvo XC60, 2023 model',
-                    'rating' => 5,
+                    'quote' => 'Fiyatı önceden net söylediler, teslimde değişmedi. Randevu talebime de aynı gün içinde döndüler.',
+                    'name'  => 'Kerem Batur',
+                    'role'  => 'Volvo XC60, 2023 model',
+                    'olcum' => ['key' => 'Parlaklık, kapı paneli', 'value' => '38 → 91', 'unit' => 'GU'],
                 ],
             ],
 

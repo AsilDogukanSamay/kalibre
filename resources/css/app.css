@@ -14,6 +14,12 @@
      Renkler burada tanimlanir, Tailwind bu degiskenleri okur.
      data-brand niteligi .env'deki APP_BRAND degerinden gelir. */
   :root {
+    /* Yuzey olcegi. 950 bu turda eklendi: sayfa 11.000 piksel boyunca TEK bir
+       koyulukta akiyordu, bolumler birbirinden ayrismiyordu. Uc kademe artik
+       "bolum" hissi kuruyor - 950 sessiz an, 900 varsayilan, 800 yukseltilmis
+       bolum. Olcek yalnizca KOYULASMA yonunde genisledi, yani kontrast
+       esikleri bozulmadi. */
+    --surface-950: 11 12 14;
     --surface-900: 16 18 20;
     --surface-800: 21 24 27;
     --surface-700: 27 31 36;
@@ -117,17 +123,36 @@
 
   /* ---------- Yerleşim ---------- */
   .shell        { @apply mx-auto w-full max-w-[82.5rem] px-5 sm:px-6; }
+
+  /* ---------- Bolum tonu (chapter) ----------
+     Sayfa dort tonal bolume ayrilir: kanit (varsayilan), teklif (yukseltilmis),
+     manifesto (sessiz), guven (varsayilan). Ton degisimi bolumun basladigini
+     soyler; sirali her bolume ayri renk vermek serit etkisi yapardi, o yuzden
+     ton BOLUM GRUBUNA uygulanir, tek tek bolume degil.
+
+     Kenarlik yalnizca UST kenarda. Alt kenarda da olsaydi ardisik iki bantta
+     cift cizgi olusuyordu (alt bilgi kendi border-t'sini zaten getiriyor). */
+  .band-raise   { @apply border-t border-line bg-surface-800; }
+  .band-deep    { @apply border-t border-line bg-surface-950; }
   .section      { @apply py-16 sm:py-20 lg:py-28; }
+  /* Ayni tonal bolum icinde ardisik iki bolum: ust dolgu kisalir. Iki tam
+     dolgu ust uste gelince ekranin dortte biri kadar bos alan olusuyordu
+     (1440x900'de 224 piksel). Chapter sinirlarinda sarmalayici <div>
+     bitisikligi bozdugu icin oralarda tam nefes korunur - istenen de bu:
+     bolum icinde sikisik, bolumler arasinda genis. */
+  .section + .section { @apply pt-10 sm:pt-12 lg:pt-16; }
   /* Bolum basligi. Ustundeki kisa cizgi bolumun basladigi yeri isaretler ve
      bolum goruse girdiginde soldan cizilir. Cerceve yerine bu: yapi veriyor
      ama basligi kutuya kapatmiyor. */
   .section-head { @apply relative mb-10 flex max-w-2xl flex-col gap-3 pt-5 sm:mb-14; }
   .section-head::before {
     content: "";
-    @apply absolute left-0 top-0 block h-0.5 w-10 origin-left bg-brand;
+    @apply absolute left-0 top-0 block h-0.5 w-10 origin-left bg-line-strong;
     transform: scaleX(0);
     transition: transform 620ms cubic-bezier(0.16, 1, 0.3, 1) 120ms;
   }
+  /* Etiketle ayni kural: cizgi de yalnizca uc durakta marka renginde. */
+  .section-head-brand::before { @apply bg-brand; }
 
   /* ---------- Sonuc kutusu ----------
      Cerceve sayfada ENDER kullanilir ve yalnizca bir SONUCU sarar: olculmus
@@ -149,6 +174,15 @@
   .note     { @apply max-w-[72ch] text-[0.88rem] leading-[1.7] text-ink-muted; font-variation-settings: "wdth" 96, "wght" var(--wght-body-sm); }
   .note-box { @apply note glass-soft p-4; }
 
+  /* ---------- Metin ici baglanti ----------
+     Ayni utility zinciri DORT yerde tekrar ediyordu: iki sablonda ham sinif
+     listesi, CSS'te de iki ayri bilesen icinde. Marka renginin alt cizgi
+     yogunlugunu degistirmek dort yerde duzeltme gerektiriyordu. Tek kaynak.
+
+     Marka renkli yazi 7:1'e cikamaz (kural 6), o yuzden yalnizca KISA
+     baglanti metinlerinde; paragraf hicbir yerde marka renginde degil. */
+  .link-ic  { @apply text-brand-text underline decoration-brand/40 underline-offset-4 transition hover:decoration-brand; }
+
   /* ---------- Tipografi: tek aile, genişlik ekseni ikinci "font" ---------- */
   /* --- TIPOGRAFI OLCEGI ---
      Tek aile (Archivo variable). Ikinci bir yazi tipi yerine GENISLIK EKSENI
@@ -168,8 +202,13 @@
   /* Ölçüm okumaları: dar genişlik + tablo rakamları */
   .readout { font-variation-settings: "wdth" 72, "wght" var(--wght-readout); @apply tabular-nums; letter-spacing: 0.005em; }
 
-  /* Bolum ust etiketi: kucuk punto, genis harf araligi, kararli agirlik */
-  .eyebrow-label { @apply text-[11px] uppercase text-brand-text; font-variation-settings: "wdth" 104, "wght" var(--wght-eyebrow); letter-spacing: 0.2em; }
+  /* Bolum ust etiketi: kucuk punto, genis harf araligi, kararli agirlik.
+     RENK NOTUR. Onceki halde sayfadaki ON bolumun etiketi de marka
+     kirmizisiydi; her yerde olan bir vurgu vurgu olmaktan cikiyordu.
+     Kirmizi artik anlatinin uc durak noktasinda: hero'daki olcum kaniti,
+     fiyat ve randevu. Gerekce KARARLAR.md 7j'de. */
+  .eyebrow-label { @apply text-[11px] uppercase text-ink-faint; font-variation-settings: "wdth" 104, "wght" var(--wght-eyebrow); letter-spacing: 0.2em; }
+  .eyebrow-brand { @apply text-brand-text; }
 
   /* ---------- GLASSMORPHISM ÇEKİRDEĞİ ----------
      Tek kaynak: her buzlu cam yüzey bu sınıflardan türer (DRY). */
@@ -201,6 +240,11 @@
     @apply glass glass-sheen p-6 transition duration-300 sm:p-7
            hover:border-white/20 hover:bg-white/[0.085];
   }
+  /* Ust kenardaki cam parlamasi hover'da guclenir. Birincil butondaki isik
+     gecisiyle ayni fikir: "bu yuzey canli". Ayri bir katman eklemiyor,
+     zaten var olan glass-sheen kuralini parlatiyor. */
+  .glass-card::before { transition: opacity 420ms ease, background-image 420ms ease; }
+  .glass-card:hover::before { @apply via-white/60; }
 
   /* ---------- Butonlar ---------- */
   .btn {
@@ -234,7 +278,15 @@
   .btn-block   { @apply w-full; }
 
   /* ---------- Navigasyon ---------- */
-  .nav-bar  { @apply sticky top-0 z-40 h-16 border-b border-line bg-surface-900/85 backdrop-blur-glass; }
+  .nav-bar  { @apply sticky top-0 z-40 h-16 border-b border-line bg-surface-900/85 backdrop-blur-glass; transition: background-color 320ms ease, border-color 320ms ease; }
+  /* Okuma ilerlemesi: seridin alt kenarinda 1 piksel. Genislik --okuma-p
+     degiskeninden gelir (JS tek kurallik stylesheet uzerinden gunceller).
+     Renk OLCUM skalasindan: accent, marka kirmizisi degil. Kirmizi sayfada
+     eylem rengi; ilerleme bir eylem degil, bir olcum. */
+  .nav-progress {
+    @apply pointer-events-none absolute inset-x-0 bottom-0 block h-px origin-left bg-brand-accent;
+    transform: scaleX(var(--okuma-p, 0));
+  }
   .nav-in   { @apply flex h-full items-center gap-10; }
   .nav-link { @apply text-[0.92rem] text-ink-muted transition hover:text-ink; }
   /* Kelime markasi artik tipografi degil, resmi vektor. Yukseklik sabit,
@@ -428,14 +480,14 @@
 
   /* Numara ve baslik ayni satirda - fotograf olsun olmasin. */
   .flow-head    { @apply flex items-baseline gap-3; }
-  .flow-no-flat { @apply readout text-[1.35rem] leading-none text-brand-text; }
+  .flow-no-flat { @apply readout text-[1.35rem] leading-none text-ink-faint; }
 
   .flow-body     { @apply flex flex-1 flex-col gap-2.5 p-5; }
   .flow-media + .flow-body { @apply pt-0; }
   .flow-title    { @apply text-lg tracking-tight text-ink; font-variation-settings: "wdth" 102, "wght" var(--wght-strong); }
   .flow-meta     { @apply mt-auto flex flex-col gap-2.5 border-t border-line pt-3.5; }
   .flow-meta-key { @apply text-[11px] uppercase tracking-[0.14em] text-ink-faint; }
-  .flow-meta-val { @apply readout mt-0.5 text-sm text-brand-text; }
+  .flow-meta-val { @apply readout mt-0.5 text-sm text-ink; }
   .flow-meta-out { @apply mt-0.5 text-[0.85rem] leading-snug text-ink; }
 
   .flow-total      { @apply mt-10 flex flex-col gap-1.5 border-t border-line pt-6 xl:mt-12; }
@@ -446,7 +498,7 @@
   /* ---------- Süreç (eski kart bileşenleri, geri uyum) ---------- */
   .step      { @apply glass-card flex flex-col gap-2; }
   .step-rule { @apply h-0.5 w-8 bg-brand; }
-  .step-time { @apply readout mt-auto pt-3 text-sm text-brand-text; }
+  .step-time { @apply readout mt-auto pt-3 text-sm text-ink; }
 
   /* ---------- SSS ----------
      Dolgu <summary> uzerinde durur; boylece tiklanabilir alan satir
@@ -460,12 +512,6 @@
   .faq-panel   { overflow: hidden; height: var(--faq-h, auto); }
   .faq-panel-gecis { transition: height 340ms cubic-bezier(0.16, 1, 0.3, 1); }
   .faq-body    { @apply body-sm max-w-[62ch] px-5 pb-5; }
-
-  /* ---------- Yildiz derecelendirmesi ----------
-     Bu sinif sablonlarda kullaniliyordu ama CSS'te hic tanimli degildi: SVG
-     ne boyut ne dolgu aliyordu, tarayici varsayilanina duserek SIYAH ve kocaman
-     ciziyordu. Koyu zeminde neredeyse gorunmuyordu. */
-  .star { @apply h-4 w-4 shrink-0 fill-brand; }
 
   /* ---------- Fiyat ---------- */
   .plan {
@@ -502,11 +548,6 @@
   .toast-title { @apply text-sm text-ink; font-variation-settings: "wdth" 96, "wght" var(--wght-medium); }
   .toast-body  { @apply mt-0.5 text-xs leading-relaxed text-ink-muted; }
   .toast-close { @apply -mr-1 -mt-1 ml-auto rounded-glass p-1 text-ink-faint transition hover:text-ink; }
-
-  /* ---------- Geri sayım ---------- */
-  .countdown-cell { @apply glass-soft flex flex-col items-center px-2 py-2.5 sm:px-3; }
-  .countdown-num  { @apply readout text-2xl text-ink sm:text-3xl; }
-  .countdown-lbl  { @apply text-[11px] uppercase tracking-[0.14em] text-ink-faint; }
 
   /* Menu baglantisi: alt cizgi soldan acilir. */
   .nav-link { @apply relative; }
@@ -594,7 +635,7 @@
   .foot-grid   { @apply grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-12; }
   .foot-key    { @apply text-[11px] uppercase tracking-[0.14em] text-ink-faint; }
   .foot-tel    { @apply readout text-lg text-ink transition hover:text-brand-text; }
-  .foot-harita { @apply w-fit text-sm text-brand-text underline decoration-brand/40 underline-offset-4 transition hover:decoration-brand; }
+  .foot-harita { @apply link-ic w-fit text-sm; }
   .foot-telif  { @apply border-t border-line pt-6 text-xs text-ink-faint; }
 
   /* ---------- WhatsApp ---------- */
@@ -631,7 +672,7 @@
   }
   .legal-note    { @apply note-box max-w-[68ch]; }
   .legal-foot    { @apply mt-12 flex max-w-[68ch] flex-col items-start gap-4 border-t border-line pt-8; }
-  .legal-link    { @apply text-brand-text underline decoration-brand/40 underline-offset-4 transition hover:decoration-brand; }
+  .legal-link    { @apply link-ic; }
 
   /* ---------- KVKK onay kutusu ----------
      Isaret, style attribute'u gerektirmesin diye CSS icinde data URI olarak
@@ -688,6 +729,74 @@
   @media (prefers-reduced-motion: reduce) {
     .cursor { @apply hidden; }
   }
+}
+
+@layer components {
+
+  /* ---------- Hero: olcum karti ----------
+     Hero'nun ikinci yarisinin tamami. Her satir ayni uc soruyu cevaplar:
+     NE olculdu (key), KAC oldu (val), NE KADAR degisti (delta).
+     Delta rakamlari uydurulmus degil, yanlarindaki iki degerin farki. */
+  .olcum-kart   { @apply w-full; }
+  .olcum-satir  { @apply glass-soft grid grid-cols-[1fr_auto] items-center gap-x-4 px-4 py-3.5; }
+  .olcum-key    { @apply col-span-2 mb-1.5 text-[10px] uppercase tracking-[0.14em] text-ink-faint; }
+  .olcum-val    { @apply flex items-baseline text-[1.65rem] leading-none text-ink; }
+  .olcum-birim  { @apply ml-1.5 text-xs text-ink-muted; font-variation-settings: "wdth" 92, "wght" var(--wght-body); }
+  /* Yon rengi olcum dilinden gelir: mavi skala (eksilen vernik), yesil kazanim
+     (artan parlaklik). Marka kirmizisi eylem rengi olarak disarida kalir. */
+  .olcum-delta  { @apply readout rounded-glass border px-2 py-1 text-xs text-ink; }
+  .olcum-delta-dusus { @apply border-brand-accent/50 bg-brand-accent/[0.12]; }
+  .olcum-delta-artis { @apply border-good/50 bg-good/[0.12]; }
+
+  /* ---------- Hero: kaydirma isareti ----------
+     Hero lg'de tam ekran; altinda icerik oldugunu soyleyen tek sinyal bu.
+     Dar ekranda hero zaten tam ekran degil, isaret gizlenir. */
+  .hero-cue     { @apply pointer-events-none absolute inset-x-0 bottom-6 z-10 hidden flex-col items-center gap-2.5 lg:flex; }
+  .hero-cue-lbl { @apply text-[10px] uppercase tracking-[0.2em] text-ink-faint; }
+  .hero-cue-line{ @apply relative block h-10 w-px overflow-hidden bg-line-strong; }
+  .hero-cue-dot { @apply absolute left-0 top-0 block h-3.5 w-px bg-brand; }
+
+  /* ---------- Manifesto ----------
+     Editoryal kesinti. Sayfanin kalibina UYMUYOR: etiket yok, kart yok,
+     izgara yok. Baslik sesi de farkli - bolum basliklari wdth 112 / wght 730
+     ile siki ve kararli konusuyor, bu cumle wdth 106 / wght 600 ile daha
+     yavas. Ayni aile, farkli ton.
+
+     Sol kenardaki cizgi yatay bolum cizgisinin yerine geciyor; bloku
+     iceri cekerek sayfanin sol hizasindan ayiriyor. */
+  .manifesto       { @apply py-24 sm:py-32 lg:py-40; }
+  .manifesto-in    { @apply relative max-w-[70ch] border-l border-line-strong pl-6 sm:pl-10 lg:ml-[7%]; }
+  .manifesto-in::before {
+    content: "";
+    @apply absolute -left-px top-0 block h-16 w-px origin-top bg-brand;
+    transform: scaleY(0);
+    transition: transform 760ms cubic-bezier(0.16, 1, 0.3, 1) 180ms;
+  }
+  .manifesto-quote {
+    @apply text-balance text-[clamp(1.85rem,3.9vw,2.9rem)] text-ink;
+    font-variation-settings: "wdth" 106, "wght" var(--wght-medium);
+    letter-spacing: -0.025em;
+    line-height: 1.14;
+  }
+  .manifesto-note  { @apply mt-8 flex max-w-[58ch] flex-col gap-4 sm:mt-10; }
+
+  /* ---------- Referans ----------
+     Kart DEGIL. Sayfada zaten dort ayri kart izgarasi var (hizmet, surec,
+     fiyat, sss); referanslar da kart olunca bolum bir oncekinden ayrismiyordu.
+     Artik ustten cizgili editoryal bir sutun.
+
+     Yildizlar kaldirildi: bes kirmizi yildiz her sitede ayni sekilde duruyor
+     ve hicbir sey olcmuyor. Yerine o araca ait OLCUM sonucu geldi - sayfanin
+     geri kalani neyi yapiyorsa, sosyal kanit da onu yapiyor. */
+  .referans       { @apply flex flex-col gap-5 border-t border-line-strong pt-6; }
+  .referans-quote { @apply text-[1.05rem] leading-[1.62] text-ink; font-variation-settings: "wdth" 100, "wght" var(--wght-label); }
+  .referans-kim   { @apply flex flex-col gap-0.5; }
+  .referans-ad    { @apply text-sm text-ink; font-variation-settings: "wdth" 98, "wght" var(--wght-strong); }
+  .referans-arac  { @apply text-xs text-ink-faint; }
+  .referans-olcum { @apply mt-auto flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-line pt-3.5; }
+  .referans-key   { @apply text-[10px] uppercase tracking-[0.14em] text-ink-faint; }
+  .referans-val   { @apply readout text-sm text-ink; }
+  .referans-birim { @apply ml-1 text-xs text-ink-muted; font-variation-settings: "wdth" 92, "wght" var(--wght-body); }
 }
 
 @layer utilities {
@@ -773,4 +882,120 @@
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1; transform: none; transition: none; }
   [data-reveal-group] > [data-reveal] { transition-delay: 0ms; }
+}
+
+/* ============================================================
+   Kaydirma durumu ve scroll'a bagli hareket - KATMAN DISINDA
+
+   Bu blok da bilerek @layer disinda. Iki sebep var ve ikisi de olculdu:
+
+   1. `.nav-kaydirildi` sinifini JavaScript takiyor. Katman icindeki kurallar
+      kullanilmayan siniflara gore budaniyor; sinif yalnizca calisma aninda
+      olustugu icin kural derlenmis dosyaya girmeyebiliyor. `[data-reveal].is-in`
+      tam olarak boyle kaybolmustu (kural 9).
+   2. Katman disi kurallar katman ici kurallari gecer. `.nav-bar` ve
+      `.cell-photo` @layer components icinde tanimli; buradaki kurallarin
+      onlari ezmesi gerekiyor.
+   ============================================================ */
+
+/* Menu seridi hero'nun uzerindeyken saydam durur, icerigin uzerine gelince
+   matlasir. Acik bir kartin uzerinden gecerken baglantilar okunmuyordu. */
+.nav-bar.nav-kaydirildi { @apply border-line-strong bg-surface-900/[0.97]; }
+
+/* Manifesto blogunun sol kenarindaki marka cizgisi bolum goruse girdiginde
+   yukaridan asagi ciziliyor - bolum basliklarindaki yatay cizginin dikey
+   karsiligi. */
+.manifesto-in.is-in::before { transform: scaleY(1); }
+
+/* Hero'daki kaydirma isareti: cizginin icinde asagi dusen kisa bir tik. */
+@keyframes hero-cue-dus {
+    0%   { transform: translateY(-110%); opacity: 0; }
+  18%   { opacity: 1; }
+  72%   { opacity: 1; }
+  100%  { transform: translateY(300%);   opacity: 0; }
+}
+.hero-cue-dot { animation: hero-cue-dus 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+
+/* ------------------------------------------------------------
+   Scroll'a bagli paralaks - JAVASCRIPT YOK
+
+   `animation-timeline: view()` animasyonun ilerlemesini elemanin goruse
+   giris/cikis mesafesine baglar. Tarayici destekliyorsa fotograflar kendi
+   kutularinin icinde scroll ile birlikte hafifce kayiyor; desteklemiyorsa
+   HICBIR SEY degismiyor - kutularin mevcut hali @supports blogunun disinda
+   duruyor, bu blok yalnizca ekliyor.
+
+   Neden `translate` ozelligi, `transform` degil: `.cell:hover .cell-photo`
+   zaten `transform: scale(1.05)` kullaniyor. Animasyon ayni ozelligi
+   kullansaydi hover'i ezerdi. `translate` bagimsiz bir ozellik oldugu icin
+   ikisi cakismadan birlikte calisiyor.
+
+   Yukseklik %120 ve ust kenar -%10: kaydirma payi birakilmazsa fotografin
+   alt ya da ust kenarinda bosluk aciliyor. Olculerek bulundu.
+   ------------------------------------------------------------ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+
+    /*
+     * ONCE `overflow: clip`, SONRA ZAMAN CIZGISI. Sirasi onemli.
+     *
+     * Ilk denemede animasyon %50'de DONUYORDU ve sebebi olculerek bulundu:
+     * `view()` bir elemanin gorunurlugunu EN YAKIN KAYDIRMA KABINA gore
+     * olcer, ve `overflow: hidden` o elemani bir kaydirma kabi yapar.
+     * Fotograf kartin icinde her zaman tam gorunur oldugu icin ilerleme
+     * sabit 0,4999 kaliyordu - scroll ne yaparsa yapsin.
+     *
+     * Ikinci denemede zaman cizgisi karta ADLANDIRILARAK tanimlandi
+     * (`view-timeline-name`). Bu sefer cizgi cozuluyor ama `currentTime`
+     * null donuyordu: ayni adi sayfadaki her kart tanimladigi icin ad
+     * belirsiz kaliyor ve cizgi etkisiz oluyor.
+     *
+     * Calisan cozum kirpmanin kendisini degistirmek. `overflow: clip` ayni
+     * gorsel kirpmayi yapar ama KAYDIRMA KABI OLUSTURMAZ; zaman cizgisi
+     * boylece sayfaya gore olculur. Kural @supports icinde durdugu icin
+     * scroll animasyonunu desteklemeyen tarayicida kirpma da degismez.
+     */
+    .hero,
+    .hero-bg,
+    .cell,
+    .flow-card,
+    .flow-media { overflow: clip; }
+
+    /*
+     * Neden `translate` ozelligi, `transform` degil: `.cell:hover .cell-photo`
+     * zaten `transform: scale(1.05)` kullaniyor. Animasyon ayni ozelligi
+     * kullansaydi hover'i ezerdi. `translate` bagimsiz bir ozellik oldugu
+     * icin ikisi cakismadan birlikte calisiyor.
+     *
+     * Yukseklik %120 ve ust kenar -%10: kaydirma payi birakilmazsa
+     * fotografin alt ya da ust kenarinda bosluk aciliyor.
+     */
+    @keyframes foto-paralaks {
+      from { translate: 0 -7%; }
+      to   { translate: 0  7%; }
+    }
+
+    .cell-photo,
+    .flow-photo {
+      height: 120%;
+      top: -10%;
+      animation: foto-paralaks linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+
+    /* Hero videosu sayfa asagi kaydikca cok yavas yaklasir. Perde
+       degismedigi icin yazi kontrasti bundan etkilenmiyor - hero kontrast
+       denetimi bunu ayrica olcuyor. */
+    @keyframes hero-yaklas {
+      from { scale: 1.04; }
+      to   { scale: 1.14; }
+    }
+
+    .hero .hero-media {
+      animation: hero-yaklas linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
 }

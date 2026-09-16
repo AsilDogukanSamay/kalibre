@@ -626,44 +626,51 @@
   })();
 
   /* ------------------------------------------------------------------
-   * Kampanya geri sayimi
+   * Navigasyon durumu ve okuma ilerlemesi
+   *
+   * Iki is yapar:
+   *   1. Sayfa kaydirilinca menu seridine 'nav-kaydirildi' sinifini takar.
+   *      Serit hero'nun uzerinde yariyken saydam, icerigin uzerine gelince
+   *      matlasir - yoksa acik bir kartin uzerinden gecerken baglantilar
+   *      okunmuyordu.
+   *   2. Seridin altindaki 1 piksellik cizgiyi okunan mesafeye gore doldurur.
+   *      Sayfanin dili olcum; bu da okunan mesafenin olcumu.
+   *
+   * Hicbir elemana style attribute'u yazilmaz: deger, sayfaya bir kez eklenen
+   * tek kurallik bir stylesheet uzerinden tasinir. Surgu, nisangah ve scroll
+   * pasosuyla ayni yontem.
    * ---------------------------------------------------------------- */
-  (function countdown() {
-    const root = document.querySelector('[data-countdown]');
-    if (!root) return;
+  (function navDurumu() {
+    const nav = document.querySelector('[data-nav]');
+    if (!nav) return;
 
-    const target = new Date(root.getAttribute('data-countdown')).getTime();
-    if (Number.isNaN(target)) return;
+    const sheetEl = document.createElement('style');
+    document.head.appendChild(sheetEl);
+    sheetEl.sheet.insertRule(':root { --okuma-p: 0; }', 0);
+    const rule = sheetEl.sheet.cssRules[0];
 
-    const cells = root.querySelector('[data-countdown-cells]');
-    const expired = root.querySelector('[data-countdown-expired]');
-    const out = {
-      days: root.querySelector('[data-cd="days"]'),
-      hours: root.querySelector('[data-cd="hours"]'),
-      minutes: root.querySelector('[data-cd="minutes"]'),
-      seconds: root.querySelector('[data-cd="seconds"]'),
-    };
+    let bekliyor = false;
 
-    const pad = (n) => String(n).padStart(2, '0');
+    function olc() {
+      bekliyor = false;
 
-    function tick() {
-      const diff = target - Date.now();
+      const y = window.scrollY;
+      const tam = document.documentElement.scrollHeight - window.innerHeight;
+      const p = tam > 0 ? Math.min(1, Math.max(0, y / tam)) : 0;
 
-      if (diff <= 0) {
-        cells.classList.add('hidden');
-        if (expired) expired.classList.remove('hidden');
-        window.clearInterval(timer);
-        return;
-      }
-
-      const s = Math.floor(diff / 1000);
-      out.days.textContent = pad(Math.floor(s / 86400));
-      out.hours.textContent = pad(Math.floor((s % 86400) / 3600));
-      out.minutes.textContent = pad(Math.floor((s % 3600) / 60));
-      out.seconds.textContent = pad(s % 60);
+      rule.style.setProperty('--okuma-p', p.toFixed(4));
+      nav.classList.toggle('nav-kaydirildi', y > 24);
     }
 
-    tick();
-    const timer = window.setInterval(tick, 1000);
+    window.addEventListener('scroll', () => {
+      if (bekliyor) return;
+      bekliyor = true;
+      requestAnimationFrame(olc);
+    }, { passive: true });
+
+    // Yeniden boyutlandirmada toplam yukseklik degisir; oran yeniden olculur.
+    window.addEventListener('resize', olc, { passive: true });
+
+    olc();
   })();
 })();

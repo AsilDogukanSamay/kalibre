@@ -22,8 +22,8 @@ Sonra şunu yapmanı istiyorum: ...
 ```bash
 npm run db        # veritabani, ayri bir terminalde acik kalmali
 npm run start     # CSS derle + sunucu -> http://127.0.0.1:5174
-npm test          # 202 test
-npm run denetim   # testler + yerlesim + kontrast + hero denetimi
+npm test          # 246 test
+npm run denetim   # testler + yerlesim + kontrast + hero + hareket denetimi
 ```
 
 **Önemli:** `npm run serve` PHP'yi yönlendirici betiğiyle başlatır. Elle
@@ -49,7 +49,7 @@ Teknik değerlendirme (iş başvurusu case study) olarak hazırlandı.
 
 ---
 
-## 2. Bilmen gereken on kural
+## 2. Bilmen gereken on bir kural
 
 Bu projede bilinçli olarak konulmuş, bozulmaması gereken kurallar:
 
@@ -84,7 +84,14 @@ Bu projede bilinçli olarak konulmuş, bozulmaması gereken kurallar:
    `[data-reveal].is-in` tam olarak böyle kayboldu ve sayfanın yarısı görünmez
    kaldı. Nitelik (attribute) seçicili kurallar `app.css` sonundaki katman dışı
    blokta. Test derlenmiş çıktıyı kontrol ediyor.
-10. **Sunucuyu `npm run serve` ile başlat.** PHP'yi yönlendirici betiği olmadan
+10. **`overflow: hidden` bir kaydırma kabı oluşturur.** Scroll'a bağlı
+   animasyonlar (`animation-timeline: view()`) görünürlüğü en yakın kaydırma
+   kabına göre ölçer; arada `overflow: hidden` olan bir kutu varsa ilerleme
+   sabit %50'de donar ve hiçbir şey kımıldamaz. Kırpma gereken yerlerde
+   `overflow: clip` kullanılır: aynı görsel sonucu verir, kap oluşturmaz.
+   `npm run hareket` bunu ölçerek doğrular — kural dosyada duruyor diye
+   çalıştığı anlamına gelmiyor.
+11. **Sunucuyu `npm run serve` ile başlat.** PHP'yi yönlendirici betiği olmadan
    çalıştırırsan statik dosyalar `index.php`'ye uğramaz, Range desteği devre
    dışı kalır ve scroll videosu ilk karesinde donar (sayaçlar çalışmaya devam
    ettiği için hata gözden kaçar).
@@ -107,13 +114,16 @@ resources/css/    app.css  ← Tailwind kaynağı, TÜM component sınıfları b
 public/           Web kökü. index.php + assets/{css,js,img,video}
 database/         schema.sql + migrations/
 storage/          Bildirim günlüğü ve giriş deneme sayacı (versiyonlanmaz)
-tests/run.php     Bağımlılıksız duman testleri (202 test)
+tests/run.php     Bağımlılıksız duman testleri (246 test)
 tests/*.mjs       Yerleşim, kontrast ve hero denetimleri (playwright-core ister)
 docs/KARARLAR.md  Ayrıntılı gerekçeler ve ölçümler (README'nin eşlikçisi)
 _eski/            Bu dönüşümden önceki tek dosyalık statik sürüm
 ```
 
-**Metin değiştirmek için** `app/Support/SiteContent.php` yeterli, HTML'e dokunma.
+**Metin değiştirmek için** `app/Support/SiteContent.php` yeterli — hizmetler,
+süreç adımları, paketler, referanslar, SSS ve iletişim bilgileri oradan gelir.
+**İstisna:** bölüm başlıkları ve giriş paragrafları hâlâ kendi şablonlarının
+içinde duruyor. Bunları da tek kaynağa taşımak açık bir iyileştirme (§6).
 **Stil değiştirmek için** `resources/css/app.css` ve `tailwind.config.js`.
 
 ---
@@ -124,7 +134,7 @@ _eski/            Bu dönüşümden önceki tek dosyalık statik sürüm
 npm install
 npm run start        # CSS derle + sunucu -> http://127.0.0.1:5174
 npm run dev          # gelistirirken CSS'i izle
-npm test             # 34 test
+npm test             # 246 test
 npm run db           # veritabani sunucusu (port 3307)
 npm run db:sql       # veritabanina baglan
 ```
@@ -195,7 +205,11 @@ Aşağıdakiler iddia değil, çalıştırılarak ölçüldü:
 | Yerleşim (6 genişlik × 5 sayfa) | 0 kusur |
 | Kontrast (390 ve 1440 px, panel dahil) | Eşik altı 0 metin |
 | Hero kontrastı (piksel yöntemi) | Eşik altı 0 metin |
-| Testler | 202/202 |
+| Bölüm tonu (3 bant) | Kontrast eşikleri bozulmadı, eşik altı 0 |
+| Scroll'a bağlı paralaks | Kart, süreç ve hero: üçü de ölçülerek hareket ediyor |
+| Hareket azaltma tercihi | Paralaks tamamen duruyor (8/8) |
+| Okuma ilerlemesi | `--okuma-p` scroll ile güncelleniyor, inline stil yok |
+| Testler | 246/246 |
 
 ---
 
@@ -216,13 +230,19 @@ Aşağıdakiler iddia değil, çalıştırılarak ölçüldü:
    ilgili bölümün altında açıkça yazıyor.
 6. Yayın öncesi kontrol listesinin tamamı `README.md` §10'da.
 
-### Açık duran öneri (yapılmadı, karar bekliyor)
+7. **Bölüm başlıkları hâlâ şablonların içinde.** Hizmet, süreç, paket ve SSS
+   *içeriği* `SiteContent.php` içinden geliyor ama bölüm başlıkları ve giriş
+   paragrafları kendi partial'larında duruyor. "İçerik tek kaynaktan" iddiası
+   bu yüzden kısmen doğru. Taşımak mekanik bir iş; başlık metinlerine bağlı
+   test yok, yani risksiz.
 
-Referans kartlarına **fotoğraf eklenmedi ve eklenmemeli**: referanslar kurgu,
+### Kapanan öneri
+
+Referans kartlarına fotoğraf **eklenmedi ve eklenmeyecek**: referanslar kurgu,
 kurgu bir alıntıya kurgu bir yüz eklemek "temsili görsel" çizgisini aşıp
-"uydurulmuş kişi"ye geçer. Yerine önerilen: her referansın altına o araca ait
-**ölçüm sonucu** (`138 → 129 µm` gibi). Sayfanın ölçüm diliyle örtüşür, sosyal
-kanıtı kanıta çevirir, kimse uydurulmaz. Sahibi onay verirse yapılabilir.
+"uydurulmuş kişi"ye geçer. Onun yerine önerilen şey bu turda **yapıldı**: her
+referansın altında artık o araca ait ölçüm sonucu var (`152 → 141 µm` gibi) ve
+beş yıldız kaldırıldı. Gerekçe `docs/KARARLAR.md` 7j'de.
 
 ---
 
@@ -235,6 +255,17 @@ Son oturumlarda yapılanlar, en yeniden eskiye:
 
 | Ne | Özet |
 |---|---|
+| **Ritim ve ton** | Sayfa dört tonal bölüme ayrıldı (`--surface-950` eklendi). Ton tek tek bölüme değil **bölüm grubuna** veriliyor; sırayla vermek şerit etkisi yapıyordu |
+| **Kırmızı disiplini** | On bölümün etiketi kırmızıydı; üç durağa indi (hero ölçümü, fiyat, randevu). Test en fazla üçe izin veriyor |
+| **Geri sayım kaldırıldı** | İndirim sayacı sayfanın ölçüm tonuyla çelişiyordu. Şablon, JS, CSS ve `.env` anahtarı birlikte gitti |
+| **Hero ölçüm kartı** | Her satır üç soruyu cevaplıyor: ne ölçüldü, kaç oldu, ne kadar değişti. Delta rakamları iki değerin farkı |
+| **Manifesto bölümü** | Kalıba uymayan tek bölüm: etiketi, kartı, ızgarası yok. Altı bölümün aynı iskelette akmasını kırıyor |
+| **Referanslar** | Beş yıldız gitti, yerine o araca ait ölçüm geldi. Kart değil, üstten çizgili editoryal sütun |
+| **Okuma ilerlemesi** | Menü şeridinin altında, accent renginde, tek kurallık stylesheet üzerinden |
+| **Scroll paralaksı** | `animation-timeline: view()`, JavaScript yok. Üç denemede oturdu; `overflow: clip` şart (kural 10) |
+| **Hareket denetimi** | `npm run hareket` — animasyonların gerçekten hareket ettiğini, hareket azaltmada durduğunu ölçer |
+| **İki sessiz kusur** | Fiyat kartları `.plan` bileşenlerini hiç kullanmıyordu (fiyat ölçüm sesinde değildi); bağlantı stili dört yerde tekrar ediyordu |
+| **Beyan kendini doğruluyor** | Vaka sayfasındaki test sayısı artık testin kendi toplamıyla karşılaştırılıyor, elle güncellenmiyor |
 | Resmi Bosch logosu | Amblem **ve** kelime markası artık özgün vektör; kaynak dosya depoda, lisansı belgeli |
 | Baştan sona geçiş | Bölüm başlıkları tutarlı hale getirildi, etkileşim katmanı (sayaç, akordeon, kart derinliği, buton ışığı), alt bilgi üç sütuna ayrıldı |
 | Tanımsız sınıf denetimi | `.star`, `.stat-num`, `.eyebrow` sessizce hiçbir şey yapmıyordu; denetim eklendi, üçü de düzeltildi |
@@ -243,10 +274,15 @@ Son oturumlarda yapılanlar, en yeniden eskiye:
 | Süreç şeridi | Dört aşama fotoğraflı şeride dönüştü, "elinize geçen" ve toplam süre eklendi |
 | Mobil veri | Görünmeyen video posteri her yüklemede 121 KB yiyordu; 598 → 503 KB |
 
-**Bu projede iki kez yanlış alarm yaşandı** ve ikisi de ölçülerek elendi:
+**Bu projede üç kez yanlış alarm yaşandı** ve üçü de ölçülerek elendi:
 ekran görüntüsündeki "havada duran + işaretleri" (sabit konumlu nişangahın
-Playwright artefaktı) ve "fotoğrafsız kart" (tembel yükleme). Bir şeyi
-düzeltmeden önce ölç; bu kod tabanında bunu yapacak araçlar var.
+Playwright artefaktı), "fotoğrafsız kart" (tembel yükleme) ve "paralaks
+çalışmıyor" (ölçüm **gizli** bir tarayıcı panelinde yapılmıştı; `document.hidden`
+true iken tarayıcı scroll animasyonlarını askıya alır).
+
+Bir şeyi düzeltmeden önce ölç — ve **ölçüm ortamının kendisini de sorgula.**
+Bu kod tabanında bunu yapacak araçlar var: `npm run denetim` beş denetimi
+birden çalıştırır.
 
 ---
 

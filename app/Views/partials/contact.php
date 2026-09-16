@@ -3,8 +3,8 @@
     <div class="grid gap-8 lg:grid-cols-12 lg:gap-14">
 
         <div class="flex flex-col gap-6 lg:col-span-5" data-reveal>
-            <div class="section-head mb-0" data-reveal>
-                <span class="eyebrow-label">Randevu</span>
+            <div class="section-head section-head-brand mb-0" data-reveal>
+                <span class="eyebrow-label eyebrow-brand">Randevu</span>
                 <h2 class="h-section text-balance" data-satir>Önce aracı görelim.</h2>
                 <p class="body-text">Ölçüm ve durum tespiti ücretsiz, yaklaşık 45 dakika sürüyor. Formu bırakın, aynı gün içinde arıyoruz.</p>
             </div>
@@ -14,7 +14,7 @@
                     <dt class="text-xs uppercase tracking-[0.14em] text-ink-faint">Atölye</dt>
                     <dd class="mt-1 max-w-[42ch] text-sm text-ink"><?= e($brand['address']) ?></dd>
                     <dd class="mt-1.5">
-                        <a class="inline-flex items-center gap-1.5 text-sm text-brand-text underline decoration-brand/40 underline-offset-4 transition hover:decoration-brand"
+                        <a class="link-ic inline-flex items-center gap-1.5 text-sm"
                            href="<?= e($brand['maps']) ?>" target="_blank" rel="noopener">
                             Haritada gör
                             <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M11 3h6v6h-2V6.4l-7.3 7.3-1.4-1.4L13.6 5H11V3z"/><path d="M5 5h4V3H3v14h14v-6h-2v4H5V5z"/></svg>

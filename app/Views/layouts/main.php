@@ -45,7 +45,7 @@ $pageDescription = $pageDescription
     İçeriğe atla
 </a>
 
-<header class="nav-bar">
+<header class="nav-bar" data-nav>
     <div class="shell nav-in">
         <a href="/" class="shrink-0 no-underline"><?= partial($brandTheme['logo'], ['size' => 'h-8 w-8']) ?></a>
 
@@ -60,6 +60,13 @@ $pageDescription = $pageDescription
 
         <a href="/#iletisim" class="btn-primary btn-sm ml-auto lg:ml-6">Randevu al</a>
     </div>
+
+    <!-- Okuma ilerlemesi. Dekoratif bir cizgi degil: sayfanin dili olcum,
+         bu da okunan mesafenin olcumu. Rengi olcum skalasindan (accent)
+         geliyor, marka kirmizisindan degil - kirmizi eylem rengi olarak
+         butonlarda kaliyor. Genislik tek kurallik stylesheet uzerinden
+         tasinan --okuma-p degiskeninden okunur, style attribute'u yok. -->
+    <span class="nav-progress" aria-hidden="true"></span>
 </header>
 
 <main id="main">

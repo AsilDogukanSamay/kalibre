@@ -14,7 +14,6 @@ final class HomeController extends Controller
     public function index(Request $request): void
     {
         $this->view('home', SiteContent::all() + [
-            'campaignEndsAt' => Env::get('CAMPAIGN_ENDS_AT', ''),
             'appName'        => Env::get('APP_NAME', 'Bosch Car Service'),
         ]);
     }
