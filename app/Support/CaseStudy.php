@@ -9,13 +9,28 @@ namespace App\Support;
  */
 final class CaseStudy
 {
+    /**
+     * Video klasorunun toplam boyutu, dosyalardan hesaplanir.
+     * Onceki halde "7,7 MB" diye ELLE yaziliydi ve gercek 6,4 MB'ydi: klip
+     * degisince rakam sessizce eskimisti. Beyan artik kaynagi okuyor.
+     */
+    private static function videoBoyutu(): string
+    {
+        $toplam = 0;
+        foreach (glob(dirname(__DIR__, 2) . '/public/assets/video/*.mp4') ?: [] as $dosya) {
+            $toplam += (int) filesize($dosya);
+        }
+
+        return number_format($toplam / 1048576, 1, ',', '.') . ' MB';
+    }
+
     /** @return array<string,mixed> */
     public static function all(): array
     {
         return [
             'intro' => [
                 'role'     => 'Ürün tasarımı, arayüz geliştirme ve backend',
-                'duration' => 'Tek oturum',
+                'duration' => 'Birkaç oturum',
                 'stack'    => 'Tailwind CSS · PHP 8.4 (OOP/MVC) · MySQL · Vanilla JS',
                 'summary'  => 'Boya düzeltme atölyeleri işlerini kelimeyle anlatır: "titiz çalışırız", "kaliteli malzeme". Müşteri bunu doğrulayamaz. Bu sayfa iddiayı ölçüme çevirir.',
             ],
@@ -50,7 +65,7 @@ final class CaseStudy
                     'title'    => 'Göstermek, anlatmaya tercih edildi',
                     'decision' => 'Öncesi/sonrası sürgüsü aynı tripod pozisyonundan çekilmiş iki kareyi kullanıyor. Scroll bölümünde video, scroll ilerlemesine bağlı; kullanıcı pasoyu kendi hızında izliyor.',
                     'why'      => 'Hizmetin çıktısı ancak hareket ve karşılaştırmayla anlaşılıyor. Kullanıcı kontrolü elinde tuttuğu için de izlemek yerine inceliyor.',
-                    'tradeoff' => 'İki video 7,7 MB. Mobilde hiç indirilmeyerek çözüldü.',
+                    'tradeoff' => 'İki video ' . self::videoBoyutu() . '. Mobilde hiç indirilmeyerek çözüldü.',
                 ],
                 [
                     'n'        => '03',
@@ -113,7 +128,7 @@ final class CaseStudy
             /* -------------------------------------------------- Ölçümler */
             'metrics' => [
                 [
-                    'value' => '4,62:1',
+                    'value' => '4,55:1',
                     'label' => 'Hero yazı kontrastı',
                     'note'  => 'Videonun 10 karesi, üç ekran genişliği, hero içindeki her metin elemanı. En kötü değer bu; WCAG AA eşiği 4,5. Yazı gizlenip kare fotoğraflanarak ölçüldü, hesaplanmadı.',
                 ],
@@ -130,14 +145,14 @@ final class CaseStudy
                 [
                     // Bu rakam elle guncellenmez: tests/run.php sonunda kendi
                     // toplamiyla karsilastiriliyor, eskirse test kaliyor.
-                    'value' => '264',
+                    'value' => '278',
                     'label' => 'Geçen test',
                     'note'  => 'Doğrulama, kurumsal kimlik, güvenlik başlıkları, CSRF, giriş freni, prepared statement ve şablon katmanları. Harici bağımlılık yok.',
                 ],
                 [
                     'value' => '0',
                     'label' => 'Eşik altı metin',
-                    'note'  => 'Kontrast denetimi iki genişlikte, panel dahil beş sayfada çalıştırıldı. WCAG AA eşiğinin altında kalan metin yok.',
+                    'note'  => 'Kontrast denetimi iki genişlikte, panel dahil altı sayfada çalıştırıldı. WCAG AA eşiğinin altında kalan metin yok.',
                 ],
                 [
                     'value' => '1',

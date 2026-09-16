@@ -509,8 +509,13 @@ $sonucKutusu = preg_match_all('/class="verdict\s/', $home);
 check('sayfada sonuc kutusu ender', $sonucKutusu === 2, 'adet: ' . $sonucKutusu);
 check('surec toplami sonuc kutusunda', str_contains($home, 'Araç atölyede toplam')
     && str_contains($home, 'verdict-val'));
+/*
+ * Iki olcum etiketi PARALEL olmali: ikisi de ayni sablonu kullanir
+ * (buyukluk, panel). Onceki halde biri "Boya kalinligi, kaput" digeri
+ * "Olculen parlaklik" diyordu; ayni kutuda iki farkli dil konusuluyordu.
+ */
 check('olcum degerleri sonuc kutusunda',
-    str_contains($home, 'Boya kalınlığı, kaput') && str_contains($home, 'Ölçülen parlaklık'));
+    str_contains($home, 'Boya kalınlığı, kaput') && str_contains($home, 'Parlaklık, kaput'));
 
 // Satir satir baslik acilisi
 check('basliklar satir acilisina isaretli', substr_count($home, 'data-satir') >= 6);
@@ -819,3 +824,66 @@ check('atolye seridi kalintisi yok',
 check('yetim gorsel dosyasi kalmadi',
     !is_file($root . '/public/assets/img/atolye-serit.webp')
     && !is_file($root . '/public/assets/img/manifesto-zemin.webp'));
+
+// ---------------------------------------------------------------- Metin
+echo "\nMetin\n";
+
+/*
+ * TEK BIR FIZIKSEL IDDIA, TEK BIR RAKAM
+ * Kesme pasosunun vernikten ne kadar aldigi sayfada UC yerde soyleniyor:
+ * scroll bolumunde, SSS cevabinda ve kesit ciziminin alt yazisinda. Uc yer de
+ * ayni rakami konusmak zorunda; biri degisip digerleri kalirsa sayfa kendi
+ * kendiyle celisir. Once "birkac mikron" ve "2-4 µm" olarak ayrisiyordu.
+ */
+/*
+ * Olcum ham HTML'de degil, OKUYUCUNUN GORDUGU metinde yapilir: sablonlarda
+ * &ndash; gibi varliklar var ve ham metinde arayan bir desen ayni cumleyi
+ * goremiyor. Bir kez yanlis alarm verdi.
+ */
+$metin = html_entity_decode(strip_tags($home), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+$pasoIddiasi = preg_match_all('/paso başına 2[-–]4/u', $metin);
+check('paso basina alinan miktar uc yerde de ayni', $pasoIddiasi === 3,
+    'gecis: ' . $pasoIddiasi);
+check('kesme pasosu vernikten alir, boyadan degil',
+    !preg_match('/kesme pasosu boyadan/iu', $home));
+
+/*
+ * OLCULMEMIS IDDIA YOK
+ * "En cok tercih edilen" bir populerlik istatistigi iddia ediyordu ve arkasinda
+ * olculmus bir sey yoktu. Sayfanin tonu bunu kaldirmaz; kendi onerimiz oldugunu
+ * soylemek hem dogru hem ayni isi goruyor.
+ */
+foreach (['En çok tercih edilen', 'en iyi', 'lider', 'Türkiye’nin', "Türkiye'nin"] as $iddia) {
+    check("olculmemis iddia yok: \"$iddia\"", !str_contains($home, $iddia));
+}
+
+/*
+ * META ACIKLAMASI TEK KAYNAKTAN TURER
+ * Ayni cumle hem layouts/main.php hem SiteContent icinde yaziliydi; birini
+ * duzeltip digerini unutmak an meselesiydi (nitekim bu turda tam da o oldu).
+ */
+$duzen = (string) file_get_contents($root . '/app/Views/layouts/main.php');
+check('meta aciklamasi sablonda kopyalanmiyor',
+    !str_contains($duzen, 'boya düzeltme ve seramik kaplama atölyesi. Her araç'));
+check('meta aciklamasi icerik kaynagindan okunur',
+    str_contains($duzen, "SiteContent::all()['hero']['subtitle']"));
+check('meta aciklamasi hero alt yazisini tasiyor',
+    str_contains($home, e(SiteContent::all()['hero']['subtitle'])));
+
+/*
+ * KARSILIKSIZ INGILIZCE TERIM YOK
+ * Sektor terimleri kalabilir ama ilk gectikleri yerde Turkce karsiligi
+ * parantez icinde verilir; musteri ne okudugunu bilmeli.
+ */
+foreach (['Swirl (yıkama izi)', 'kendi kendini onaran (self healing)', '(ekstraksiyon)'] as $terim) {
+    check("terim karsiligiyla birlikte: \"$terim\"", str_contains($home, $terim));
+}
+
+/*
+ * AYNI VAAT UC KEZ TEKRARLANMASIN
+ * "Ayni gun ariyoruz" sozu iletisim bolumunde, form ipucunda ve SSS'te olmak
+ * uzere uc yerde geciyordu. Soz bir kez verilir, bir kez hatirlatilir.
+ */
+$ayniGun = substr_count($metin, 'Aynı gün') + substr_count($metin, 'aynı gün');
+check('ayni gun sozu en fazla iki yerde', $ayniGun <= 2, 'gecis: ' . $ayniGun);

@@ -26,14 +26,14 @@ final class SiteContent
 
             'hero' => [
                 'title'     => 'Boyayı ölçerek düzeltiyoruz.',
-                'subtitle'  => "İstanbul Maslak'ta boya düzeltme ve seramik kaplama atölyesi. Her araç mikron ölçümüyle başlar, ölçüm raporuyla teslim edilir.",
+                'subtitle'  => "İstanbul Maslak'ta boya düzeltme ve seramik kaplama atölyesi. Her araç mikronla başlar, ölçüm raporuyla teslim edilir.",
                 'primary'   => ['label' => 'Randevu al', 'href' => '#iletisim'],
                 'secondary' => ['label' => 'İşlerimizi gör', 'href' => '#calismalar'],
             ],
 
             'stats' => [
-                ['value' => '1.480',    'label' => '2014 yılından bu yana işlenen araç'],
-                ['value' => '11 nokta', 'label' => 'Her araçta alınan kalınlık ölçümü'],
+                ['value' => '1.480',    'label' => "2014'ten bu yana elimizden geçen araç"],
+                ['value' => '11 nokta', 'label' => 'Her araçta ölçtüğümüz kalınlık noktası'],
                 ['value' => '36 ay',    'label' => 'Seramik kaplama garanti süresi'],
             ],
 
@@ -41,7 +41,7 @@ final class SiteContent
                 [
                     'title' => 'Boya düzeltme',
                     'price' => "24.900 TL'den başlar",
-                    'body'  => 'İki veya üç kademeli kesme ve parlatma. Swirl, hologram ve hafif çizikler kalkar, kalan vernik her adımda ölçülür.',
+                    'body'  => 'İki veya üç kademeli kesme ve parlatma. Swirl (yıkama izi), hologram ve hafif çizikler kalkar; kalan vernik her adımda ölçülür.',
                     'meta'  => '1 ile 3 gün',
                     'image' => 'bento-duzeltme.webp',
                     'size'  => 'lg',
@@ -49,7 +49,7 @@ final class SiteContent
                 [
                     'title' => 'Seramik kaplama',
                     'price' => "18.500 TL'den başlar",
-                    'body'  => '9H sınıfı kaplama, düzeltme bittikten sonra kontrollü ortamda uygulanır. Yıkama direnci ve su itme performansı kayıt altına alınır.',
+                    'body'  => '9H sınıfı kaplama, düzeltme bittikten sonra kontrollü ortamda uygulanır. Yıkama direnci ve su temas açısı kayıt altına alınır.',
                     'meta'  => '36 ay garanti',
                     'image' => 'bento-seramik.webp',
                     'size'  => 'md',
@@ -57,7 +57,7 @@ final class SiteContent
                 [
                     'title' => 'İç detaylı temizlik',
                     'price' => "6.400 TL'den başlar",
-                    'body'  => 'Deri, alkantara ve tekstil için ayrı kimyasal. Ekstraksiyon sonrası koku giderme ve UV koruma.',
+                    'body'  => 'Deri, alkantara ve tekstil için ayrı kimyasal. Derinlemesine yıkama (ekstraksiyon) sonrası koku giderme ve UV koruma.',
                     'meta'  => '6 ile 10 saat',
                     'image' => 'bento-ic-temizlik.webp',
                     'size'  => 'md',
@@ -65,7 +65,7 @@ final class SiteContent
                 [
                     'title' => 'Şeffaf koruma filmi',
                     'price' => "32.000 TL'den başlar",
-                    'body'  => 'Ön tampon, kaput ve ayna kapakları için kesim şablonuyla uygulanan self healing film. Taş çiziklerini fiziksel olarak durdurur.',
+                    'body'  => 'Ön tampon, kaput ve ayna kapakları için kesim şablonuyla uygulanan kendi kendini onaran (self healing) film. Taş çiziklerini fiziksel olarak durdurur.',
                     'meta'  => '2 ile 4 gün',
                     'image' => 'bento-film.webp',
                     'size'  => 'lg',
@@ -99,7 +99,7 @@ final class SiteContent
                 ],
                 [
                     'title'  => 'Düzeltme',
-                    'body'   => 'Test alanında pad ve pasta seçimi, ardından kademeli pasolar. Her paso sonrası yeniden ölçüm.',
+                    'body'   => 'Test alanında ped ve pasta seçimi, ardından kademeli pasolar. Her paso sonrası yeniden ölçüm.',
                     'time'   => '1 ile 3 gün',
                     'output' => 'Paso başına kalınlık ve parlaklık kaydı',
                     'image'  => 'surec-duzeltme.webp',
@@ -123,7 +123,7 @@ final class SiteContent
             'plans' => [
                 [
                     'name'     => 'Koruma',
-                    'intro'    => 'Boyası iyi durumda olan, çizilmeden önce korumaya almak isteyen araçlar için.',
+                    'intro'    => 'Boyası iyi durumdaki araçlar için: yüzeyi çizilmeden koruma altına alır.',
                     'price'    => '18.500',
                     'currency' => 'TL',
                     'featured' => false,
@@ -183,7 +183,7 @@ final class SiteContent
             'faq' => [
                 [
                     'q' => 'Boya düzeltme boyayı inceltir mi?',
-                    'a' => 'Evet, kesme pasosu vernikten birkaç mikron alır. Bu yüzden her paso öncesi ve sonrası kalınlık ölçüyoruz. Kalan vernik güvenli sınırın altına inecekse ikinci pasoya geçmiyor, durumu size yazılı bildiriyoruz.',
+                    'a' => 'Evet, kesme pasosu vernikten paso başına 2–4 mikron alır. Bu yüzden her paso öncesi ve sonrası kalınlık ölçüyoruz. Kalan vernik güvenli sınırın altına inecekse ikinci pasoya geçmiyor, durumu size yazılı bildiriyoruz.',
                 ],
                 [
                     'q' => 'Seramik kaplama çizilmeyi tamamen engelliyor mu?',

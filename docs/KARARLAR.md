@@ -1089,6 +1089,101 @@ karşılaştırılıyor; rakamı güncellemeden yeni test eklemek mümkün deği
 
 ---
 
+## 7k. Metin geçişi: sayfa kendi kurallarına uymuyordu
+
+Sayfanın metni zaten iyiydi; sorun tek tek cümlelerde değil, **tutarlılıktaydı.**
+Baştan sona geçildi ve dört kural konuldu. Üçü teste bağlandı.
+
+### Kural 1 — Aynı kök bir blokta üç kez geçmez
+
+Hero'nun ilk 25 kelimesinde `ölç-` üç kez (*ölçerek → ölçümüyle → ölçüm*),
+`boya` iki kez geçiyordu. Alt başlığın işi başlığa **yeni bilgi** eklemektir;
+bir kısmını tekrar ediyordu.
+
+> Her araç mikron **ölçümüyle** başlar → Her araç **mikronla** başlar
+
+Aynı sorun bir vaatte de vardı: "aynı gün arıyoruz" sözü iletişim bölümünde,
+form ipucunda ve SSS'te olmak üzere **üç** yerde geçiyordu. Söz bir kez verilir.
+Form ipucu artık yeni bilgi veriyor ("Randevu ve ölçüm saatini bu numaradan
+konuşuyoruz"), SSS ise telefonla dönüşten söz ediyor. Test en fazla ikiye
+izin veriyor.
+
+### Kural 2 — Tek bir fiziksel iddia, tek bir rakam
+
+Kesme pasosunun vernikten ne kadar aldığı sayfada **üç** yerde söyleniyor:
+scroll bölümünde, SSS cevabında ve kesit çiziminin alt yazısında. İkisi
+"birkaç mikron", biri "2–4 µm" diyordu — üstelik scroll bölümü "boyadan"
+diyordu, oysa kesme pasosu **vernikten** alır ve kesit çizimi bunu gösteriyor.
+Üçü de artık "paso başına 2–4 mikron" diyor ve bir test üç geçişi de sayıyor.
+
+Bu kural sayfanın omurgası: aynı şeyi iki farklı rakamla söyleyen bir sayfa,
+ölçtüğünü iddia edemez.
+
+### Kural 3 — Ölçülmemiş iddia yok
+
+Öne çıkan pakette **"En çok tercih edilen"** rozeti vardı. Bu bir popülerlik
+istatistiği iddiasıdır ve arkasında ölçülmüş hiçbir şey yoktu. Sayfanın geri
+kalanı her sayıyı ölçerken burada bedava bir iddia duruyordu.
+
+> En çok tercih edilen → **Önerdiğimiz paket**
+
+Aynı işi görüyor, üstelik doğru: bu bizim önerimiz. Test artık bu ve benzeri
+kalıpları ("en iyi", "lider", "Türkiye'nin") sayfada arıyor.
+
+### Kural 4 — Yabancı terim karşılığıyla birlikte gelir
+
+`swirl`, `self healing`, `ekstraksiyon` karşılıksız duruyordu. Sektör terimi
+kalabilir ama müşteri ne okuduğunu bilmeli:
+
+| Önce | Sonra |
+|---|---|
+| Swirl, hologram ve hafif çizikler | **Swirl (yıkama izi)**, hologram ve hafif çizikler |
+| uygulanan self healing film | uygulanan **kendi kendini onaran (self healing)** film |
+| Ekstraksiyon sonrası koku giderme | **Derinlemesine yıkama (ekstraksiyon)** sonrası koku giderme |
+| pad ve pasta seçimi | **ped** ve pasta seçimi |
+
+### Küçük düzeltmeler
+
+- Edilgen çatı etkin sese döndü: *"araç kabul edilmeden önce"* → *"aracı kabul
+  etmeden önce"*, *"size veriliyor"* → *"size veriyoruz"*, *"net fiyat verilir"*
+  → *"net fiyatı biz veriyoruz"*. Sayfa birinci çoğul konuşuyor, bazı cümleler
+  bundan kopmuştu.
+- Karşılaştırma kutusundaki iki ölçüm etiketi paralel değildi: biri
+  *"Boya kalınlığı, kaput"*, diğeri *"Ölçülen parlaklık"*. Aynı kutuda iki
+  farklı dil. İkincisi *"Parlaklık, kaput"* oldu.
+- Sürgü açıklamasında *"soldaki kayıt"* → *"soldaki kare"*; sayfa başka yerde
+  zaten "kare" diyor.
+
+### Meta açıklaması artık kopyalanmıyor
+
+Hero alt yazısı hem `SiteContent.php` içinde hem `layouts/main.php` içinde
+kelimesi kelimesine yazılıydı. Birini düzeltip diğerini unutmak an meselesiydi
+— nitekim bu turda tam da o oldu: alt yazı düzeltildi, meta açıklaması eski
+cümleyi göstermeye devam etti. Açıklama artık `SiteContent`'ten türüyor ve bir
+test şablonda kopya cümle kalmadığını doğruluyor.
+
+### Vaka sayfasındaki üç rakam eskimişti
+
+Bu sayfayı işveren en dikkatli okuyacak yer, ve üç sayı gerçeği yansıtmıyordu:
+
+| Beyan | Gerçek | Ne yapıldı |
+|---|---|---|
+| Hero kontrastı **4,62:1** | 4,55–4,57 | Beyan gözlenen **en düşük** değere çekildi |
+| İki video **7,7 MB** | 6,4 MB | Artık dosyalardan hesaplanıyor |
+| Kontrast **beş sayfada** | altı sayfa | Düzeltildi |
+
+Video boyutu `filesize()` ile üretiliyor: klibi değiştiren kimse rakamı
+güncellemeyi unutamaz. Kontrast rakamı hesaplanamaz, ama **doğrulanabilir**:
+`npm run hero` ölçümü bitirince `/case` sayfasını açıyor, oradaki rakamı okuyor
+ve kendi ölçümüyle karşılaştırıyor. İki kural — beyan gerçekten daha iyi
+olamaz, ve gerçekten uzaklaşamaz. Bu yüzden beyan ortalamaya değil **en kötü
+gözlenen değere** yazılır.
+
+Test sayısı zaten aynı şekilde korunuyordu. Sayfadaki üç beyandan ikisi artık
+kendi kaynağını okuyor, üçüncüsü de ölçümle karşılaştırılıyor.
+
+---
+
 ## 8. Kurulum
 
 ```bash
@@ -1141,7 +1236,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 264 birim/duman testi  (php tests/run.php)
+npm test          # 278 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -1165,7 +1260,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **264 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **278 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin** (panel dahil 12 sayfa/genişlik
 kombinasyonu), hero kontrastında **eşik altı 0 metin**, hareket denetiminde
 **8/8**.

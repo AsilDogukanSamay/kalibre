@@ -3,7 +3,7 @@
     <div class="section-head" data-reveal>
         <span class="eyebrow-label">Hizmetler</span>
         <h2 class="h-section text-balance" data-satir>Dört iş yapıyoruz, dördünü de sonuna kadar.</h2>
-        <p class="body-text">Araç kabul edilmeden önce hangi işlemin gerektiğine ölçüm karar verir. Gerekmeyen işlemi satmıyoruz.</p>
+        <p class="body-text">Aracı kabul etmeden önce hangi işlemin gerektiğine ölçüm karar verir. Gerekmeyen işlemi satmıyoruz.</p>
     </div>
 
     <div class="grid gap-4 lg:grid-cols-12" data-reveal-group>

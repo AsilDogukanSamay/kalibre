@@ -9,7 +9,7 @@
         <div class="section-head" data-reveal>
             <span class="eyebrow-label">Aynı kaput, iki paso</span>
             <h2 class="h-section" data-satir>Önce ve sonra, aynı kadrajdan.</h2>
-            <p class="body-text">Sürgüyü kaydırın. Soldaki kayıt işlem öncesi ölçümde, sağdaki iki kademeli düzeltme ve seramik uygulamasından sonra çekildi.</p>
+            <p class="body-text">Sürgüyü kaydırın. Soldaki kare işlem öncesi ölçüm sırasında, sağdaki iki kademeli düzeltme ve seramik uygulamasından sonra çekildi.</p>
         </div>
     </div>
 
@@ -47,14 +47,14 @@
                 <strong class="verdict-val">138 &rarr; 129 <span class="verdict-birim">&micro;m</span></strong>
             </p>
             <p class="shrink-0 verdict-note">
-                <span class="verdict-key">Ölçülen parlaklık</span>
+                <span class="verdict-key">Parlaklık, kaput</span>
                 <strong class="verdict-val">41 &rarr; 94 <span class="verdict-birim">GU</span></strong>
             </p>
         </div>
         <p class="note mt-3 max-w-[86ch]">
-            Bu bölümdeki öncesi/sonrası kareleri ve ölçüm değerleri temsilidir; gerçek bir müşteri
-            aracına ait değildir. Yayına alınırken atölyede aynı kadrajdan çekilen gerçek karelerle
-            değiştirilmek üzere hazırlanmıştır.
+            Bu bölümdeki kareler ve ölçüm değerleri temsilidir, gerçek bir müşteri aracına ait
+            değildir. Yayına alınırken atölyede aynı kadrajdan çekilmiş gerçek karelerle
+            değiştirilecek.
         </p>
     </div>
 

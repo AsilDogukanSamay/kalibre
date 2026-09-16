@@ -178,6 +178,7 @@ const SAHNELER = [
 
 const tarayici = await chromium.launch({ executablePath: CHROME, headless: true });
 let altta = 0;
+let enKotuGenel = Infinity;
 
 for (const genislik of GENISLIKLER) {
   for (const sahne of SAHNELER) {
@@ -231,6 +232,7 @@ for (const genislik of GENISLIKLER) {
     for (const h of sonuc.sort((a, b) => a.enKotu - b.enKotu)) {
       const gecti = h.enKotu >= h.esik;
       if (!gecti) altta++;
+      if (h.enKotu < enKotuGenel) enKotuGenel = h.enKotu;
       console.log(
         `  ${h.enKotu.toFixed(2).padStart(6)}:1  esik ${h.esik}  ${String(h.punto).padStart(6)}px  ` +
         `${gecti ? 'gecti' : 'KALDI'}  "${h.metin}"`
@@ -239,6 +241,45 @@ for (const genislik of GENISLIKLER) {
 
     await ctx.close();
   }
+}
+
+/* ---------------------------------------------------- beyan dogrulamasi
+ * Vaka calismasi sayfasi "hero yazi kontrasti" diye bir rakam gosteriyor.
+ * Bu rakam elle yaziliydi ve sessizce eskimisti: buton golgesi degisince
+ * gercek deger 4,62'den 4,56'ya indi, sayfa hala 4,62 diyordu.
+ *
+ * Artik olcum bitince sayfadaki beyan okunup karsilastiriliyor. Iki kural:
+ *   1. Beyan gercekten DAHA IYI olamaz - sayfa kendini kayiramaz (0,03'luk
+ *      tolerans yalnizca olcum gurultusu icin: video karesi cozumleme
+ *      farkiyla deger turler arasinda +-0,02 oynuyor).
+ *   2. Beyan gercekten uzaklasamaz - rakam eskiyemez (0,1 siniri).
+ * Beyan bu yuzden gozlenen EN DUSUK degere yazilir, ortalamaya degil.
+ */
+const beyanCtx = await tarayici.newContext({ viewport: { width: 1440, height: 900 } });
+const beyanSayfa = await beyanCtx.newPage();
+await beyanSayfa.goto(TABAN + '/case', { waitUntil: 'domcontentloaded' });
+
+const beyanMetni = await beyanSayfa.evaluate(() => {
+  const etiket = [...document.querySelectorAll('span')]
+    .find((e) => e.textContent.trim() === 'Hero yazı kontrastı');
+  const deger = etiket && etiket.parentElement.querySelector('.readout');
+  return deger ? deger.textContent.trim() : null;
+});
+await beyanCtx.close();
+
+console.log('\nBeyan dogrulamasi');
+if (beyanMetni === null) {
+  altta++;
+  console.log('  [FAIL] vaka sayfasinda "Hero yazi kontrasti" rakami bulunamadi');
+} else {
+  const beyan = Number(beyanMetni.replace(':1', '').replace(',', '.'));
+  const fark = beyan - enKotuGenel;
+  const ok = fark <= 0.03 && Math.abs(fark) <= 0.1;
+  if (!ok) altta++;
+  console.log(
+    `  ${ok ? '[ok]  ' : '[FAIL]'} vaka sayfasindaki rakam olcumle uyumlu  ` +
+    `beyan: ${beyanMetni}  olculen: ${enKotuGenel.toFixed(2).replace('.', ',')}:1`
+  );
 }
 
 await tarayici.close();

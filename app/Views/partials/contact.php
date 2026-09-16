@@ -45,7 +45,7 @@
                     <div class="field">
                         <label class="field-label" for="phone">Telefon</label>
                         <input class="field-input" id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required>
-                        <p class="field-hint">Aynı gün içinde bu numaradan arıyoruz.</p>
+                        <p class="field-hint">Randevu ve ölçüm saatini bu numaradan konuşuyoruz.</p>
                         <p class="field-error" data-error-for="phone"></p>
                     </div>
                 </div>

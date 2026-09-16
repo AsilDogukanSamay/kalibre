@@ -13,8 +13,11 @@ $pageTitle = isset($pageTitle)
     ? $pageTitle . ' · ' . $brandTheme['name']
     : $brandTheme['name'] . ' · Boya düzeltme ve seramik kaplama, İstanbul';
 
+// Meta aciklamasi hero alt yazisindan TURER. Onceki halde ayni cumle hem
+// burada hem SiteContent icinde yaziliydi; birini duzeltip digerini unutmak
+// an meselesiydi. Tek kaynak: SiteContent.
 $pageDescription = $pageDescription
-    ?? $brandTheme['name'] . ", İstanbul Maslak'ta boya düzeltme ve seramik kaplama atölyesi. Her araç mikron ölçümüyle başlar, ölçüm raporuyla teslim edilir.";
+    ?? $brandTheme['name'] . ', ' . App\Support\SiteContent::all()['hero']['subtitle'];
 ?><!doctype html>
 <html lang="tr" data-brand="<?= e($brandTheme['key']) ?>">
 <head>

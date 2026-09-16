@@ -3,7 +3,7 @@
     <div class="section-head section-head-brand" data-reveal>
         <span class="eyebrow-label eyebrow-brand">Fiyat</span>
         <h2 class="h-section text-balance" data-satir>İki paket, ikisi de ölçümle başlıyor.</h2>
-        <p class="body-text">Fiyatlar orta sınıf sedan içindir. SUV ve ticari araçlarda yüzey alanına göre fark uygulanır, ölçüm sonrası net fiyat verilir.</p>
+        <p class="body-text">Fiyatlar orta sınıf sedan içindir. SUV ve ticari araçlarda yüzey alanına göre fark uygulanır, ölçüm sonrası net fiyatı biz veriyoruz.</p>
         <p class="body-sm">İç detaylı temizlik ve şeffaf koruma filmi paket dışında, tek tek de alınabilir. Başlangıç fiyatları hizmetler bölümünde.</p>
         <p class="text-xs text-ink-faint">Son güncelleme: Eylül 2026</p>
     </div>
@@ -14,7 +14,7 @@
                 <div class="flex items-start justify-between gap-4">
                     <h3 class="h-card"><?= e($plan['name']) ?></h3>
                     <?php if ($plan['featured']): ?>
-                        <span class="plan-badge">En çok tercih edilen</span>
+                        <span class="plan-badge">Önerdiğimiz paket</span>
                     <?php endif; ?>
                 </div>
 

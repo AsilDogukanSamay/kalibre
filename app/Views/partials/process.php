@@ -16,7 +16,7 @@
     <div class="section-head" data-reveal>
         <span class="eyebrow-label">Süreç</span>
         <h2 class="h-section text-balance" data-satir>Araç girdiğinde ne oluyor?</h2>
-        <p class="body-text">Dört aşama. Her aşamanın bir çıktısı var; işlem sonunda hepsi tek dosya halinde size veriliyor.</p>
+        <p class="body-text">Dört aşama. Her aşamanın bir çıktısı var; işlem sonunda hepsini tek dosya halinde size veriyoruz.</p>
     </div>
 
     <ol class="flow" data-reveal-group>

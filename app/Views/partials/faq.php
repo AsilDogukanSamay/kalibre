@@ -24,7 +24,7 @@
             <p class="body-sm mt-3">
                 Aradığınız soruyu bulamadıysanız
                 <a class="link-ic" href="#iletisim">formu bırakın</a>,
-                aynı gün içinde arıyoruz.
+                telefonla dönüyoruz.
             </p>
         </div>
     </div>

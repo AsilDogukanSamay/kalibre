@@ -6,7 +6,7 @@
         <div class="section-head mb-0 max-w-none lg:col-span-7" data-reveal>
             <span class="eyebrow-label">Canlı ölçüm</span>
             <h2 class="h-section text-balance" data-satir>Pasoyu kendi hızınızda izleyin.</h2>
-            <p class="body-text">Aşağı kaydırdıkça video ilerler ve ölçüm değerleri onunla birlikte değişir. Kesme pasosu boyadan birkaç mikron alır; bu yüzden her adımda yeniden ölçüyoruz.</p>
+            <p class="body-text">Aşağı kaydırdıkça video ilerler, ölçüm değerleri onunla birlikte değişir. Kesme pasosu vernikten paso başına 2–4 mikron alır; bu yüzden her adımda yeniden ölçüyoruz.</p>
         </div>
 
         <dl class="glass grid grid-cols-2 gap-px overflow-hidden lg:col-span-5">
@@ -56,7 +56,7 @@
                 <div class="gauge-bar" aria-hidden="true"><span class="gauge-fill"></span></div>
             </div>
 
-            <p class="body-sm">Kalan vernik payını ölçmeden ikinci pasoya geçmiyoruz. Güvenli sınırın altına inecekse durumu yazılı bildiriyoruz.</p>
+            <p class="body-sm">Kalan vernik payını ölçmeden ikinci pasoya geçmiyoruz.</p>
         </aside>
     </div>
 </section>
