@@ -314,6 +314,21 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 
 ---
 
+## 8b. Görsel üretimi
+
+Sayfadaki altı görsel slotu (hero posteri, bento kartları, süreç şeridi)
+temsilidir ve yapay zekâ ile üretilmiştir. Rastgele üretilmediler: önce ortak
+bir ışık dili tanımlandı (tek soğuk mavi inceleme lambası, doygunluğu alınmış
+grafit ve kirli beyaz, sıcak turuncu yok), her slot promptu o bloğa bağlandı.
+Sayfanın görsel bütünlüğü buradan geliyor.
+
+Kullanılan promptların tamamı `docs/GORSEL-PROMPTLARI.md` içinde. Yayına
+alınırken bu kareler atölyede çekilmiş gerçek karelerle değiştirilmelidir;
+sayfa bunu kendi içinde de açıkça yazıyor (öncesi/sonrası ve referans
+bölümlerinin altındaki bilgilendirmeler).
+
+---
+
 ## 9. Testler ve denetimler
 
 ```bash
