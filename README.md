@@ -389,6 +389,38 @@ ayrıntı `HANDOFF.md` içinde.
 
 ---
 
+## 8b. Statik dosyalar ve bayt aralığı (Range)
+
+Scroll ile sürülen video bölümü, `video.currentTime` atayarak çalışır. Tarayıcı
+bir videoyu ancak sunucu **HTTP Range** isteklerini destekliyorsa "sarılabilir"
+sayar; desteklemiyorsa dosyayı tamamen indirse bile `seekable` aralığı boş kalır
+ve `currentTime` atamaları **sessizce yok sayılır**.
+
+PHP'nin dahili geliştirme sunucusu Range isteklerine `206` yerine `200` döner.
+Sonuç: video ilk karesinde donar, sayaçlar çalışmaya devam ettiği için hata
+fark edilmez.
+
+`app/Core/FileServer.php` bunu çözer:
+
+| Durum | Yanıt |
+|---|---|
+| Aralık istenmemiş | `200` + `Accept-Ranges: bytes` |
+| `bytes=0-1023` | `206` + `Content-Range: bytes 0-1023/3200823` |
+| `bytes=-500` (son 500 bayt) | `206` |
+| Dosya dışı aralık | `416` |
+| Dizin dışına çıkma denemesi | `404` (`realpath` ile doğrulanır) |
+
+Ayrıca `ETag` + `304` ve `Cache-Control` üretir.
+
+Bu yüzden `npm run serve` komutu PHP'yi **yönlendirici betiği** ile başlatır
+(`php -S ... public/index.php`); aksi halde dahili sunucu statik dosyaları
+`index.php`'ye hiç uğratmadan kendi sunar ve sınıf devreye girmez.
+
+Üretimde Apache/nginx statik dosyaları kendi sunar ve Range'i zaten destekler;
+bu katman oraya uğramaz.
+
+---
+
 ## 9. Testler
 
 ```bash
@@ -399,7 +431,7 @@ Harici bağımlılık gerektirmez. Veri erişim katmanı sahte bir PDO ile test 
 böylece **MySQL kurulu olmadan da** prepared statement kullanıldığı ve kullanıcı
 girdisinin SQL metnine birleştirilmediği doğrulanabilir.
 
-Mevcut durum: **26 test, hepsi geçiyor.**
+Mevcut durum: **34 test, hepsi geçiyor.**
 
 ### Rotalar
 

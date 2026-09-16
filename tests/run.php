@@ -170,6 +170,26 @@ $repo->recentCountByIp('203.0.113.7', 10);
 check('spam freni sorgusu da parametrelidir', str_contains($pdo->lastSql, ':ip') && str_contains($pdo->lastSql, ':minutes'));
 check('IP degeri baglanir', ($pdo->lastStatement->bound[':ip'] ?? null) === '203.0.113.7');
 
+// ---------------------------------------------------------------- Range
+echo "
+Bayt araligi (Range) cozumleyici
+";
+
+$coz = function (string $header, int $boyut) {
+    $m = new ReflectionMethod(App\Core\FileServer::class, 'araligiCoz');
+    $m->setAccessible(true);
+    return $m->invoke(null, $header, $boyut);
+};
+
+check('aralik istenmemisse tamami',      $coz('', 1000)            === [0, 999]);
+check('bytes=0-499',                     $coz('bytes=0-499', 1000) === [0, 499]);
+check('bytes=500- (sona kadar)',         $coz('bytes=500-', 1000)  === [500, 999]);
+check('bytes=-200 (son 200 bayt)',       $coz('bytes=-200', 1000)  === [800, 999]);
+check('dosya sonunu asan bitis kirpilir',$coz('bytes=900-5000', 1000) === [900, 999]);
+check('baslangic dosya disinda ise red', $coz('bytes=5000-', 1000) === [null, 0]);
+check('ters aralik reddedilir',          $coz('bytes=800-100', 1000) === [null, 0]);
+check('bozuk baslik yok sayilir',        $coz('bytes=abc', 1000)   === [0, 999]);
+
 // ---------------------------------------------------------------- Sablonlar
 echo "\nSablonlar\n";
 

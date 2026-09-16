@@ -70,6 +70,8 @@ _eski/            Bu dönüşümden önceki tek dosyalık statik sürüm
 npm install
 npm run build        # CSS derle  (geliştirirken: npm run dev)
 npm run serve        # http://127.0.0.1:5174
+                     # PHP yonlendirici betigi ile baslar; video sarma
+                     # icin Range destegi buna bagli (bkz. README 8b)
 npm test             # 22 test
 ```
 
@@ -111,7 +113,7 @@ Aşağıdakiler iddia değil, çalıştırılarak ölçüldü:
 | Inline stil | Canlı DOM'da 0 |
 | Hero yazı kontrastı | En kötü 5,2:1 (WCAG AA eşiği 4,5) |
 | Mobil veri (375px) | 393 KB, hiç video indirilmiyor |
-| Testler | 22/22 |
+| Testler | 34/34 |
 
 ---
 

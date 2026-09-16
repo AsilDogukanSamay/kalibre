@@ -8,6 +8,7 @@ declare(strict_types=1);
  */
 
 use App\Core\Autoloader;
+use App\Core\FileServer;
 use App\Core\Env;
 use App\Core\Request;
 use App\Core\Response;
@@ -31,6 +32,18 @@ if (Env::bool('APP_DEBUG')) {
 }
 
 date_default_timezone_set(Env::get('APP_TIMEZONE', 'Europe/Istanbul'));
+
+// Statik varliklar: Range destekli sunucu.
+// Uretimde Apache/nginx bunlari zaten kendi sunar ve buraya hic ugramaz;
+// bu satir yalnizca "php -S" ile calisirken videonun sarilabilir olmasi icin.
+$istekYolu = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+if (str_starts_with($istekYolu, '/assets/')) {
+    if (FileServer::tryServe(__DIR__, $istekYolu)) {
+        return;
+    }
+    // Bulunamadi: dahili sunucu kendi karar versin (yonlendirici betigi sozlesmesi)
+    return false;
+}
 
 $router = new Router();
 $router->get('/', 'HomeController@index');
