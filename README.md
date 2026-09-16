@@ -14,7 +14,7 @@ altında bu bilgilendirme görünür.
 | Frontend | Tailwind CSS 3.4, glassmorphic bileşenler, vanilla JS |
 | Backend | PHP 8.4, framework yok, OOP + MVC, kendi PSR-4 autoloader'ı |
 | Veritabanı | MySQL / MariaDB, PDO prepared statements |
-| Test | 261 test + 4 tarayıcı denetimi, hepsi geçiyor |
+| Test | 269 test + 4 tarayıcı denetimi, hepsi geçiyor |
 
 > **Ayrıntılı gerekçeler:** [`docs/KARARLAR.md`](docs/KARARLAR.md) — her kararın
 > nedeni, denenip bırakılan alternatifler ve ölçüm sonuçları.
@@ -37,7 +37,7 @@ npm run start                     # CSS derle + sunucu -> http://127.0.0.1:5174
 |---|---|
 | `npm run start` | CSS derler ve sunucuyu başlatır |
 | `npm run dev` | Geliştirirken CSS'i izler |
-| `npm test` | 261 test (harici bağımlılık yok) |
+| `npm test` | 269 test (harici bağımlılık yok) |
 | `npm run denetim` | Testler + yerleşim + kontrast + hero denetimi |
 
 Yerleşim denetimi **tanımsız sınıf** da arar: işaretlemede kullanılıp hiçbir stylesheet'te karşılığı olmayan sınıf sessizce hiçbir şey yapmaz. Üç tane buldu; ayrıntı [`docs/KARARLAR.md`](docs/KARARLAR.md).
@@ -315,10 +315,10 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 ## 9. Testler ve denetimler
 
 ```bash
-npm test          # 261 test (php tests/run.php) - harici bagimlilik yok
+npm test          # 269 test (php tests/run.php) - harici bagimlilik yok
 npm run yerlesim  # 6 genislik x 5 sayfa: yatay tasma, h1, baslik atlamasi, alt metni
 npm run kontrast  # WCAG AA, duz zeminler ve cam yuzeyler
-npm run hero      # hero kontrasti, piksel yontemi (video uzerinde)
+npm run hero      # piksel kontrasti: yazinin foto/video uzerinde durdugu sahneler
 npm run hareket   # scroll'a bagli animasyonlar gercekten hareket ediyor mu
 npm run denetim   # besi birden
 ```
@@ -328,7 +328,7 @@ prepared statement kullanıldığı ve kullanıcı girdisinin SQL metnine
 birleştirilmediği doğrulanabilir. `.mjs` denetimleri `playwright-core` ve yerel
 bir Chrome ister, sunucu açıkken çalışır.
 
-**Mevcut durum:** 261 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0
+**Mevcut durum:** 269 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0
 (panel dahil) · hero eşik altı 0 · hareket 8/8.
 
 `npm run hareket` sayfanın **görünür** olmasını gerektirir: `document.hidden`

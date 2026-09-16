@@ -18,6 +18,7 @@
  */
 ?>
 <section class="manifesto">
+
     <div class="shell">
         <div class="manifesto-izgara">
 

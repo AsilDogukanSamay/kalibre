@@ -803,3 +803,28 @@ check('kesit etiketlerinde buyuk harfe cevrim yok',
 // Sinir cizgisi bolum goruse girdiginde ciziliyor; kural katman disinda (kural 9).
 check('kesit sinir cizgisi acilisa bagli',
     strrpos($css, '.kesit.is-in .kesit-sinir') > strrpos($css, '@layer utilities'));
+
+/*
+ * ATOLYE SERIDI
+ *
+ * Fotograf once manifestonun ZEMINI olarak denendi; piksel olcumu geri
+ * cevirdi (notur etiket 5,08:1, kural 6 yedi istiyor). Seridin uzerinde
+ * HIC YAZI OLMAMASI bu kararin kendisi - test onu koruyor.
+ */
+$seritBlok = preg_match('/<figure class="atolye-serit">([\s\S]*?)<\/figure>/u', $home, $mSe) ? $mSe[1] : '';
+check('atolye seridi sayfada', $seritBlok !== '');
+check('seridin uzerinde yazi yok',
+    $seritBlok !== '' && trim(strip_tags($seritBlok)) === '');
+check('serit sessiz bandin icinde',
+    (bool) preg_match('/band-deep[\s\S]*?atolye-serit[\s\S]*?<\/div>/u', $home));
+check('manifestoya zemin fotografi geri konmadi',
+    $manifestoBlok !== '' && !str_contains($manifestoBlok, '<img'));
+
+// Ekranin altinda duruyor: pesinen indirilmesi mobil veriyi bosuna buyutur.
+check('serit gorseli tembel yukleniyor',
+    (bool) preg_match('/atolye-foto[^>]*loading="lazy"/', $home));
+check('dar ekrana kucuk surum iniyor',
+    str_contains($home, 'atolye-serit-dar.webp') && str_contains($home, 'atolye-serit.webp'));
+check('serit gorselinde alt metni var',
+    (bool) preg_match('/atolye-foto[^>]*alt="[^"]{20,}"/', $home));
+check('kenar gecisi tanimli', str_contains($css, '.atolye-kenar'));

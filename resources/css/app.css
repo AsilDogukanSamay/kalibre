@@ -765,6 +765,30 @@
      Sol kenardaki cizgi yatay bolum cizgisinin yerine geciyor; bloku
      iceri cekerek sayfanin sol hizasindan ayiriyor. */
   .manifesto       { @apply py-24 sm:py-32 lg:py-36; }
+
+  /* ---------- Atolye seridi ----------
+     Tam genislik, uzerinde HIC YAZI YOK. Fotograf once manifestonun zemini
+     olarak denendi; piksel olcumu geri cevirdi (notur etiket 5,08:1, kural 6
+     yedi istiyor). Sebep yerlesimdi: manifestonun iki sutunu zaten doluydu.
+     Burada fotograf tam gucunde gorunuyor ve uzerinde olculecek yazi yok.
+
+     Kenar gecisi serit "yapistirilmis dikdortgen" gibi durmasin diye: ust ve
+     alt kenar icinde bulundugu sessiz bandin tonuna karisiyor. */
+  .atolye-serit  { @apply relative block h-[30vh] min-h-[200px] w-full overflow-clip sm:h-[38vh] sm:max-h-[24rem]; }
+  /* Kaynak 2,6:1 kirpildi ve kirpim bilincli: mil goruntunun ORTASINDAYKEN
+     ne oldugu okunmuyordu, halter barina benziyordu. Sola kaydirilan kirpimda
+     inceleme lambasinin parlak boyadaki yansimasi one cikiyor, mil sagdan
+     giren destekleyici bir oge oluyor. Konu artik "atolye isigi altinda
+     parlak yuzey" - sayfanin konusuyla ayni sey. */
+  .atolye-foto   { @apply absolute inset-0 h-full w-full object-cover object-[38%_52%]; }
+  .atolye-kenar  {
+    @apply pointer-events-none absolute inset-0 block;
+    background: linear-gradient(180deg,
+      rgb(var(--surface-950)) 0%,
+      rgb(var(--surface-950) / 0) 20%,
+      rgb(var(--surface-950) / 0) 78%,
+      rgb(var(--surface-950)) 100%);
+  }
   /* Iki sutun: solda cumle, sagda kanit. Onceki halde tek sutundu ve genis
      ekranda saginin yarisi bostu. Kanit tarafina fotograf KONMADI - bu bolumun
      isi kaliba uymamak; bir atolye karesi onu diger alti bolumden ayirt
@@ -799,7 +823,10 @@
   .kesit-toplam { @apply flex items-baseline text-[1.4rem] leading-none text-ink; }
   .kesit-birim  { @apply ml-1.5 text-xs text-ink-muted; font-variation-settings: "wdth" 92, "wght" var(--wght-body); }
 
-  .kesit-govde  { @apply flex h-[19rem] flex-col overflow-hidden rounded-glass border border-line sm:h-[22rem]; }
+  /* Kutu OPAK: katmanlar yari saydam beyaz ve altindaki zemin fotografi
+     degiskendir; saydam biraksaydik cizimin okunmasi zemine gore oynardi.
+     Teknik bir cizim, sahnenin uzerine tutturulmus gibi durur. */
+  .kesit-govde  { @apply flex h-[19rem] flex-col overflow-clip rounded-glass border border-line bg-surface-950 sm:h-[22rem]; }
 
   /* Katman yuksekligi = mikron degeri. Temel 0 oldugu icin oran birebir. */
   /* KATMAN KUTUSU HICBIR SABIT PIKSEL TASIMAZ.
@@ -1031,6 +1058,7 @@
      */
     .hero,
     .hero-bg,
+    .atolye-serit,
     .cell,
     .flow-card,
     .flow-media { overflow: clip; }
@@ -1050,7 +1078,8 @@
     }
 
     .cell-photo,
-    .flow-photo {
+    .flow-photo,
+    .atolye-foto {
       height: 120%;
       top: -10%;
       animation: foto-paralaks linear both;

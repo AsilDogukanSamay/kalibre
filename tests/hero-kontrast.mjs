@@ -31,13 +31,13 @@ const GENISLIKLER = (process.env.GENISLIK ?? '390,1440,1920').split(',').map(Num
 
 /* ---------------------------------------------------- tarayici ici yardimcilar */
 
-const HAZIRLA = async () => {
+const HAZIRLA = async ({ kokSecici, videoId }) => {
   const ayristir = (renk) => {
     const s = renk.match(/[\d.]+/g).map(Number);
     return { r: s[0], g: s[1], b: s[2], a: s.length > 3 ? s[3] : 1 };
   };
 
-  const kok = document.querySelector('.hero-inner');
+  const kok = document.querySelector(kokSecici);
   const hedefler = [];
 
   for (const el of kok.querySelectorAll('*')) {
@@ -75,9 +75,10 @@ const HAZIRLA = async () => {
   };
 
   // Video 640px altinda bilincli olarak hic indirilmez; o durumda zemin
-  // poster gorselidir ve tek kare olcmek yeterlidir.
-  const video = document.getElementById('heroVideo');
-  if (!video) return { adet: hedefler.length, hata: 'hero videosu bulunamadi' };
+  // poster gorselidir ve tek kare olcmek yeterlidir. Manifesto sahnesinde
+  // zaten video yok, zemin duragan bir fotograf.
+  const video = videoId ? document.getElementById(videoId) : null;
+  if (!video) return { adet: hedefler.length, hata: 'duragan zemin' };
 
   if (!video.src && video.dataset.src) video.src = video.dataset.src;
   video.muted = true;
@@ -92,8 +93,8 @@ const HAZIRLA = async () => {
   return { adet: hedefler.length, sure: window.__olcum.sure };
 };
 
-const SAR = async (an) => {
-  const video = document.getElementById('heroVideo');
+const SAR = async ([an, videoId]) => {
+  const video = document.getElementById(videoId);
   video.currentTime = an;
   await new Promise((r) => {
     video.addEventListener('seeked', r, { once: true });
@@ -155,55 +156,81 @@ const SONUC = () => window.__olcum.hedefler.map(
 
 /* ---------------------------------------------------------------- calistir */
 
+/*
+ * SAHNELER
+ * Yazinin bir FOTOGRAF ya da VIDEO uzerinde durdugu her yer buraya girer.
+ * Normal kontrast denetimi (kontrast.mjs) bu iki yeri olcemez: arkada CSS
+ * renk degil piksel var, hesaplanan zemin rengi gercegi yansitmaz. Manifesto
+ * bolumune zemin fotografi eklendiginde bu liste bir satir uzadi.
+ */
+const SAHNELER = [
+  { ad: 'Hero',      kokSecici: '.hero-inner',   videoId: 'heroVideo', kaydir: false, yukseklik: 900 },
+  { ad: 'Manifesto', kokSecici: '.manifesto-izgara', videoId: null,    kaydir: true,  yukseklik: 1500 },
+];
+
 const tarayici = await chromium.launch({ executablePath: CHROME, headless: true });
 let altta = 0;
 
 for (const genislik of GENISLIKLER) {
-  const ctx = await tarayici.newContext({
-    viewport: { width: genislik, height: 900 },
-    deviceScaleFactor: 1,
-  });
-  const sayfa = await ctx.newPage();
-  await sayfa.goto(TABAN + '/', { waitUntil: 'networkidle' });
-
-  const hazir = await sayfa.evaluate(HAZIRLA);
-  if (hazir.hata) {
-    // 640px altinda video bilincli olarak hic indirilmez; zemin poster gorselidir.
-    console.log(`\n${genislik}px · ${hazir.hata} (dar ekranda video indirilmiyor, poster olculur)`);
-  }
-
-  const hero = await sayfa.evaluate(() => {
-    const k = document.querySelector('.hero-inner').getBoundingClientRect();
-    return { x: k.x, y: k.y, width: k.width, height: Math.min(k.height, innerHeight - k.y) };
-  });
-
-  const sure = hazir.sure ?? 1;
-  for (let i = 0; i < KARE_SAYISI; i++) {
-    const an = (sure * i) / KARE_SAYISI;
-    if (!hazir.hata) await sayfa.evaluate(SAR, an);
-    else await sayfa.evaluate(() => {
-      document.querySelectorAll('[data-olcum]').forEach((el) => { el.style.color = 'transparent'; });
+  for (const sahne of SAHNELER) {
+    const ctx = await tarayici.newContext({
+      viewport: { width: genislik, height: sahne.yukseklik },
+      deviceScaleFactor: 1,
     });
+    const sayfa = await ctx.newPage();
+    await sayfa.goto(TABAN + '/', { waitUntil: 'networkidle' });
 
-    const png = await sayfa.screenshot({ clip: hero, scale: 'css' });
-    await sayfa.evaluate(OKU, [png.toString('base64'), an]);
+    if (sahne.kaydir) {
+      await sayfa.evaluate((sec) => {
+        document.documentElement.style.scrollBehavior = 'auto';
+        const el = document.querySelector(sec);
+        window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 40, behavior: 'instant' });
+      }, sahne.kokSecici);
+      // Acilis animasyonlari bitsin: baslik satirlari maskeden cikip metin
+      // eski haline donene kadar olcum yanlis kutu verir.
+      await sayfa.waitForTimeout(1800);
+    }
 
-    if (hazir.hata) break; // video yoksa tek kare yeter
+    const hazir = await sayfa.evaluate(HAZIRLA, { kokSecici: sahne.kokSecici, videoId: sahne.videoId });
+    if (hazir.hata && sahne.videoId) {
+      // 640px altinda video bilincli olarak hic indirilmez; zemin poster gorselidir.
+      console.log(`\n${genislik}px · ${sahne.ad} · ${hazir.hata} (dar ekranda video indirilmiyor, poster olculur)`);
+    }
+
+    const kutu = await sayfa.evaluate((sec) => {
+      const k = document.querySelector(sec).getBoundingClientRect();
+      const y = Math.max(0, k.y);
+      return { x: k.x, y, width: k.width, height: Math.min(k.height, window.innerHeight - y) };
+    }, sahne.kokSecici);
+
+    const sure = hazir.sure ?? 1;
+    const kareler = hazir.hata ? 1 : KARE_SAYISI;
+
+    for (let i = 0; i < kareler; i++) {
+      const an = (sure * i) / kareler;
+      if (!hazir.hata) await sayfa.evaluate(SAR, [an, sahne.videoId]);
+      else await sayfa.evaluate(() => {
+        document.querySelectorAll('[data-olcum]').forEach((el) => { el.style.color = 'transparent'; });
+      });
+
+      const png = await sayfa.screenshot({ clip: kutu, scale: 'css' });
+      await sayfa.evaluate(OKU, [png.toString('base64'), an]);
+    }
+
+    const sonuc = await sayfa.evaluate(SONUC);
+    console.log(`\n${genislik}px · ${sahne.ad} · ${kareler === 1 ? 'duragan zemin' : kareler + ' kare'} tarandi`);
+
+    for (const h of sonuc.sort((a, b) => a.enKotu - b.enKotu)) {
+      const gecti = h.enKotu >= h.esik;
+      if (!gecti) altta++;
+      console.log(
+        `  ${h.enKotu.toFixed(2).padStart(6)}:1  esik ${h.esik}  ${String(h.punto).padStart(6)}px  ` +
+        `${gecti ? 'gecti' : 'KALDI'}  "${h.metin}"`
+      );
+    }
+
+    await ctx.close();
   }
-
-  const sonuc = await sayfa.evaluate(SONUC);
-  console.log(`\n${genislik}px · ${hazir.hata ? 'poster' : KARE_SAYISI + ' kare'} tarandi`);
-
-  for (const h of sonuc.sort((a, b) => a.enKotu - b.enKotu)) {
-    const gecti = h.enKotu >= h.esik;
-    if (!gecti) altta++;
-    console.log(
-      `  ${h.enKotu.toFixed(2).padStart(6)}:1  esik ${h.esik}  ${String(h.punto).padStart(6)}px  ` +
-      `${gecti ? 'gecti' : 'KALDI'}  "${h.metin}"`
-    );
-  }
-
-  await ctx.close();
 }
 
 await tarayici.close();

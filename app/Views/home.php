@@ -33,6 +33,7 @@ $chapters = [
     ]],
     ['tone' => 'band-deep',  'sections' => [
         'partials/manifesto'    => [],
+        'partials/atolye-band'  => [],
     ]],
     ['tone' => '',           'sections' => [
         'partials/testimonials' => ['testimonials' => $testimonials],
