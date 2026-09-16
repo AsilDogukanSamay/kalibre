@@ -71,6 +71,21 @@
        Dolgu, kenarlik ve ikonlar kurumsal --brand rengini kullanmaya
        devam ediyor. */
     --brand-text: 255  85 105;
+
+    /* --- AGIRLIK OLCEGI ---
+       Koyu zeminde acik yazi optik olarak daha INCE gorunur; ayni agirlik
+       acik zeminde daha dolgun okunur. Bu yuzden govde 400 degil 470.
+       Kucuk puntoda fark daha belirgin oldugu icin bir kademe daha yukari.
+       Degerler tek yerde durur: "su bilesen ince kalmis" diye tek tek elle
+       ayarlamak yerine olcek buradan kaydirilir. */
+    --wght-body:    470;
+    --wght-body-sm: 490;
+    --wght-label:   560;
+    --wght-eyebrow: 640;
+    --wght-readout: 650;
+    --wght-medium:  600;
+    --wght-strong:  660;
+    --wght-display: 730;
   }
 
   :root { color-scheme: dark; }
@@ -79,7 +94,7 @@
 
   body {
     @apply bg-surface-900 text-ink font-sans antialiased;
-    font-variation-settings: "wdth" 96, "wght" 400;
+    font-variation-settings: "wdth" 96, "wght" var(--wght-body);
     text-rendering: optimizeLegibility;
   }
 
@@ -122,7 +137,7 @@
   .verdict-key  { @apply text-[11px] uppercase tracking-[0.14em] text-ink-faint; }
   .verdict-val  { @apply readout mt-1 block text-[clamp(1.6rem,3vw,2.2rem)] leading-none text-ink; }
   .verdict-note  { @apply sm:border-l sm:border-line sm:pl-8; }
-  .verdict-birim { @apply ml-1 text-base text-ink-muted; font-variation-settings: "wdth" 92, "wght" 400; }
+  .verdict-birim { @apply ml-1 text-base text-ink-muted; font-variation-settings: "wdth" 92, "wght" var(--wght-body); }
   .verdict-rule { @apply absolute inset-x-0 top-0 block h-px origin-left bg-brand;
                   transform: scaleX(0);
                   transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1) 200ms; }
@@ -131,7 +146,7 @@
      Ipucu degil, okunmasi gereken cumle. Sorumluluk bildirimleri ve yasal
      aciklamalar 12px solgun gri yerine bu bilesende durur: govde tonu,
      rahat satir araligi, okunabilir punto. */
-  .note     { @apply max-w-[72ch] text-[0.88rem] leading-[1.7] text-ink-muted; }
+  .note     { @apply max-w-[72ch] text-[0.88rem] leading-[1.7] text-ink-muted; font-variation-settings: "wdth" 96, "wght" var(--wght-body-sm); }
   .note-box { @apply note glass-soft p-4; }
 
   /* ---------- Tipografi: tek aile, genişlik ekseni ikinci "font" ---------- */
@@ -141,18 +156,20 @@
        display  wdth 112 / wght 730  siki, kararli, genis
        govde    wdth  96 / wght 400  notr, rahat satir araligi
        readout  wdth  72 / wght 650  dar, tablo rakamli, olcum dili         */
-  .display   { font-variation-settings: "wdth" 112, "wght" 730; letter-spacing: -0.032em; line-height: 0.98; }
+  .display   { font-variation-settings: "wdth" 112, "wght" var(--wght-display); letter-spacing: -0.032em; line-height: 0.98; }
   .h-display { @apply display text-[clamp(2.3rem,4.8vw,4.2rem)]; }
   .h-section { @apply display text-[clamp(2.05rem,4.4vw,3.2rem)] text-balance; line-height: 1.02; }
+  /* Bu iki deger olcek disinda ve bilincli: kart basligi strong ile display
+     arasinda bir ara kademe, kelime markasi ise logo kilidinin parcasi. */
   .h-card    { @apply text-[clamp(1.32rem,2.2vw,1.7rem)]; font-variation-settings: "wdth" 104, "wght" 680; letter-spacing: -0.021em; line-height: 1.14; }
-  .body-text { @apply max-w-[52ch] text-[clamp(1.02rem,1.35vw,1.15rem)] text-ink-muted; font-variation-settings: "wdth" 96, "wght" 400; line-height: 1.68; }
-  .body-sm   { @apply max-w-[58ch] text-[0.9rem] text-ink-muted; font-variation-settings: "wdth" 96, "wght" 400; line-height: 1.62; }
+  .body-text { @apply max-w-[52ch] text-[clamp(1.02rem,1.35vw,1.15rem)] text-ink-muted; font-variation-settings: "wdth" 96, "wght" var(--wght-body); line-height: 1.68; }
+  .body-sm   { @apply max-w-[58ch] text-[0.9rem] text-ink-muted; font-variation-settings: "wdth" 96, "wght" var(--wght-body-sm); line-height: 1.62; }
 
   /* Ölçüm okumaları: dar genişlik + tablo rakamları */
-  .readout { font-variation-settings: "wdth" 72, "wght" 650; @apply tabular-nums; letter-spacing: 0.005em; }
+  .readout { font-variation-settings: "wdth" 72, "wght" var(--wght-readout); @apply tabular-nums; letter-spacing: 0.005em; }
 
   /* Bolum ust etiketi: kucuk punto, genis harf araligi, kararli agirlik */
-  .eyebrow-label { @apply text-[11px] uppercase text-brand-text; font-variation-settings: "wdth" 104, "wght" 640; letter-spacing: 0.2em; }
+  .eyebrow-label { @apply text-[11px] uppercase text-brand-text; font-variation-settings: "wdth" 104, "wght" var(--wght-eyebrow); letter-spacing: 0.2em; }
 
   /* ---------- GLASSMORPHISM ÇEKİRDEĞİ ----------
      Tek kaynak: her buzlu cam yüzey bu sınıflardan türer (DRY). */
@@ -190,7 +207,7 @@
     @apply inline-flex items-center justify-center whitespace-nowrap rounded-glass
            border border-transparent px-6 py-3 text-[0.94rem] transition duration-200
            active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60;
-    font-variation-settings: "wdth" 96, "wght" 600;
+    font-variation-settings: "wdth" 96, "wght" var(--wght-medium);
   }
   .btn-primary { @apply btn bg-brand text-white shadow-brand hover:bg-brand-dark; }
   .btn-ghost   { @apply btn border-line-strong bg-white/5 text-ink backdrop-blur-md hover:border-ink; }
@@ -202,7 +219,7 @@
   .nav-in   { @apply flex h-full items-center gap-10; }
   .nav-link { @apply text-[0.92rem] text-ink-muted transition hover:text-ink; }
   .wordmark     { @apply text-[1.08rem] text-ink; font-variation-settings: "wdth" 116, "wght" 800; letter-spacing: 0.055em; }
-  .wordmark-sub { @apply mt-0.5 text-[11px] uppercase tracking-[0.16em] text-ink-faint; font-variation-settings: "wdth" 96, "wght" 500; }
+  .wordmark-sub { @apply mt-0.5 text-[11px] uppercase tracking-[0.16em] text-ink-faint; font-variation-settings: "wdth" 96, "wght" var(--wght-label); }
 
   /* ---------- Hero ---------- */
   .hero-bg    { @apply absolute inset-0 z-0 overflow-hidden bg-surface-800; }
@@ -282,7 +299,7 @@
   }
   .scrub-panel { @apply glass-soft flex flex-col justify-center gap-7 rounded-none border-l border-line p-6 sm:p-8; }
   .gauge-value { @apply readout block text-[clamp(2rem,4vw,2.8rem)] leading-none text-ink; }
-  .gauge-unit  { @apply ml-1 text-sm text-ink-muted; font-variation-settings: "wdth" 92, "wght" 400; }
+  .gauge-unit  { @apply ml-1 text-sm text-ink-muted; font-variation-settings: "wdth" 92, "wght" var(--wght-body); }
   .gauge-label { @apply mt-1.5 block text-[0.85rem] text-ink-muted; }
   /* Olcum dili kurumsal paletin mavi tonlarini kullanir: kanal secondary,
      canli deger accent. Kirmizi marka ve eylem rengi olarak ayri kalir. */
@@ -385,7 +402,7 @@
 
   .flow-body     { @apply flex flex-1 flex-col gap-2.5 p-5; }
   .flow-media + .flow-body { @apply pt-0; }
-  .flow-title    { @apply text-lg tracking-tight text-ink; font-variation-settings: "wdth" 102, "wght" 660; }
+  .flow-title    { @apply text-lg tracking-tight text-ink; font-variation-settings: "wdth" 102, "wght" var(--wght-strong); }
   .flow-meta     { @apply mt-auto flex flex-col gap-2.5 border-t border-line pt-3.5; }
   .flow-meta-key { @apply text-[11px] uppercase tracking-[0.14em] text-ink-faint; }
   .flow-meta-val { @apply readout mt-0.5 text-sm text-brand-text; }
@@ -405,7 +422,7 @@
      Dolgu <summary> uzerinde durur; boylece tiklanabilir alan satir
      yuksekligi kadar degil, tum satir boyunca ~56px olur. */
   .faq-item    { @apply glass transition hover:border-white/20; }
-  .faq-summary { @apply flex cursor-pointer list-none items-center justify-between gap-4 p-5 text-base text-ink; font-variation-settings: "wdth" 100, "wght" 600; }
+  .faq-summary { @apply flex cursor-pointer list-none items-center justify-between gap-4 p-5 text-base text-ink; font-variation-settings: "wdth" 100, "wght" var(--wght-medium); }
   .faq-icon    { @apply h-5 w-5 shrink-0 text-brand transition; }
   .faq-body    { @apply body-sm max-w-[62ch] px-5 pb-5; }
 
@@ -413,11 +430,11 @@
   .plan       { @apply glass-card flex flex-col gap-5; }
   .plan-best  { @apply border-brand/40 bg-brand/[0.07]; }
   .plan-price { @apply readout text-[clamp(2rem,3.6vw,2.7rem)] leading-none text-ink; }
-  .plan-badge { @apply rounded-pill bg-brand px-3 py-1 text-xs text-white; font-variation-settings: "wdth" 96, "wght" 600; }
+  .plan-badge { @apply rounded-pill bg-brand px-3 py-1 text-xs text-white; font-variation-settings: "wdth" 96, "wght" var(--wght-medium); }
 
   /* ---------- Form ---------- */
   .field       { @apply flex flex-col gap-1.5; }
-  .field-label { @apply text-[0.86rem] text-ink; font-variation-settings: "wdth" 96, "wght" 600; }
+  .field-label { @apply text-[0.86rem] text-ink; font-variation-settings: "wdth" 96, "wght" var(--wght-strong); }
   .field-input {
     @apply w-full rounded-glass border border-line-strong bg-surface-700/70 px-4 py-3 text-[0.95rem]
            text-ink backdrop-blur-md transition placeholder:text-ink-faint
@@ -437,7 +454,7 @@
   .toast-dot     { @apply mt-1.5 h-2 w-2 shrink-0 rounded-pill; }
   .toast-dot-success { @apply bg-good; }
   .toast-dot-error   { @apply bg-warn; }
-  .toast-title { @apply text-sm text-ink; font-variation-settings: "wdth" 96, "wght" 600; }
+  .toast-title { @apply text-sm text-ink; font-variation-settings: "wdth" 96, "wght" var(--wght-medium); }
   .toast-body  { @apply mt-0.5 text-xs leading-relaxed text-ink-muted; }
   .toast-close { @apply -mr-1 -mt-1 ml-auto rounded-glass p-1 text-ink-faint transition hover:text-ink; }
 
@@ -545,10 +562,10 @@
   .legal-head    { @apply max-w-[68ch] border-b border-line pb-8; }
   .legal-body    { @apply mt-10 flex max-w-[68ch] flex-col gap-9; }
   .legal-section { @apply flex flex-col gap-3; }
-  .legal-h       { @apply text-[1.12rem] text-ink; font-variation-settings: "wdth" 104, "wght" 660; letter-spacing: -0.012em; }
-  .legal-p       { @apply max-w-[68ch] text-[0.95rem] leading-[1.75] text-ink-muted; }
+  .legal-h       { @apply text-[1.12rem] text-ink; font-variation-settings: "wdth" 104, "wght" var(--wght-strong); letter-spacing: -0.012em; }
+  .legal-p       { @apply max-w-[68ch] text-[0.95rem] leading-[1.75] text-ink-muted; font-variation-settings: "wdth" 96, "wght" var(--wght-body); }
   .legal-list    { @apply flex list-none flex-col gap-2 pl-0; }
-  .legal-li      { @apply relative max-w-[66ch] pl-5 text-[0.95rem] leading-[1.7] text-ink-muted; }
+  .legal-li      { @apply relative max-w-[66ch] pl-5 text-[0.95rem] leading-[1.7] text-ink-muted; font-variation-settings: "wdth" 96, "wght" var(--wght-body); }
   .legal-li::before {
     content: "";
     @apply absolute left-0 top-[0.72em] h-1 w-1 rounded-pill bg-brand;
@@ -582,7 +599,7 @@
   .admin-count  { @apply readout rounded-pill bg-white/10 px-2 py-0.5 text-[11px] text-ink; }
   .admin-list   { @apply flex flex-col gap-4; }
   .admin-card   { @apply glass flex flex-col gap-4 p-5; }
-  .admin-name   { @apply text-base text-ink; font-variation-settings: "wdth" 100, "wght" 660; }
+  .admin-name   { @apply text-base text-ink; font-variation-settings: "wdth" 100, "wght" var(--wght-strong); }
   .admin-meta   { @apply flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-ink-faint; }
   .admin-msg    { @apply max-w-[80ch] whitespace-pre-line text-[0.92rem] leading-relaxed text-ink-muted; }
   .admin-actions{ @apply flex flex-wrap items-center gap-2 border-t border-line pt-4; }

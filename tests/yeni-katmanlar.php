@@ -494,3 +494,45 @@ check('satir kutusu alt cikintilara pay birakiyor', str_contains($css, 'padding-
 check('yazi tipi yuklenmeden olculmuyor', str_contains($js, 'document.fonts.ready'));
 check('animasyon sonunda metin eski haline doner', str_contains($js, 'el.textContent = orijinal;'));
 check('hareket azaltmada satir animasyonu yok', str_contains($css, '.satir-ic { transform: none; transition: none; }'));
+
+// ---------------------------------------------------------------- Agirlik olcegi
+echo "
+Agirlik olcegi
+";
+
+/*
+ * Koyu zeminde acik yazi optik olarak daha INCE gorunur. Govde 400'de
+ * biraktirilirsa sayfa zayif okunuyor; olcek tek yerde durur ve buradan
+ * dogrulanir. Deger dusurulurse test yakalar.
+ */
+$agirlik = static function (string $css, string $ad): ?int {
+    return preg_match('/--wght-' . preg_quote($ad, '/') . ':\s*(\d+)\s*;/', $css, $m) === 1
+        ? (int) $m[1]
+        : null;
+};
+
+foreach (['body' => 460, 'body-sm' => 470, 'medium' => 560, 'strong' => 620, 'display' => 700] as $ad => $enAz) {
+    $deger = $agirlik($css, $ad);
+    check(
+        sprintf('--wght-%s tanimli ve en az %d', $ad, $enAz),
+        $deger !== null && $deger >= $enAz,
+        $deger === null ? 'tanimsiz' : 'olculen ' . $deger
+    );
+}
+
+// Govde, baslikla arasinda net bir fark birakmali; ikisi ayni kademede olmamali.
+check('govde ile baslik arasinda kademe farki var',
+    ($agirlik($css, 'display') ?? 0) - ($agirlik($css, 'body') ?? 0) >= 200);
+
+// Bilesenler sayiyi elle yazmak yerine olcegi okumali.
+$derlenmisCss = (string) file_get_contents($root . '/public/assets/css/app.css');
+check('bilesenler olcegi okuyor', substr_count($derlenmisCss, 'var(--wght-') >= 20,
+    'kullanim: ' . substr_count($derlenmisCss, 'var(--wght-'));
+
+/*
+ * Kaynakta yalnizca iki sabit deger kalabilir ve ikisi de bilincli:
+ * kart basligi (ara kademe) ve kelime markasi (logo kilidi).
+ */
+check('olcek disinda en fazla iki sabit deger var',
+    preg_match_all('/"wght" \d/', $css) <= 2,
+    'sabit: ' . preg_match_all('/"wght" \d/', $css));

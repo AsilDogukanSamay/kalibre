@@ -578,7 +578,48 @@ gönderilemezse talep yine de kaydedilmiştir ve kullanıcı başarı yanıtın�
 
 ---
 
-## 7c. Çerçeve başlığa değil sonuca
+## 7c. Yazı zayıf görünüyordu; sebep font değil ağırlıktı
+
+"Yazı karakterleri zayıf geliyor" denince önce fontun yüklenip yüklenmediği
+ölçüldü, çünkü en olası açıklama oydu: değişken font yüklenmezse tarayıcı yedek
+yazı tipine düşer ve `font-variation-settings` hiçbir işe yaramaz.
+
+Ölçüm bunu eledi. Archivo yüklenmişti (`wght 300–800`, `wdth 62–125`) ve
+varyasyon ayarları uygulanıyordu:
+
+```
+h2      Archivo  "wdth" 112, "wght" 730
+gövde   Archivo  "wdth" 96,  "wght" 400
+```
+
+Sorun buradaydı: **gövde 400.** Açık yazı koyu zeminde optik olarak daha ince
+görünür — aynı ağırlık açık zeminde daha dolgun okunur. Koyu arayüzler bu yüzden
+gövde ağırlığını bir tık yukarı alır.
+
+Aynı cümle canvas'a farklı ağırlıklarda çizilip mürekkep oranı ölçüldü:
+
+| `wght` | Mürekkep oranı |
+|---|---|
+| 400 | %5,34 |
+| 460 | %5,70 |
+| 520 | %6,00 |
+
+Fark gerçek ama küçük; asıl karar gözle verildi — aynı paragraf 400/440/480'de
+yan yana render edilip karşılaştırıldı.
+
+Sonuç: dağınık sayılar yerine bir **ağırlık ölçeği** kuruldu ve bileşenler o
+ölçeği okuyor. Gövde 470, küçük punto 490. Ölçek dışında yalnızca iki sabit
+değer kaldı (kart başlığı ve kelime markası), test bunu sayıyor.
+
+Bir şey bilerek değiştirilmedi: `-webkit-font-smoothing: antialiased`. macOS'ta
+yazıyı inceltir, yani oradaki inceliği azaltmak için kaldırılabilirdi. Ama koyu
+zeminde alt piksel yumuşatması saçaklı görünüyor ve etki platforma bağlı.
+Ağırlık ekseni gerçek bir font ekseni olduğu için her yerde aynı sonucu verir;
+çözüm oradan yapıldı.
+
+---
+
+## 7d. Çerçeve başlığa değil sonuca
 
 Bölüm başlıklarının düz durduğu, çerçeveye alınabileceği önerildi. Yarısına
 katılıp yarısına katılmadım ve sebebini yazmak gerekiyor.
@@ -620,7 +661,7 @@ ve metin seçildiğinde parça parça kopyalanmasına yol açardı.
 
 ---
 
-## 7d. Tailwind katmanı bir kuralı sessizce yuttu
+## 7e. Tailwind katmanı bir kuralı sessizce yuttu
 
 Görünüme giriş animasyonu ilk yazıldığında `@layer components` içindeydi.
 Sayfa açıldı, bölümlerin yarısı görünmedi. Derlenmiş çıktıya bakınca sebep
@@ -651,7 +692,7 @@ geçerse testin bir değeri kalmaz.
 
 ---
 
-## 7e. SEO ve yerel işletme verisi
+## 7f. SEO ve yerel işletme verisi
 
 | Ne | Nerede |
 |---|---|
@@ -720,7 +761,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 176 birim/duman testi  (php tests/run.php)
+npm test          # 184 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -740,7 +781,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **176 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **184 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin**.
 
 | Katman | Test sayısı | Ne doğrulanıyor |

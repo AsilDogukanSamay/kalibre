@@ -14,7 +14,7 @@ altında bu bilgilendirme görünür.
 | Frontend | Tailwind CSS 3.4, glassmorphic bileşenler, vanilla JS |
 | Backend | PHP 8.4, framework yok, OOP + MVC, kendi PSR-4 autoloader'ı |
 | Veritabanı | MySQL / MariaDB, PDO prepared statements |
-| Test | 176 test + 3 tarayıcı denetimi, hepsi geçiyor |
+| Test | 184 test + 3 tarayıcı denetimi, hepsi geçiyor |
 
 > **Ayrıntılı gerekçeler:** [`docs/KARARLAR.md`](docs/KARARLAR.md) — her kararın
 > nedeni, denenip bırakılan alternatifler ve ölçüm sonuçları.
@@ -37,7 +37,7 @@ npm run start                     # CSS derle + sunucu -> http://127.0.0.1:5174
 |---|---|
 | `npm run start` | CSS derler ve sunucuyu başlatır |
 | `npm run dev` | Geliştirirken CSS'i izler |
-| `npm test` | 176 test (harici bağımlılık yok) |
+| `npm test` | 184 test (harici bağımlılık yok) |
 | `npm run denetim` | Testler + yerleşim + kontrast + hero denetimi |
 
 > `npm run serve` PHP'yi **yönlendirici betiğiyle** başlatır. Elle
@@ -159,6 +159,23 @@ değişmez. Test bunu doğrular: marka adı şablonlara gömülü değildir.
 **Tipografi:** tek aile (Archivo variable). İkinci bir yazı tipi yerine genişlik
 ekseni ikinci ses olarak kullanılır — başlık `wdth 112`, gövde `96`, ölçüm
 okuması `72`.
+
+**Ağırlık ölçeği koyu zemine göre kurulur.** Açık yazı koyu zeminde optik olarak
+daha ince görünür; aynı ağırlık açık zeminde daha dolgun okunur. Bu yüzden gövde
+400 değil **470**, küçük punto **490**. Değerler `--wght-*` token'larında tek
+yerde durur; bir bileşen ince kaldığında elle ayarlanmaz, ölçek kaydırılır.
+
+| Kademe | Değer | Nerede |
+|---|---|---|
+| `--wght-body` | 470 | Gövde metni, paragraflar |
+| `--wght-body-sm` | 490 | Küçük punto — daha çok ağırlık ister |
+| `--wght-medium` | 600 | Butonlar, form etiketleri, SSS başlıkları |
+| `--wght-strong` | 660 | Kart başlıkları |
+| `--wght-display` | 730 | Bölüm başlıkları |
+
+Ölçek dışında yalnızca iki sabit değer var ve ikisi de bilinçli: kart başlığı
+(680, ara kademe) ve kelime markası (800, logo kilidinin parçası). Test bunu
+sayıyor.
 
 ---
 
@@ -282,7 +299,7 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 ## 9. Testler ve denetimler
 
 ```bash
-npm test          # 176 test (php tests/run.php) - harici bagimlilik yok
+npm test          # 184 test (php tests/run.php) - harici bagimlilik yok
 npm run yerlesim  # 6 genislik x 5 sayfa: yatay tasma, h1, baslik atlamasi, alt metni
 npm run kontrast  # WCAG AA, duz zeminler ve cam yuzeyler
 npm run hero      # hero kontrasti, piksel yontemi (video uzerinde)
@@ -294,7 +311,7 @@ prepared statement kullanıldığı ve kullanıcı girdisinin SQL metnine
 birleştirilmediği doğrulanabilir. `.mjs` denetimleri `playwright-core` ve yerel
 bir Chrome ister, sunucu açıkken çalışır.
 
-**Mevcut durum:** 176 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0 ·
+**Mevcut durum:** 184 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0 ·
 hero eşik altı 0.
 
 ### API sözleşmesi
