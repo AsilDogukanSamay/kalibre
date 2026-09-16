@@ -974,40 +974,46 @@ gelmesini engelliyor.
 µm" üst üste biniyordu; bölge yalnızca 40 piksel. Rakam alt yazıya taşındı —
 çizim tek bakışta okunmalı, ikinci etiket onu kalabalıklaştırıyordu.
 
-### Atölye fotoğrafı: zemin olarak denendi, ölçüm geri çevirdi
+### Atölye fotoğrafı: iki yerde denendi, ikisinde de elendi
 
-Sahibi bir atölye fotoğrafı üretti ve manifestoya eklenmesini istedi. İlk
-deneme fotoğrafı bölümün **zemini** yapmaktı: perde altında fotoğraf "nesne"
-olmaktan çıkar, bölüm kart/ızgara kazanmadan atmosfer kazanırdı.
+Sahibi bir atölye fotoğrafı üretti ve manifestoya eklenmesini istedi. İki
+yerleşim denendi, ikisi de ölçümle elendi. Sonuç fotoğrafın kaldırılması oldu
+ve bu turun en öğretici kısmı burası.
 
-Piksel denetimi bunu geri çevirdi. Kesit başlığındaki nötr etiket
-(`µm toplam film`, 12 px) **5,08:1**'e düşüyordu. WCAG AA eşiğini (4,5) geçiyor
-ama bu projenin nötr yazı için koyduğu **7:1** kuralının altında (kural 6).
-Perdeyi yeterince koyulaştırmak fotoğrafı ~%6 görünürlüğe indiriyordu, yani
-o yönde de kimse kazanmıyordu.
+**1. deneme — bölümün zemini.** Perde altında fotoğraf "nesne" olmaktan çıkar,
+bölüm kart/ızgara kazanmadan atmosfer kazanırdı. Piksel denetimi geri çevirdi:
+kesit başlığındaki nötr etiket (`µm toplam film`, 12 px) **5,08:1**'e
+düşüyordu. WCAG AA eşiğini (4,5) geçiyor ama bu projenin nötr yazı için
+koyduğu **7:1** kuralının altında (kural 6). Perdeyi yeterince koyulaştırmak
+fotoğrafı ~%6 görünürlüğe indiriyordu, yani o yönde de kimse kazanmıyordu.
 
 Asıl sebep kontrast değil **yerleşimdi**: manifestonun iki sütunu (cümle ve
-kesit) zaten doluydu, fotoğrafa boş alan kalmıyordu. Fotoğraf yer için
-yazıyla yarışıyordu.
+kesit) zaten doluydu, fotoğraf yer için yazıyla yarışıyordu.
 
-Çözüm fotoğrafı yazının altından çıkarmak oldu: manifestonun hemen altında,
-tam genişlikte, **üzerinde hiç yazı olmayan** bir şerit. İki sorun birden
-bitiyor — fotoğraf tam gücünde görünüyor ve ölçülecek yazı yok. Şerit aynı
-zamanda manifesto ile referanslar arasında görsel bir nefes veriyor.
+**2. deneme — tam genişlik şerit.** Manifestonun altında, üzerinde hiç yazı
+olmayan bir bant. Kontrast sorunu tanım gereği bitti. Bu kez görsel **iki kez
+kırpılıyordu**: kaynak 2,59:1, kutu 1440'ta 4,2:1, yani `object-cover` üstten
+ve alttan ~%38 kesiyordu; kenar geçişleri bir %20 daha yiyordu. Kaynak
+panoramik kırpılarak düzeltilebilirdi ve üç aday üretildi.
 
-**Kırpım da ölçülerek seçildi.** İlk kırpımda metal mil kadrajın ortasındaydı
-ve ne olduğu okunmuyordu — halter barına benziyordu. Sola kaydırılan kırpımda
-inceleme lambasının parlak boyadaki yansıması öne çıkıyor, mil sağdan giren
-destekleyici bir öğeye dönüşüyor. Konu artık "atölye ışığı altında parlak
-yüzey", yani sayfanın konusunun kendisi.
+**Elenme sebebi kırpım değil, konu.** Her kırpımda ortadaki krom silindir
+kadrajı alıyor ve ne olduğu okunmuyordu; "araç boyası düzeltiliyor" demiyor,
+bir makine parçası gibi duruyordu. İyi olan tek şey inceleme lambasının parlak
+boyadaki yansımasıydı, o da soyut kalıyordu.
 
-Şerit ekranın altında olduğu için tembel yükleniyor; ilk mobil yüke
-eklediği bayt **sıfır**. Dosyalar 15 KB (geniş) ve 5,7 KB (dar).
+**Kural olarak not:** bir görseli yerleştirmek için üst üste düzeltme
+gerekiyorsa — zemin yap, ölçüm reddetsin; şerit yap, kırpım bozulsun; kırpımı
+düzelt, konu okunmasın — sorun genellikle yerleşimde değil **malzemededir.**
 
-Bu arada `tests/hero-kontrast.mjs` **sahnelere** göre yeniden yazıldı. Artık
-"hero" değil, "yazının bir fotoğraf ya da video üzerinde durduğu her yer"
-ölçülüyor; listeye bir satır eklemek yetiyor. Zemin denemesi bu sayede
-ölçüldü ve elendi.
+Sayfada zaten üç güçlü görsel an var: hero videosu, öncesi/sonrası sürgüsü ve
+scroll pasosu. Dördüncüsü doldurucu olurdu; manifesto + kesit kompozisyonu
+kendi başına tamamlanmış durumda. Şablon, CSS, görsel dosyaları ve testler
+birlikte kaldırıldı — yetim dosya kalmadığını test doğruluyor.
+
+Geriye kalan kazanç: `tests/hero-kontrast.mjs` bu deneme sırasında
+**sahnelere** göre yeniden yazıldı. Artık "hero" değil, *yazının bir fotoğraf
+ya da video üzerinde durduğu her yer* ölçülüyor; listeye bir satır eklemek
+yetiyor. Zemin denemesi tam da bu sayede ölçülüp elendi.
 
 ### Okuma ilerlemesi
 
@@ -1135,7 +1141,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 269 birim/duman testi  (php tests/run.php)
+npm test          # 264 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -1159,7 +1165,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **269 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **264 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin** (panel dahil 12 sayfa/genişlik
 kombinasyonu), hero kontrastında **eşik altı 0 metin**, hareket denetiminde
 **8/8**.

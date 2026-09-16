@@ -164,8 +164,16 @@ const SONUC = () => window.__olcum.hedefler.map(
  * bolumune zemin fotografi eklendiginde bu liste bir satir uzadi.
  */
 const SAHNELER = [
-  { ad: 'Hero',      kokSecici: '.hero-inner',   videoId: 'heroVideo', kaydir: false, yukseklik: 900 },
-  { ad: 'Manifesto', kokSecici: '.manifesto-izgara', videoId: null,    kaydir: true,  yukseklik: 1500 },
+  { ad: 'Hero', kokSecici: '.hero-inner', videoId: 'heroVideo', kaydir: false, yukseklik: 900 },
+  /*
+   * Manifesto bolumu bir sure bu listedeydi: arkasina zemin fotografi
+   * konmustu ve olcum onu geri cevirdi (notur etiket 5,08:1, kural 6 yedi
+   * istiyor). Fotograf kaldirilinca sahne de cikti - arkasinda artik CSS
+   * rengi var, onu kontrast.mjs zaten olcuyor.
+   *
+   * Yazinin arkasina yeni bir fotograf ya da video koyan HERKES buraya bir
+   * satir eklemeli: hesaplanan zemin rengi o durumda gercegi yansitmaz.
+   */
 ];
 
 const tarayici = await chromium.launch({ executablePath: CHROME, headless: true });

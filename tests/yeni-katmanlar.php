@@ -804,27 +804,18 @@ check('kesit etiketlerinde buyuk harfe cevrim yok',
 check('kesit sinir cizgisi acilisa bagli',
     strrpos($css, '.kesit.is-in .kesit-sinir') > strrpos($css, '@layer utilities'));
 
-/*
- * ATOLYE SERIDI
- *
- * Fotograf once manifestonun ZEMINI olarak denendi; piksel olcumu geri
- * cevirdi (notur etiket 5,08:1, kural 6 yedi istiyor). Seridin uzerinde
- * HIC YAZI OLMAMASI bu kararin kendisi - test onu koruyor.
- */
-$seritBlok = preg_match('/<figure class="atolye-serit">([\s\S]*?)<\/figure>/u', $home, $mSe) ? $mSe[1] : '';
-check('atolye seridi sayfada', $seritBlok !== '');
-check('seridin uzerinde yazi yok',
-    $seritBlok !== '' && trim(strip_tags($seritBlok)) === '');
-check('serit sessiz bandin icinde',
-    (bool) preg_match('/band-deep[\s\S]*?atolye-serit[\s\S]*?<\/div>/u', $home));
-check('manifestoya zemin fotografi geri konmadi',
-    $manifestoBlok !== '' && !str_contains($manifestoBlok, '<img'));
 
-// Ekranin altinda duruyor: pesinen indirilmesi mobil veriyi bosuna buyutur.
-check('serit gorseli tembel yukleniyor',
-    (bool) preg_match('/atolye-foto[^>]*loading="lazy"/', $home));
-check('dar ekrana kucuk surum iniyor',
-    str_contains($home, 'atolye-serit-dar.webp') && str_contains($home, 'atolye-serit.webp'));
-check('serit gorselinde alt metni var',
-    (bool) preg_match('/atolye-foto[^>]*alt="[^"]{20,}"/', $home));
-check('kenar gecisi tanimli', str_contains($css, '.atolye-kenar'));
+/*
+ * FOTOGRAF DENENDI VE KALDIRILDI
+ * Manifestonun arkasina zemin olarak kondu: piksel olcumu geri cevirdi
+ * (notur etiket 5,08:1, kural 6 yedi istiyor). Sonra tam genislik serit
+ * yapildi: bu kez konu okunmuyordu - krom silindir her kirpimda kadraji
+ * aliyor ve "arac boyasi" demiyordu. Sayfada zaten uc guclu gorsel an var;
+ * dorduncusu doldurucu olurdu. Gerekce KARARLAR.md 7j'de.
+ */
+check('manifestoda fotograf yok', $manifestoBlok !== '' && !str_contains($manifestoBlok, '<img'));
+check('atolye seridi kalintisi yok',
+    !str_contains($home, 'atolye-serit') && !preg_match('/\.atolye-/', $css));
+check('yetim gorsel dosyasi kalmadi',
+    !is_file($root . '/public/assets/img/atolye-serit.webp')
+    && !is_file($root . '/public/assets/img/manifesto-zemin.webp'));
