@@ -65,6 +65,82 @@
   })();
 
   /* ------------------------------------------------------------------
+   * Olcum nisangahi (imlec)
+   * Yerli imleci gizlemez, yanina ince bir halka koyar. Tiklanabilir bir
+   * hedefin uzerinde halka acilir, icindeki tikler cekilir.
+   * ---------------------------------------------------------------- */
+  (function imlecNisangahi() {
+    const el = document.getElementById('cursor');
+    if (!el) return;
+
+    // Dokunmatik ekranda imlec yoktur; hareket azaltma tercihinde de calismaz.
+    if (reduceMotion) return;
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    /*
+     * Hicbir elemana style attribute'u yazilmaz. Konum, sayfaya bir kez
+     * eklenen tek kurallik bir stylesheet uzerinden guncellenir; konumlandirma
+     * kurali app.css icinde kalir. Surgu ile ayni yontem.
+     */
+    const sheetEl = document.createElement('style');
+    document.head.appendChild(sheetEl);
+    sheetEl.sheet.insertRule(':root { --cursor-x: -100px; --cursor-y: -100px; }', 0);
+    const rule = sheetEl.sheet.cssRules[0];
+
+    const ETKILESIMLI = 'a, button, input, textarea, select, summary, label, [role="button"]';
+
+    let hedefX = -100;
+    let hedefY = -100;
+    let x = -100;
+    let y = -100;
+    let doner = false;
+
+    function kare() {
+      // Yumusak takip: her karede kalan mesafenin bir kismi kapanir.
+      x += (hedefX - x) * 0.2;
+      y += (hedefY - y) * 0.2;
+
+      rule.style.setProperty('--cursor-x', x.toFixed(1) + 'px');
+      rule.style.setProperty('--cursor-y', y.toFixed(1) + 'px');
+
+      // Hedefe oturunca dongu kapanir; bosta rAF harcanmaz.
+      if (Math.abs(hedefX - x) < 0.15 && Math.abs(hedefY - y) < 0.15) {
+        doner = false;
+        return;
+      }
+      requestAnimationFrame(kare);
+    }
+
+    function uyandir() {
+      if (doner) return;
+      doner = true;
+      requestAnimationFrame(kare);
+    }
+
+    window.addEventListener('pointermove', (event) => {
+      if (event.pointerType !== 'mouse') return;
+
+      hedefX = event.clientX;
+      hedefY = event.clientY;
+
+      el.classList.add('cursor-gorunur');
+
+      const hedef = event.target;
+      const etkilesimli = hedef instanceof Element && hedef.closest(ETKILESIMLI) !== null;
+      el.classList.toggle('cursor-etkin', etkilesimli);
+
+      uyandir();
+    }, { passive: true });
+
+    window.addEventListener('pointerdown', () => el.classList.add('cursor-basili'), { passive: true });
+    window.addEventListener('pointerup', () => el.classList.remove('cursor-basili'), { passive: true });
+
+    // Pencereden cikinca nisangah kaybolur, geri gelince ilk harekette doner.
+    document.addEventListener('mouseleave', () => el.classList.remove('cursor-gorunur'));
+    window.addEventListener('blur', () => el.classList.remove('cursor-gorunur'));
+  })();
+
+  /* ------------------------------------------------------------------
    * Iletisim formu - fetch tabanli, sayfa yenilenmez
    * ---------------------------------------------------------------- */
   (function contactForm() {

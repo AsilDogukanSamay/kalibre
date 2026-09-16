@@ -300,6 +300,43 @@ Sayfadaki her metin, gerçek zemin rengine karşı ölçülerek denetlendi.
 2. **`--ink-faint` çok koyuydu** (4,11:1) ve 10px etiketlerde kullanılıyordu.
    Açıldı, en küçük etiket 11px'e çıkarıldı.
 
+**Üçüncü tur: "hiçbir yazı sönük görünmesin".** Ölçüm AA eşiğini geçiyordu ama
+sayfadaki 12 px soluk gri paragraflar gözle bakınca hâlâ zayıf duruyordu. AA
+eşiği okunabilirliğin tabanıdır, hedefi değil. Ev kuralı yükseltildi:
+
+| Metin | Yeni eşik | Nerede ölçülüyor |
+|---|---|---|
+| Nötr gri | **7:1 (AAA)** | Sayfanın en açık nötr yüzeyinde: panel eylem rozeti (#282A2C) |
+| Marka renkli | 4,5:1 (AA) | Aynı yerde |
+
+En açık yüzeye göre ölçmek önemli: aynı token düz zeminde 10,16:1 verirken cam
+kartta 8,95:1, rozetin üzerinde 7,77:1 veriyor. En kötü durum ölçülmezse kural
+kâğıt üzerinde kalır.
+
+Token değerleri:
+
+| Token | Önce | Sonra | En açık yüzeyde |
+|---|---|---|---|
+| `--ink-muted` | `139 148 156` | `181 192 203` | 6,04 → **7,77:1** |
+| `--ink-faint` | `130 142 152` | `172 185 196` | 5,61 → **7,17:1** |
+| `--brand-text` | `255 55 78` | `255 85 105` | 4,65 → **5,32:1** |
+
+Marka kırmızısı neden AAA'ya zorlanmadı: 7:1 verdiği nokta `#FF7384`, yani
+somon. Kurumsal kimlik orada biter. Bunun yerine kullanım daraltıldı — marka
+rengi yalnızca kısa etiketlerde ve bağlantılarda; hiçbir paragraf marka
+renginde değil.
+
+Renk tek başına yetmedi. İçerik taşıyan açıklamalar (temsili görsel ibaresi,
+gizlilik cümlesi, yasal notlar) 12 px'lik "ipucu" kademesindeydi. Bunlar ipucu
+değil, okunması gereken cümleler: kendi bileşenlerine alındı (`.note`,
+`.note-box` — 14 px, gövde tonu, 1,7 satır aralığı). `.field-hint` yalnızca
+gerçek mikro ipuçlarında kaldı ve o da gövde tonuna geçti.
+
+Denetçiye de öğretildi: nötr yazı + nötr zemin AAA eşiğiyle, marka renginin
+girdiği her yer AA eşiğiyle değerlendiriliyor. Beyaz yazı kurumsal kırmızı
+dolgu üzerinde 4,66:1 verir ve bunu yükseltmenin tek yolu kurumsal rengi
+değiştirmektir.
+
 **İkinci tur: cam yüzeyler ölçüme dahil edildi.** İlk denetim metinleri düz zemine
 (`--surface-900`) karşı ölçüyordu. Oysa kartların çoğu cam yüzey üzerinde duruyor ve
 cam zemini açıyor; aynı token orada daha düşük kontrast veriyor. Yeniden ölçüldü:
@@ -584,7 +621,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 117 birim/duman testi  (php tests/run.php)
+npm test          # 138 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -604,7 +641,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **117 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **138 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin**.
 
 | Katman | Test sayısı | Ne doğrulanıyor |
@@ -621,6 +658,8 @@ kontrast denetiminde **eşik altı 0 metin**.
 | XSS | 3 | Kaçış fonksiyonu |
 | Kurumsal kimlik | 12 | Özgün vektör amblem, palet kodları, marka bağımsızlığı |
 | Varlık sürümleme | 4 | Adres damgası, eksik dosya davranışı |
+| Okunabilirlik | 12 | Token eşikleri, açıklama metni bileşeni |
+| İmleç nişangahı | 9 | Inline stil yokluğu, dokunmatik ve hareket azaltma davranışı |
 | Bildirim | 1 | Adres tanımsızsa akış sessizce atlanır |
 
 ### Rotalar

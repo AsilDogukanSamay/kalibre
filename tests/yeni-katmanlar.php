@@ -282,3 +282,90 @@ check('css adresi surum damgasi tasir', (bool) preg_match('#^/assets/css/app\.cs
 check('olmayan dosyaya damga eklenmez', asset('css/yok.css') === '/assets/css/yok.css');
 check('damga dosya degisince degisir (ayni dosya ayni damga)', asset('css/app.css') === $cssAdres);
 check('sayfada surumlu adres kullanilir', str_contains($home, 'app.css?v='));
+
+// ---------------------------------------------------------------- Okunabilirlik
+echo "
+Okunabilirlik esikleri
+";
+
+/**
+ * Ev kurali: notur gri yazi, sayfanin EN ACIK notur yuzeyinde bile AAA
+ * esigini (7:1) tutar. Bu test tarayici gerektirmez; token degerlerini
+ * app.css icinden okur ve orani hesaplar. Boylece biri token'i karartirsa
+ * tarayici denetimini beklemeden burada yakalanir.
+ */
+$tokenOku = static function (string $css, string $ad): ?array {
+    if (preg_match('/--' . preg_quote($ad, '/') . ':\s*(\d+)\s+(\d+)\s+(\d+)\s*;/', $css, $m) !== 1) {
+        return null;
+    }
+    return [(int) $m[1], (int) $m[2], (int) $m[3]];
+};
+
+$parlaklik = static function (array $renk): float {
+    $kanal = static function (int $v): float {
+        $c = $v / 255;
+        return $c <= 0.03928 ? $c / 12.92 : pow(($c + 0.055) / 1.055, 2.4);
+    };
+    return 0.2126 * $kanal($renk[0]) + 0.7152 * $kanal($renk[1]) + 0.0722 * $kanal($renk[2]);
+};
+
+$oran = static function (array $a, array $b) use ($parlaklik): float {
+    $x = $parlaklik($a);
+    $y = $parlaklik($b);
+    [$ust, $alt] = $x > $y ? [$x, $y] : [$y, $x];
+    return ($ust + 0.05) / ($alt + 0.05);
+};
+
+$css = (string) file_get_contents($root . '/resources/css/app.css');
+
+// Sayfadaki en acik notur yuzey: panel eylem rozeti (bg-white/5, cam kart
+// uzerinde). Tarayicida olculdu, burada sabit olarak duruyor.
+$enAcikYuzey = [40, 42, 44];
+$zemin       = $tokenOku($css, 'surface-900') ?? [16, 18, 20];
+
+foreach (['ink', 'ink-muted', 'ink-faint'] as $ad) {
+    $renk = $tokenOku($css, $ad);
+    check($ad . ' token degeri okunabiliyor', $renk !== null);
+    if ($renk === null) {
+        continue;
+    }
+    $enKotu = $oran($renk, $enAcikYuzey);
+    check(
+        sprintf('%s en acik yuzeyde AAA tutuyor', $ad),
+        $enKotu >= 7.0,
+        sprintf('olculen %.2f:1', $enKotu)
+    );
+    check(
+        sprintf('%s duz zeminde AAA tutuyor', $ad),
+        $oran($renk, $zemin) >= 7.0,
+        sprintf('olculen %.2f:1', $oran($renk, $zemin))
+    );
+}
+
+// Icerik tasiyan aciklama metni artik ipucu kademesinde degil.
+check('aciklama metni kendi bileseninde', str_contains($css, '.note     { @apply max-w-[72ch]'));
+check('temsili gorsel ibaresi not bileseni kullaniyor',
+    str_contains((string) file_get_contents($root . '/app/Views/partials/compare.php'), 'class="note mt-3'));
+check('ipucu kademesi de govde tonunda', str_contains($css, '.field-hint  { @apply text-[0.8rem] text-ink-muted; }'));
+
+// ---------------------------------------------------------------- Imlec nisangahi
+echo "
+Imlec nisangahi
+";
+
+$js = (string) file_get_contents($root . '/public/assets/js/app.js');
+
+check('nisangah iki duzende de var',
+    str_contains((string) file_get_contents($root . '/app/Views/layouts/main.php'), 'id="cursor"')
+    && str_contains((string) file_get_contents($root . '/app/Views/layouts/admin.php'), 'id="cursor"'));
+check('ekran okuyucudan gizli', str_contains($home, 'class="cursor" id="cursor" aria-hidden="true"'));
+check('konum inline stille degil CSS degiskeniyle tasinir',
+    str_contains($js, "insertRule(':root { --cursor-x: -100px; --cursor-y: -100px; }'"));
+check('hareket azaltma tercihinde hic calismaz', str_contains($js, 'if (reduceMotion) return;'));
+check('yalnizca gercek fare varken calisir',
+    str_contains($js, "matchMedia('(hover: hover) and (pointer: fine)')"));
+check('dokunmatik olaylar yok sayilir', str_contains($js, "event.pointerType !== 'mouse'"));
+check('bosta rAF dongusu kapanir', str_contains($js, 'doner = false;'));
+// pointermove/down/up ucu de passive: tarayici kaydirmayi beklemeden surdurur.
+check('isaretci dinleyicileri passive', substr_count($js, '{ passive: true }') >= 3);
+check('dokunmatikte CSS de gizler', str_contains($css, '@media (hover: hover) and (pointer: fine)'));

@@ -50,5 +50,10 @@ $adminUser  = $adminUser ?? null;
     <?= $content ?>
 </main>
 
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-ring"></span></div>
+
+<!-- Panelde de ayni davranis katmani calisir. Modullerin hepsi kendi
+     elemanini bulamazsa sessizce cikar, bu yuzden fazladan kosul gerekmez. -->
+<script src="<?= e(asset('js/app.js')) ?>" defer></script>
 </body>
 </html>

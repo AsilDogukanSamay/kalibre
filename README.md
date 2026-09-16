@@ -14,7 +14,7 @@ altında bu bilgilendirme görünür.
 | Frontend | Tailwind CSS 3.4, glassmorphic bileşenler, vanilla JS |
 | Backend | PHP 8.4, framework yok, OOP + MVC, kendi PSR-4 autoloader'ı |
 | Veritabanı | MySQL / MariaDB, PDO prepared statements |
-| Test | 117 test + 3 tarayıcı denetimi, hepsi geçiyor |
+| Test | 138 test + 3 tarayıcı denetimi, hepsi geçiyor |
 
 > **Ayrıntılı gerekçeler:** [`docs/KARARLAR.md`](docs/KARARLAR.md) — her kararın
 > nedeni, denenip bırakılan alternatifler ve ölçüm sonuçları.
@@ -37,7 +37,7 @@ npm run start                     # CSS derle + sunucu -> http://127.0.0.1:5174
 |---|---|
 | `npm run start` | CSS derler ve sunucuyu başlatır |
 | `npm run dev` | Geliştirirken CSS'i izler |
-| `npm test` | 117 test (harici bağımlılık yok) |
+| `npm test` | 138 test (harici bağımlılık yok) |
 | `npm run denetim` | Testler + yerleşim + kontrast + hero denetimi |
 
 > `npm run serve` PHP'yi **yönlendirici betiğiyle** başlatır. Elle
@@ -125,12 +125,31 @@ yazı tipidir ve prototipe dahil edilmemiştir.
 | hover | `#B8000F` | `brand-dark` | Buton hover |
 | secondary | `#00509D` | `brand-secondary` | Ölçüm göstergesinin kanalı |
 | accent | `#008ECF` | `brand-accent` | Canlı ölçüm değeri, ışık şeridi |
-| metin | `#FF374E` | `brand-text` | Koyu zeminde marka renkli **yazı** |
+| metin | `#FF5569` | `brand-text` | Koyu zeminde marka renkli **yazı** (kısa etiketler) |
 
 Kırmızı marka ve eylem rengidir; mavi tonlar ölçüm dilidir. Ayrı bir `brand-text`
 token'ı vardır çünkü `#EA0016` koyu zeminde metin olarak 4,03:1 verir, WCAG AA
 eşiği 4,5. Dolgu ve ikonlar kurumsal rengi kullanmaya devam eder; yalnızca yazı
 açılmış varyanta geçer.
+
+### Okunabilirlik kuralı: hiçbir yazı sönük değil
+
+Sayfada gri bir metnin "geri planda" olması soldurularak değil, punto, ağırlık
+ve harf aralığıyla anlatılır. Somut kural:
+
+| Metin | Eşik | Nerede ölçülüyor |
+|---|---|---|
+| Nötr gri yazı | **7:1 (WCAG AAA)** | Sayfanın **en açık** nötr yüzeyinde — panel eylem rozeti |
+| Marka renkli yazı | 4,5:1 (AA) | Aynı yerde |
+
+Marka renkli yazı neden AAA'ya zorlanmıyor: kurumsal kırmızının 7:1 verdiği
+nokta `#FF7384`, yani somon. Kimlik orada biter. Bu yüzden marka rengi yalnızca
+kısa etiketlerde ve bağlantılarda kullanılır — **hiçbir paragraf marka renginde
+değildir**. Beyaz yazının kurumsal kırmızı dolgu üzerindeki değeri de 4,66:1'dir
+ve bunu yükseltmenin tek yolu kurumsal rengi değiştirmek olurdu.
+
+Bu kural `npm test` içinde (token değerleri app.css'ten okunup hesaplanır) ve
+`npm run kontrast` içinde (canlı sayfada ölçülür) ayrı ayrı doğrulanır.
 
 **Tasarım sistemi marka bağımsızdır.** Tailwind token'ları CSS değişkenlerini
 okur, değişkenler `:root[data-brand="..."]` ile değişir. Marka değiştirmek tek bir
@@ -251,6 +270,7 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 | **Mobil veri koruması** | 640px altında iki video da **hiç** indirilmez. Kaynak `data-src` ile tutulur; `src` yazılsaydı tarayıcı ayrıştırma sırasında indirmeye başlardı. Ölçülen: 375px'te 393 KB |
 | **Range destekli dosya sunucusu** | `video.currentTime` ancak sunucu HTTP Range desteklerse çalışır. PHP'nin dahili sunucusu `206` yerine `200` döner; `Core/FileServer.php` bunu çözer |
 | **Varlık sürümleme** | `asset()` dosyanın değişme zamanını adrese ekler (`app.css?v=6aaa55f3`). Sürümlü adres bir yıl + `immutable`, sürümsüz adres bir saat önbelleklenir. Yayına alınan yeni CSS geri dönen ziyaretçiye anında ulaşır; "sürüm atlamayı unutma" diye bir adım kalmaz |
+| **Ölçüm nişangahı (imleç)** | Jenerik bir takip noktası değil: ince halka + artı biçiminde iki tik, parlaklık ölçerin nişangahı. Tıklanabilir hedefte halka açılır, tikler çekilir. Yerli imleç gizlenmez. Konum inline stille değil, sürgüyle aynı CSS-değişkeni yöntemiyle taşınır. Dokunmatik ekranda ve `prefers-reduced-motion` tercihinde hiç çalışmaz; boşta `requestAnimationFrame` döngüsü kapanır |
 | **SEO** | Schema.org `AutoDetailing` JSON-LD, canonical/og etiketleri, favicon, `robots.txt`, `sitemap.xml` |
 
 ---
@@ -258,7 +278,7 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 ## 9. Testler ve denetimler
 
 ```bash
-npm test          # 117 test (php tests/run.php) - harici bagimlilik yok
+npm test          # 138 test (php tests/run.php) - harici bagimlilik yok
 npm run yerlesim  # 6 genislik x 5 sayfa: yatay tasma, h1, baslik atlamasi, alt metni
 npm run kontrast  # WCAG AA, duz zeminler ve cam yuzeyler
 npm run hero      # hero kontrasti, piksel yontemi (video uzerinde)
@@ -270,7 +290,7 @@ prepared statement kullanıldığı ve kullanıcı girdisinin SQL metnine
 birleştirilmediği doğrulanabilir. `.mjs` denetimleri `playwright-core` ve yerel
 bir Chrome ister, sunucu açıkken çalışır.
 
-**Mevcut durum:** 117 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0 ·
+**Mevcut durum:** 138 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0 ·
 hero eşik altı 0.
 
 ### API sözleşmesi
