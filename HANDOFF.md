@@ -4,8 +4,31 @@ Bu dosya, projeyi **başka bir yapay zekaya, başka bir sohbete veya başka bir
 geliştiriciye** devrederken okutulacak özettir. Tek dosya okutmak, projeyi
 sıfırdan anlatmaktan hızlıdır.
 
-> Yeni bir sohbete şunu yaz: *"Önce HANDOFF.md ve README.md dosyalarını oku,
-> sonra şunu yapmanı istiyorum: ..."*
+## Yeni bir sohbete nasıl devredilir
+
+1. Yeni oturumu **`C:\Users\doguk\Claude Usta`** dizininde aç.
+   Dosyaları ayrıca göndermene gerek yok, orada duruyorlar.
+2. İlk mesaj olarak şunu yaz:
+
+```
+Önce kalibre-landing/HANDOFF.md ve kalibre-landing/README.md dosyalarını oku.
+Bu bir iş başvurusu case study'si, oradaki kurallara sadık kalman önemli.
+Sonra şunu yapmanı istiyorum: ...
+```
+
+3. Sunucular bu oturumla birlikte kapanır, yeniden başlatılmaları gerekir:
+
+```bash
+npm run db        # veritabani, ayri bir terminalde acik kalmali
+npm run start     # CSS derle + sunucu -> http://127.0.0.1:5174
+npm test          # 34 test
+```
+
+**Önemli:** `npm run serve` PHP'yi yönlendirici betiğiyle başlatır. Elle
+`php -S ... -t public` yazarsan Range desteği devre dışı kalır ve scroll
+videosu ilk karesinde donar.
+
+---
 
 ---
 
@@ -73,11 +96,11 @@ _eski/            Bu dönüşümden önceki tek dosyalık statik sürüm
 
 ```bash
 npm install
-npm run build        # CSS derle  (geliştirirken: npm run dev)
-npm run serve        # http://127.0.0.1:5174
-                     # PHP yonlendirici betigi ile baslar; video sarma
-                     # icin Range destegi buna bagli (bkz. README 8b)
+npm run start        # CSS derle + sunucu -> http://127.0.0.1:5174
+npm run dev          # gelistirirken CSS'i izle
 npm test             # 34 test
+npm run db           # veritabani sunucusu (port 3307)
+npm run db:sql       # veritabanina baglan
 ```
 
 CSS derlenmeden sayfa stilsiz görünür. `public/assets/css/app.css` üretilen
@@ -85,23 +108,18 @@ dosyadır, elle düzenlenmez (`.gitignore` içindedir).
 
 ### Veritabanı
 
-Bu makinede **taşınabilir MariaDB** kullanıldı (yönetici izni ve kurulum
-gerektirmez). Sunucu `C:/Users/doguk/Claude Usta/_db` altında, port **3307**.
+Bu makinede **taşınabilir MariaDB** kullanıldı; kurulum ve yönetici izni
+gerektirmez, `Claude Usta/_db` klasöründe durur, port **3307**.
 
 ```bash
-# Sunucuyu başlat
-"C:/Users/doguk/Claude Usta/_db/mariadb-11.4.4-winx64/bin/mysqld.exe" \
-  --datadir="C:/Users/doguk/Claude Usta/_db/data" --port=3307 --console
-
-# Şemayı kur (bir kez)
-"C:/Users/doguk/Claude Usta/_db/mariadb-11.4.4-winx64/bin/mariadb.exe" \
-  -u root -P 3307 -h 127.0.0.1 < database/schema.sql
-
-# Kayıtları gör
-... mariadb.exe -u root -P 3307 -h 127.0.0.1 -e "USE kalibre; SELECT * FROM contact_messages;"
+npm run db        # sunucuyu baslat, acik kalmali
+npm run db:sql    # baglan:  SELECT * FROM contact_messages;
 ```
 
-Başka bir makinede normal MySQL kuruluysa `.env` içinde `DB_PORT=3306` yap.
+Şema bir kez kuruldu. Sıfırdan kurmak gerekirse:
+`npm run db:sql < database/schema.sql`
+
+Normal MySQL kuruluysa `.env` içinde `DB_PORT=3306` yap.
 
 ---
 
