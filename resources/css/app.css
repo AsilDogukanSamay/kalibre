@@ -195,11 +195,10 @@
   .compare-meta   { @apply mt-6 flex max-w-[86ch] flex-wrap gap-x-7 gap-y-1 text-sm text-ink-muted; }
 
   /* ---------- Scroll ile ilerleyen paso ---------- */
-  /* Scroll mesafesi videodaki degisim miktarina gore ayarlandi.
-     Mevcut klipte hareket karenin %16'lik bir bandinda kaliyor; 280vh
-     boyunca kaydirmak emek/karsilik dengesini bozuyordu. Daha genis bir
-     paso iceren klip gelirse bu deger yeniden yukseltilebilir. */
-  .scrub-track { @apply relative; height: 190vh; }
+  /* Scroll mesafesi videodaki gercek hareket miktarina gore ayarlanir.
+     Mevcut klipte paso karenin %34'unu katediyor ve tek yonde ilerliyor
+     (net ilerleme 0.31), yani izlenecek gercek bir donusum var. */
+  .scrub-track { @apply relative; height: 260vh; }
   .scrub       { @apply sticky top-0 grid h-[100dvh] grid-cols-1 overflow-hidden border-b border-line lg:grid-cols-[minmax(0,1fr)_20rem]; }
   .scrub-stage { @apply relative overflow-hidden bg-black; }
   .scrub-stage img, .scrub-stage video { @apply absolute inset-0 h-full w-full object-cover object-[38%_50%]; }
@@ -233,7 +232,7 @@
   /* Dar ekranda sahne yuksekligin cogunu alir; panel kompaktlasir.
      Bolumun konusu video, panel destekleyici. */
   @media (max-width: 1023px) {
-    .scrub-track { height: 160vh; }
+    .scrub-track { height: 200vh; }
     .scrub       { grid-template-rows: minmax(0, 1fr) auto; }
     .scrub-stage { @apply min-h-[52dvh]; }
     .scrub-panel { @apply flex-row flex-wrap items-center gap-x-7 gap-y-3 border-l-0 border-t border-line p-5; }

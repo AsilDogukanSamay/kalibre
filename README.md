@@ -314,7 +314,7 @@ ulaşır, altında yazı bloğu tam genişliğe yayıldığı için yatay perde 
 | Modül | Gerekçe |
 |---|---|
 | **Hero arka plan videosu** | Sessiz, 20 sn dikişsiz döngü (ileri-geri birleştirilmiş). Cam yüzeylerin hareketli görüntü üzerinde durması glassmorphism'in en güçlü göründüğü senaryo. |
-| **Scroll ile sürülen paso videosu** | Scroll ilerlemesi videonun zaman çizgisine bağlanır, mikron ve parlaklık sayaçları eşzamanlı sayar. `scroll` dinleyicisi yoktur: IntersectionObserver bölüm görünürken bir rAF döngüsü açar, çıkınca kapatır. Video 3 karede bir keyframe ile kodlanmıştır, seek pürüzsüzdür. |
+| **Scroll ile sürülen paso videosu** | Scroll ilerlemesi videonun zaman çizgisine bağlanır, mikron ve parlaklık sayaçları eşzamanlı sayar. `scroll` dinleyicisi yoktur: IntersectionObserver bölüm görünürken bir rAF döngüsü açar, çıkınca kapatır. Video 3 karede bir keyframe ile kodlanmıştır, seek pürüzsüzdür. Kliple scroll mesafesi birlikte ayarlanır (aşağıya bakın). |
 | **Öncesi/sonrası sürgüsü** | Hizmetin çıktısını anlatmak yerine gösterir. `range` input kullanıldığı için klavye ve ekran okuyucu desteği hazır gelir. |
 | **Kampanya geri sayımı** | Aciliyet duygusu. Bitiş tarihi `.env`'den; süresi dolunca sayaç gizlenip bilgilendirme mesajına döner. |
 | **WhatsApp destek butonu** | Türkiye'de servis randevusu için birincil kanal. Hazır mesaj metniyle açılır. |
@@ -322,6 +322,25 @@ ulaşır, altında yazı bloğu tam genişliğe yayıldığı için yatay perde 
 | **Honeypot + oran sınırı** | Bot gönderimlerini CAPTCHA eklemeden azaltır. |
 | **Referans numarası** | Başarılı gönderimde `KLB-004271` biçiminde numara döner. Kullanıcıya somut geri bildirim, operasyona takip anahtarı. |
 | **`SiteContent` sınıfı** | Tüm metinler tek kaynakta. Şablonlarda dizi tekrarı yok, içerik güncellemesi HTML'e dokunmadan yapılır. |
+
+### Scroll mesafesi klibe göre ayarlanır
+
+Scroll bölümünün yüksekliği keyfi değil; videodaki gerçek hareket miktarına göre
+belirlendi. İlk klipte pasta makinesinin yatay konumu kare kare ölçüldü:
+
+| | İlk klip | Kullanılan klip |
+|---|---|---|
+| Net ilerleme (0-1) | 0,02 | **0,31** |
+| Katedilen kare genişliği | %16 | **%34** |
+| Çözünürlük | 1280×720 | 1920×1080 kaynak |
+| Scroll mesafesi | 190vh'ye indirilmişti | **260vh** |
+
+İlk klipte makine karenin dar bir bandında dönüp başladığı yere dönüyordu; bölüm
+"pasoyu izleyin" diyordu ama izlenecek bir ilerleme yoktu, o yüzden scroll
+mesafesi kısaltılmıştı. İkinci klip tek yönde ilerlediği için mesafe geri açıldı.
+
+Kodlama ayarı da ölçülerek seçildi: 1600 px çıktı, 1280 px'e göre hiç ek detay
+vermiyordu (kenar enerjisi 1,963'e karşı 1,965) ama %46 daha ağırdı.
 
 ### Mobil veri koruması
 
