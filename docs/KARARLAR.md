@@ -935,6 +935,45 @@ istisnaydı ve üstündeki "Sık sorulanlar" etiketiyle aynı şeyi iki kez
 söylüyordu. Yerine bölümün gerçekten yaptığı işi söyleyen bir cümle geldi:
 dört sorudan ikisinin cevabı olumsuz.
 
+### Manifestonun sağ yarısı: fotoğraf değil, kanıt
+
+Bölüm tek sütundu ve 1440 pikselde sağının yarısı boştu. Oraya bir atölye
+karesi koymak en kolay çözümdü ve **yanlış** olurdu: bu bölümün işi sayfanın
+kalıbına uymamak; fotoğraf eklemek onu diğer altı bölümden ayırt edilemez
+yapardı.
+
+Onun yerine cümlenin kanıtı kondu. "Kalan vernik karar verir" deniyordu ama
+neyin ne kadar kaldığı sayfanın hiçbir yerinde görülmüyordu. Artık bir kaput
+kesiti duruyor: vernik 48, renk katı 22, astar 38, elektro kaplama 30 — toplam
+138 µm, hero'daki ölçümle aynı rakam. Kesme pasosunun alabileceği bölge
+kırmızı bantla, güvenli sınır kesikli çizgiyle işaretli.
+
+**Çizim ölçekli ve bu bir iddia değil, testle korunuyor.** Katman
+yükseklikleri `flex-grow` değerlerinden geliyor ve o değerler mikron
+rakamlarının kendisi (48 / 22 / 38 / 30). Güvenli sınırın konumu da
+hesabın sonucu: `bottom: 62.5%` = 30/48. Şablondaki rakam değişip CSS'teki
+oran kalırsa test kalır — çizim yalan söylemeye başlayamaz.
+
+Üç tur ölçüm gerekti:
+
+**Kutu saf oran taşımalı.** İlk halde katmanlarda dolgu (`pt-2.5`) ve ayırıcı
+kenarlık vardı. İkisi de `flex-basis: 0`'ın **üstüne** ekleniyor, yani her
+katmana eşit miktarda sabit piksel bindiriyordu; küçük katmanlar oransal
+ölçüsünden büyük çıkıyordu. Ölçüldü: vernik/renk katı oranı 2,182 olması
+gerekirken **1,921** çıkıyordu. Etiketler akıştan çıkarıldı (mutlak konum),
+ayırıcılar `box-shadow`'a alındı — ikisi de yerleşime yükseklik eklemez.
+Sonraki ölçüm: 2,182 / 2,182, iki genişlikte de birebir.
+
+**`uppercase` birimi bozuyordu.** "güvenli sınır · 30 µm" etiketi büyük harfe
+çevriliyordu ve `µm` ekranda **`MM`** olarak çıkıyordu: mikro işareti büyük
+harfte Yunan Mu'suna dönüyor. Ölçüm dili konuşan bir sayfada yanlış birim
+gösteren etiket kabul edilemez. Büyük harfe çevrim kaldırıldı, test geri
+gelmesini engelliyor.
+
+**Sökülebilir bölgeye iki etiket sığmıyordu.** "Vernik" ile "çalışma payı ≈ 18
+µm" üst üste biniyordu; bölge yalnızca 40 piksel. Rakam alt yazıya taşındı —
+çizim tek bakışta okunmalı, ikinci etiket onu kalabalıklaştırıyordu.
+
 ### Okuma ilerlemesi
 
 Menü şeridinin altında 1 piksellik bir çizgi okunan mesafeyi gösteriyor.
@@ -1061,7 +1100,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 246 birim/duman testi  (php tests/run.php)
+npm test          # 261 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -1085,7 +1124,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **246 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **261 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin** (panel dahil 12 sayfa/genişlik
 kombinasyonu), hero kontrastında **eşik altı 0 metin**, hareket denetiminde
 **8/8**.

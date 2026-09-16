@@ -22,7 +22,7 @@ Sonra şunu yapmanı istiyorum: ...
 ```bash
 npm run db        # veritabani, ayri bir terminalde acik kalmali
 npm run start     # CSS derle + sunucu -> http://127.0.0.1:5174
-npm test          # 246 test
+npm test          # 261 test
 npm run denetim   # testler + yerlesim + kontrast + hero + hareket denetimi
 ```
 
@@ -114,7 +114,7 @@ resources/css/    app.css  ← Tailwind kaynağı, TÜM component sınıfları b
 public/           Web kökü. index.php + assets/{css,js,img,video}
 database/         schema.sql + migrations/
 storage/          Bildirim günlüğü ve giriş deneme sayacı (versiyonlanmaz)
-tests/run.php     Bağımlılıksız duman testleri (246 test)
+tests/run.php     Bağımlılıksız duman testleri (261 test)
 tests/*.mjs       Yerleşim, kontrast ve hero denetimleri (playwright-core ister)
 docs/KARARLAR.md  Ayrıntılı gerekçeler ve ölçümler (README'nin eşlikçisi)
 _eski/            Bu dönüşümden önceki tek dosyalık statik sürüm
@@ -134,7 +134,7 @@ içinde duruyor. Bunları da tek kaynağa taşımak açık bir iyileştirme (§6
 npm install
 npm run start        # CSS derle + sunucu -> http://127.0.0.1:5174
 npm run dev          # gelistirirken CSS'i izle
-npm test             # 246 test
+npm test             # 261 test
 npm run db           # veritabani sunucusu (port 3307)
 npm run db:sql       # veritabanina baglan
 ```
@@ -209,7 +209,8 @@ Aşağıdakiler iddia değil, çalıştırılarak ölçüldü:
 | Scroll'a bağlı paralaks | Kart, süreç ve hero: üçü de ölçülerek hareket ediyor |
 | Hareket azaltma tercihi | Paralaks tamamen duruyor (8/8) |
 | Okuma ilerlemesi | `--okuma-p` scroll ile güncelleniyor, inline stil yok |
-| Testler | 246/246 |
+| Boya kesiti ölçekli mi | Katman oranları mikron oranlarına birebir eşit (2,182) |
+| Testler | 261/261 |
 
 ---
 

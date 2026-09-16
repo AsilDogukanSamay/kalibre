@@ -14,7 +14,7 @@ altında bu bilgilendirme görünür.
 | Frontend | Tailwind CSS 3.4, glassmorphic bileşenler, vanilla JS |
 | Backend | PHP 8.4, framework yok, OOP + MVC, kendi PSR-4 autoloader'ı |
 | Veritabanı | MySQL / MariaDB, PDO prepared statements |
-| Test | 246 test + 4 tarayıcı denetimi, hepsi geçiyor |
+| Test | 261 test + 4 tarayıcı denetimi, hepsi geçiyor |
 
 > **Ayrıntılı gerekçeler:** [`docs/KARARLAR.md`](docs/KARARLAR.md) — her kararın
 > nedeni, denenip bırakılan alternatifler ve ölçüm sonuçları.
@@ -37,7 +37,7 @@ npm run start                     # CSS derle + sunucu -> http://127.0.0.1:5174
 |---|---|
 | `npm run start` | CSS derler ve sunucuyu başlatır |
 | `npm run dev` | Geliştirirken CSS'i izler |
-| `npm test` | 246 test (harici bağımlılık yok) |
+| `npm test` | 261 test (harici bağımlılık yok) |
 | `npm run denetim` | Testler + yerleşim + kontrast + hero denetimi |
 
 Yerleşim denetimi **tanımsız sınıf** da arar: işaretlemede kullanılıp hiçbir stylesheet'te karşılığı olmayan sınıf sessizce hiçbir şey yapmaz. Üç tane buldu; ayrıntı [`docs/KARARLAR.md`](docs/KARARLAR.md).
@@ -291,6 +291,7 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 | **Okuma ilerlemesi** | Menü şeridinin altındaki 1 piksellik çizgi okunan mesafeyi gösterir. Sayfanın dili ölçüm; rengi bu yüzden accent (canlı ölçüm değeri), marka kırmızısı değil. Değer tek kurallık bir stylesheet üzerinden taşınır, `style` attribute'u yazılmaz |
 | **Scroll'a bağlı paralaks** | Fotoğraflar kendi kutularının içinde scroll ile kayar, hero videosu yavaşça yaklaşır. **JavaScript yok:** `animation-timeline: view()`. `@supports` içinde durduğu için desteklemeyen tarayıcıda hiçbir şey eksilmez |
 | **Manifesto bölümü** | Sayfanın kalıbına uymayan tek bölüm: etiketi, kartı ve ızgarası yok. Altı bölümün aynı iskelette akmasını kıran editoryal duraklama |
+| **Boya kesiti** | Manifesto cümlesinin kanıtı; fotoğraf değil. Katman yükseklikleri mikron değerlerinin kendisi (48/22/38/30 = 138), güvenli sınırın konumu 30/48 oranı. Ölçek testle korunuyor |
 | **WhatsApp destek butonu** | Türkiye'de servis randevusu için birincil kanal. Hazır mesaj metniyle açılır |
 | **Referans kartları** | Sosyal kanıt. Yıldız derecelendirmesi kaldırıldı: her sitede aynı duruyor ve hiçbir şey ölçmüyor. Yerine her referansın altında o araca ait ölçüm sonucu var |
 | **Referans numarası** | Başarılı gönderimde `KLB-004271` biçiminde numara. Kullanıcıya somut geri bildirim, operasyona takip anahtarı |
@@ -314,7 +315,7 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 ## 9. Testler ve denetimler
 
 ```bash
-npm test          # 246 test (php tests/run.php) - harici bagimlilik yok
+npm test          # 261 test (php tests/run.php) - harici bagimlilik yok
 npm run yerlesim  # 6 genislik x 5 sayfa: yatay tasma, h1, baslik atlamasi, alt metni
 npm run kontrast  # WCAG AA, duz zeminler ve cam yuzeyler
 npm run hero      # hero kontrasti, piksel yontemi (video uzerinde)
@@ -327,7 +328,7 @@ prepared statement kullanıldığı ve kullanıcı girdisinin SQL metnine
 birleştirilmediği doğrulanabilir. `.mjs` denetimleri `playwright-core` ve yerel
 bir Chrome ister, sunucu açıkken çalışır.
 
-**Mevcut durum:** 246 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0
+**Mevcut durum:** 261 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0
 (panel dahil) · hero eşik altı 0 · hareket 8/8.
 
 `npm run hareket` sayfanın **görünür** olmasını gerektirir: `document.hidden`

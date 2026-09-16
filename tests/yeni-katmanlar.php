@@ -749,3 +749,57 @@ check('sablonlarda ham baglanti zinciri yok',
     !str_contains($home, 'decoration-brand/40'));
 check('turemis baglanti bilesenleri tek kaynagi okuyor',
     str_contains($css, '.legal-link    { @apply link-ic; }') && str_contains($css, '.foot-harita { @apply link-ic'));
+
+/*
+ * BOYA KESITI (manifesto bolumunun sag sutunu)
+ *
+ * Buraya FOTOGRAF konmadi ve konmamali: manifestonun isi sayfanin kalibina
+ * uymamak. Bir atolye karesi onu diger alti bolumden ayirt edilemez yapardi.
+ * Yerine cumlenin kaniti duruyor.
+ *
+ * Cizim OLCEKLI: katman yukseklikleri flex-grow degerlerinden geliyor ve o
+ * degerler mikron rakamlarinin kendisi. Test bu iki yerin birbirinden
+ * kaymadigini dogrular - sablondaki rakam degisip CSS'teki oran kalirsa
+ * cizim yalan soylemeye baslar.
+ */
+$kesitKatmanlari = ['vernik' => 48, 'boya' => 22, 'astar' => 38, 'ekaplama' => 30];
+
+check('kesit manifesto bolumunun icinde',
+    $manifestoBlok !== '' && str_contains($manifestoBlok, 'class="kesit"'));
+check('kesit fotograf degil',
+    $manifestoBlok !== '' && !str_contains($manifestoBlok, '<img'));
+
+foreach ($kesitKatmanlari as $ad => $mikron) {
+    check("katman yuksekligi mikron degerine esit: $ad",
+        (bool) preg_match('/\.kesit-' . $ad . '\s*\{[^}]*flex:\s*' . $mikron . ' 1 0%/', $css),
+        "beklenen flex-grow: $mikron");
+    check("katman degeri sayfada yaziyor: $ad",
+        (bool) preg_match('/kesit-deger">' . $mikron . '</', $manifestoBlok));
+}
+
+check('katmanlarin toplami beyan edilen film kalinligina esit',
+    array_sum($kesitKatmanlari) === 138 && str_contains($manifestoBlok, '>138<'),
+    'toplam: ' . array_sum($kesitKatmanlari));
+
+/*
+ * Guvenli sinirin konumu 30/48 oraninin kendisi: cizginin altinda kalan
+ * 30 mikron dokunulmaz. Yuzde elle yazilmis bir "goze guzel gelen" deger
+ * degil, hesabin sonucu.
+ */
+check('guvenli sinir konumu 30/48 oranina esit',
+    (bool) preg_match('/\.kesit-sinir\s*\{[^}]*bottom:\s*62\.5%/', $css)
+    && abs(30 / 48 * 100 - 62.5) < 0.001);
+check('sokulebilir bolge tenti ayni orana dayaniyor',
+    (bool) preg_match('/\.kesit-vernik::before\s*\{[^}]*bottom:\s*62\.5%/', $css));
+
+/*
+ * Buyuk harfe cevrim "µm" birimini "MM" yapar (mikro isareti buyuk harfte
+ * Yunan Mu'suna doner). Sayfanin dili olcum; yanlis birim gosteren bir etiket
+ * kabul edilemez. Bir kez yasandi, test geri gelmesini engelliyor.
+ */
+check('kesit etiketlerinde buyuk harfe cevrim yok',
+    !(bool) preg_match('/\.kesit-(sinir-et|deger|birim-ic)[^{]*\{[^}]*uppercase/', $css));
+
+// Sinir cizgisi bolum goruse girdiginde ciziliyor; kural katman disinda (kural 9).
+check('kesit sinir cizgisi acilisa bagli',
+    strrpos($css, '.kesit.is-in .kesit-sinir') > strrpos($css, '@layer utilities'));
