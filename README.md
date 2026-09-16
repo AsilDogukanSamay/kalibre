@@ -37,8 +37,24 @@ npm run start                     # CSS derle + sunucu -> http://127.0.0.1:5174
 |---|---|
 | `npm run start` | CSS derler ve sunucuyu başlatır |
 | `npm run dev` | Geliştirirken CSS'i izler |
-| `npm test` | 280 test (harici bağımlılık yok) |
-| `npm run denetim` | Testler + yerleşim + kontrast + hero denetimi |
+| `npm test` | 280 test. CSS'i önce kendisi derler (`pretest`), çünkü altı test derlenmiş çıktıyı okur |
+| `npm run denetim` | Beşi birden: testler + yerleşim + kontrast + hero piksel kontrastı + hareket |
+
+Tarayıcı denetimleri (`yerlesim`, `kontrast`, `hero`, `hareket`) `playwright-core`
+ile **yerel bir Chrome** açar; `npm install` bunu kurar ama Chrome'un kendisi sizde
+kurulu olmalı. Başka bir yoldaysa:
+
+```bash
+CHROME="/yol/chrome.exe" npm run denetim
+```
+
+Denetimler **sunucu açıkken** çalışır (`npm run start` ayrı bir terminalde).
+
+> `package.json` içindeki `db` ve `db:sql` betikleri yalnızca geliştirme
+> makinesine özeldir: depo dışındaki taşınabilir bir MariaDB kurulumunu
+> başlatırlar. Projeyi incelemek için bunlara ihtiyacınız yok, kendi MySQL
+> kurulumunuzu kullanın; şema `database/schema.sql` içinde. Farklı port
+> kullanıyorsanız `.env` içinde `DB_PORT` satırını düzenleyin.
 
 Yerleşim denetimi **tanımsız sınıf** da arar: işaretlemede kullanılıp hiçbir stylesheet'te karşılığı olmayan sınıf sessizce hiçbir şey yapmaz. Üç tane buldu; ayrıntı [`docs/KARARLAR.md`](docs/KARARLAR.md).
 

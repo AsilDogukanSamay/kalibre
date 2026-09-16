@@ -7,6 +7,7 @@
     "build": "tailwindcss -i resources/css/app.css -o public/assets/css/app.css --minify",
     "dev": "tailwindcss -i resources/css/app.css -o public/assets/css/app.css --watch",
     "serve": "php -S 127.0.0.1:5174 -t public public/index.php",
+    "pretest": "npm run build",
     "test": "php tests/run.php",
     "db": "\"../_db/mariadb-11.4.4-winx64/bin/mysqld.exe\" --datadir=\"../_db/data\" --port=3307 --console",
     "db:sql": "\"../_db/mariadb-11.4.4-winx64/bin/mariadb.exe\" -u root -P 3307 -h 127.0.0.1 kalibre",
@@ -18,6 +19,7 @@
     "hareket": "node tests/hareket.mjs"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "playwright-core": "^1.63.0"
   }
 }
