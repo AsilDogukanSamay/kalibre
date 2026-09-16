@@ -7,7 +7,7 @@
 
     <div class="shell">
         <div class="section-head">
-            <span class="text-xs uppercase tracking-[0.16em] text-brand-text">Aynı kaput, iki paso</span>
+            <span class="eyebrow-label">Aynı kaput, iki paso</span>
             <h2 class="h-section">Önce ve sonra, aynı kadrajdan.</h2>
             <p class="body-text">Sürgüyü kaydırın. Soldaki kayıt işlem öncesi ölçümde, sağdaki iki kademeli düzeltme ve seramik uygulamasından sonra çekildi.</p>
         </div>

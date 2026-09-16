@@ -8,7 +8,7 @@
 ?>
 <section class="shell pb-6 pt-14 sm:pt-20">
     <div class="flex max-w-3xl flex-col gap-5">
-        <span class="text-xs uppercase tracking-[0.16em] text-brand-text">Vaka çalışması</span>
+        <span class="eyebrow-label">Vaka çalışması</span>
         <h1 class="h-display text-balance">Ölçülebilir bir hizmeti ölçülebilir bir arayüze çevirmek.</h1>
         <p class="body-text"><?= e($intro['summary']) ?></p>
     </div>

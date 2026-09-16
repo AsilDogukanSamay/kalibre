@@ -51,7 +51,8 @@
 
   body {
     @apply bg-surface-900 text-ink font-sans antialiased;
-    font-variation-settings: "wdth" 92, "wght" 400;
+    font-variation-settings: "wdth" 96, "wght" 400;
+    text-rendering: optimizeLegibility;
   }
 
   ::selection { @apply bg-brand text-white; }
@@ -77,15 +78,24 @@
   .section-head { @apply mb-10 flex max-w-2xl flex-col gap-3 sm:mb-14; }
 
   /* ---------- Tipografi: tek aile, genişlik ekseni ikinci "font" ---------- */
-  .display   { font-variation-settings: "wdth" 118, "wght" 700; @apply tracking-tight; line-height: 1.04; }
-  .h-display { @apply display text-[clamp(2.2rem,4.5vw,3.8rem)]; }
-  .h-section { @apply display text-[clamp(2rem,4.4vw,3.1rem)] text-balance; }
-  .h-card    { @apply text-[clamp(1.3rem,2.2vw,1.65rem)] tracking-tight; font-variation-settings: "wdth" 108, "wght" 650; line-height: 1.15; }
-  .body-text { @apply max-w-[52ch] text-[clamp(1rem,1.35vw,1.13rem)] leading-relaxed text-ink-muted; }
-  .body-sm   { @apply max-w-[58ch] text-sm leading-relaxed text-ink-muted; }
+  /* --- TIPOGRAFI OLCEGI ---
+     Tek aile (Archivo variable). Ikinci bir yazi tipi yerine GENISLIK EKSENI
+     ikinci ses olarak kullanilir. Uc net karakter:
+       display  wdth 112 / wght 730  siki, kararli, genis
+       govde    wdth  96 / wght 400  notr, rahat satir araligi
+       readout  wdth  72 / wght 650  dar, tablo rakamli, olcum dili         */
+  .display   { font-variation-settings: "wdth" 112, "wght" 730; letter-spacing: -0.032em; line-height: 0.98; }
+  .h-display { @apply display text-[clamp(2.3rem,4.8vw,4.2rem)]; }
+  .h-section { @apply display text-[clamp(2.05rem,4.4vw,3.2rem)] text-balance; line-height: 1.02; }
+  .h-card    { @apply text-[clamp(1.32rem,2.2vw,1.7rem)]; font-variation-settings: "wdth" 104, "wght" 680; letter-spacing: -0.021em; line-height: 1.14; }
+  .body-text { @apply max-w-[52ch] text-[clamp(1.02rem,1.35vw,1.15rem)] text-ink-muted; font-variation-settings: "wdth" 96, "wght" 400; line-height: 1.68; }
+  .body-sm   { @apply max-w-[58ch] text-[0.9rem] text-ink-muted; font-variation-settings: "wdth" 96, "wght" 400; line-height: 1.62; }
 
   /* Ölçüm okumaları: dar genişlik + tablo rakamları */
-  .readout { font-variation-settings: "wdth" 70, "wght" 600; @apply tabular-nums tracking-wide; }
+  .readout { font-variation-settings: "wdth" 72, "wght" 650; @apply tabular-nums; letter-spacing: 0.005em; }
+
+  /* Bolum ust etiketi: kucuk punto, genis harf araligi, kararli agirlik */
+  .eyebrow-label { @apply text-[11px] uppercase text-brand-text; font-variation-settings: "wdth" 104, "wght" 640; letter-spacing: 0.2em; }
 
   /* ---------- GLASSMORPHISM ÇEKİRDEĞİ ----------
      Tek kaynak: her buzlu cam yüzey bu sınıflardan türer (DRY). */
@@ -93,8 +103,12 @@
     @apply rounded-glass border border-white/10 bg-white/[0.055] shadow-glass
            backdrop-blur-glass backdrop-saturate-150;
   }
+  /* Video ve fotograf uzerinde duran paneller. Beyaz %9 ile zemin videonun
+     parlakligina gore degisiyordu; parlak bir karede ikincil metin 1.30:1'e
+     dusuyordu. Yuzey rengi %86 opaklikla zemini sabitler, buzlu cam etkisi
+     backdrop-blur ile korunur. Olculen en kotu deger: 4.61:1. */
   .glass-strong {
-    @apply rounded-glass border border-white/[0.14] bg-white/[0.09] shadow-glass-lg
+    @apply rounded-glass border border-white/[0.14] bg-surface-800/[0.86] shadow-glass-lg
            backdrop-blur-glass backdrop-saturate-150;
   }
   .glass-soft {
@@ -130,7 +144,7 @@
   .nav-bar  { @apply sticky top-0 z-40 h-16 border-b border-line bg-surface-900/85 backdrop-blur-glass; }
   .nav-in   { @apply flex h-full items-center gap-10; }
   .nav-link { @apply text-[0.92rem] text-ink-muted transition hover:text-ink; }
-  .wordmark     { @apply text-[1.05rem] tracking-[0.05em] text-ink; font-variation-settings: "wdth" 118, "wght" 800; }
+  .wordmark     { @apply text-[1.08rem] text-ink; font-variation-settings: "wdth" 116, "wght" 800; letter-spacing: 0.055em; }
   .wordmark-sub { @apply mt-0.5 text-[11px] uppercase tracking-[0.16em] text-ink-faint; font-variation-settings: "wdth" 96, "wght" 500; }
 
   /* ---------- Hero ---------- */

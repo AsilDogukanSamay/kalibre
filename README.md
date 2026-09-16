@@ -62,13 +62,19 @@ Zemin ve metin skalası her iki markada ortaktır; yalnızca `brand-*` değişir
 ### Tipografi
 
 Tek yazı tipi ailesi: **Archivo** (variable). İkinci bir yazı tipi yerine
-**genişlik ekseni** ikinci bir ses olarak kullanılır:
+**genişlik ekseni** ikinci bir ses olarak kullanılır. Üç net karakter:
 
-| Rol | `wdth` | `wght` | Sınıf |
-|---|---|---|---|
-| Başlık | 118 | 700 | `.display` |
-| Gövde | 92 | 400 | `body` |
-| Ölçüm okumaları | 70 | 600 | `.readout` (tablo rakamları ile) |
+| Rol | `wdth` | `wght` | Harf aralığı | Satır aralığı | Sınıf |
+|---|---|---|---|---|---|
+| Başlık | 112 | 730 | −0,032em | 0,98 | `.display` |
+| Gövde | 96 | 400 | 0 | 1,68 | `.body-text` |
+| Ölçüm okuması | 72 | 650 | +0,005em | — | `.readout` |
+| Bölüm etiketi | 104 | 640 | +0,2em | — | `.eyebrow-label` |
+
+Büyük puntoda harf aralığı negatife çekilir, küçük puntoda pozitife: optik
+düzeltme. Başlıklar 0,98 satır aralığıyla sıkışır, gövde 1,68 ile nefes alır;
+bu zıtlık iki sesi birbirinden ayırır. Bölüm etiketleri dağınık utility
+sınıflarından tek bir `.eyebrow-label` bileşenine toplandı.
 
 ### Köşe yarıçapı
 
@@ -204,6 +210,22 @@ CAMPAIGN_ENDS_AT=2026-12-31T23:59:59+03:00
 - `prefers-reduced-motion` ve `prefers-reduced-transparency` tercihlerine uyulur.
 - Klavye erişilebilirliği: `focus-visible` halkası, "İçeriğe atla" bağlantısı,
   hatalı alanlarda `aria-invalid`, toast'ta `aria-live="polite"`.
+
+### Cam yüzeyler videonun üzerinde
+
+Cam paneller `bg-white/[0.09]` ile kurulmuştu; bu, zemini arkadaki videonun
+parlaklığına bırakıyordu. Ölçüldü:
+
+| Videonun o bölgedeki parlaklığı | İkincil metin kontrastı |
+|---|---|
+| Koyu kare (25) | 4,42:1 |
+| Orta (60) | 2,72:1 |
+| Parlak kare (160) | **1,30:1** |
+
+Yani belirli karelerde yazı pratik olarak görünmez oluyordu. Zemin, yüzey
+rengiyle **%86 opaklığa** sabitlendi; `backdrop-blur` korunduğu için buzlu cam
+etkisi kaybolmadı. Dört farklı parlaklık değerinde yeniden ölçüldü, en kötü
+sonuç **4,61:1**. %86, eşiği geçen en saydam değer (%82'de 4,27'ye düşüyor).
 
 ### Erişilebilirlik denetimi
 
