@@ -21,11 +21,20 @@
     --line:        39 44 50;
     --line-strong: 54 61 69;
     --ink:        233 236 239;
-    --ink-muted:  139 148 156;
-    /* Iki kez acildi. Ilk tur duz zemine gore olculmustu (4.11 -> 5.06);
-       ikinci tur cam yuzeylere gore: cam zemini actigi icin ayni token
-       kart uzerinde 4.41'e dusuyordu. Simdi duz zeminde 5.4, camda 4.7. */
-    --ink-faint:  130 142 152;
+    /* Govde tonu. Esik, sayfanin EN ACIK notur yuzeyine gore belirlendi
+       (panel eylem rozeti, #282A2C): orada 7,77:1. Cam kartta 8,95:1,
+       duz zeminde 10,16:1. Yani sayfanin hicbir yerinde AAA esiginin
+       altina inmiyor.
+       Hiyerarsi artik solgunlukla degil punto, agirlik ve harf araligiyla
+       kuruluyor - bir metni geri plana atmak icin soldurmuyoruz. */
+    --ink-muted:  181 192 203;
+    /* Ucuncu kademe: mikro etiketler (11-12px, buyuk harf, genis harf araligi).
+       Uc turda acildi: once duz zemine gore (4,11 -> 5,06), sonra cam
+       yuzeylere gore (4,41 -> 4,70), son olarak "hicbir yazi sonuk
+       gorunmesin" kurali icin. En acik notur yuzeyde 7,17:1.
+       Muted ile arasindaki luminans farki artik cok kucuk; ayrimi punto ve
+       harf araligi yapiyor. Token yine de duruyor cunku rol farki gercek. */
+    --ink-faint:  172 185 196;
     --warn:       255 154 139;
     --good:        91 208 138;
 
@@ -53,11 +62,15 @@
     --brand-tint:      255  42  60;
     --brand-secondary:   0  80 157;   /* secondary #00509D */
     --brand-accent:      0 142 207;   /* accent    #008ECF */
-    /* #EA0016 metin olarak duz zeminde 4.03:1. Acilmis varyant duz zeminde
-       4.93 veriyordu ama cam kart uzerinde 4.44'e dusuyordu; bir kademe
-       daha acildi. Dolgu, kenarlik ve ikonlar kurumsal --brand rengini
-       kullanmaya devam ediyor, degisen yalnizca yazi. */
-    --brand-text: 255  55  78;
+    /* #EA0016 metin olarak duz zeminde 4,03:1 verir. Uc turda acildi;
+       su an duz zeminde 6,04:1, cam uzerinde 5,32:1.
+       Neden noturlerle ayni 7:1 hedefi tutulmuyor: kirmizinin 7:1 verdigi
+       nokta #FF7384, yani somon. Kurumsal kimlik orada biter. Bu yuzden
+       marka renkli YAZI yalnizca kisa etiketlerde ve baglantilarda
+       kullaniliyor; paragraf hicbir yerde marka renginde degil.
+       Dolgu, kenarlik ve ikonlar kurumsal --brand rengini kullanmaya
+       devam ediyor. */
+    --brand-text: 255  85 105;
   }
 
   :root { color-scheme: dark; }
@@ -91,6 +104,13 @@
   .shell        { @apply mx-auto w-full max-w-[82.5rem] px-5 sm:px-6; }
   .section      { @apply py-16 sm:py-20 lg:py-28; }
   .section-head { @apply mb-10 flex max-w-2xl flex-col gap-3 sm:mb-14; }
+
+  /* ---------- Aciklama metni ----------
+     Ipucu degil, okunmasi gereken cumle. Sorumluluk bildirimleri ve yasal
+     aciklamalar 12px solgun gri yerine bu bilesende durur: govde tonu,
+     rahat satir araligi, okunabilir punto. */
+  .note     { @apply max-w-[72ch] text-[0.88rem] leading-[1.7] text-ink-muted; }
+  .note-box { @apply note glass-soft p-4; }
 
   /* ---------- Tipografi: tek aile, genişlik ekseni ikinci "font" ---------- */
   /* --- TIPOGRAFI OLCEGI ---
@@ -306,7 +326,7 @@
            focus:border-brand focus:bg-surface-700;
   }
   .field-input-invalid { @apply border-warn bg-warn/[0.07]; }
-  .field-hint  { @apply text-xs text-ink-faint; }
+  .field-hint  { @apply text-[0.8rem] text-ink-muted; }
   .field-error { @apply hidden text-xs text-warn; }
   .field-error-visible { @apply block; }
   .honeypot    { @apply pointer-events-none absolute -left-[9999px] h-px w-px opacity-0; }
@@ -327,6 +347,67 @@
   .countdown-cell { @apply glass-soft flex flex-col items-center px-2 py-2.5 sm:px-3; }
   .countdown-num  { @apply readout text-2xl text-ink sm:text-3xl; }
   .countdown-lbl  { @apply text-[11px] uppercase tracking-[0.14em] text-ink-faint; }
+
+  /* ---------- Ölçüm nişangahı (imleç) ----------
+     Jenerik bir takip noktası değil, sayfanın diline ait: ince bir halka ve
+     içinde artı biçiminde iki tik. Parlaklık ölçerin nişangahı. Tıklanabilir
+     bir şeyin üzerine gelince halka büyür, tikler çekilir — alet hedefe
+     kilitlenir.
+
+     Yerli imleç gizlenmiyor: nişangah onun yerine geçmiyor, yanında duruyor.
+     Gizleseydik metin seçme ve sürükleme imleçleri de kaybolurdu.
+
+     Konum inline stille değil, sayfaya bir kez eklenen tek kurallık bir
+     stylesheet üzerinden taşınan CSS değişkeniyle güncellenir; öncesi/sonrası
+     sürgüsüyle aynı yöntem. */
+  .cursor {
+    @apply pointer-events-none fixed left-0 top-0 z-[80] hidden opacity-0;
+    transform: translate3d(var(--cursor-x, -100px), var(--cursor-y, -100px), 0);
+    transition: opacity 260ms ease;
+    will-change: transform;
+  }
+  .cursor-gorunur { @apply opacity-100; }
+
+  .cursor-ring {
+    @apply relative block rounded-pill border;
+    height: 2rem;
+    width: 2rem;
+    border-color: rgb(var(--brand) / 0.75);
+    /* Ince koyu ana hat: nisangah parlak bir video karesinin uzerine
+       geldiginde de kayboluyor gorunmesin. */
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35);
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 260ms ease,
+                background-color 260ms ease,
+                box-shadow 260ms ease;
+  }
+  .cursor-ring::before,
+  .cursor-ring::after {
+    content: "";
+    @apply absolute left-1/2 top-1/2;
+    background-color: rgb(var(--brand) / 0.85);
+    transition: opacity 200ms ease;
+  }
+  .cursor-ring::before { height: 1px; width: 0.7rem; transform: translate(-50%, -50%); }
+  .cursor-ring::after  { height: 0.7rem; width: 1px; transform: translate(-50%, -50%); }
+
+  /* Tiklanabilir hedef: halka acilir, tikler cekilir.
+     Halka burada acik renge doner cunku tiklanabilir seylerin cogu kurumsal
+     kirmizi dolguludur; kirmizi halka kirmizi butonun uzerinde kaybolurdu.
+     Marka rengi disaridaki ince halede kaliyor. */
+  .cursor-etkin .cursor-ring {
+    background-color: rgb(var(--ink) / 0.10);
+    border-color: rgb(var(--ink) / 0.92);
+    box-shadow: 0 0 0 2px rgb(var(--brand) / 0.45);
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+  .cursor-etkin .cursor-ring::before,
+  .cursor-etkin .cursor-ring::after { @apply opacity-0; }
+
+  /* Basili tutulurken kisa bir geri cekilme. */
+  .cursor-basili .cursor-ring { transform: translate(-50%, -50%) scale(0.82); }
+  .cursor-etkin.cursor-basili .cursor-ring { transform: translate(-50%, -50%) scale(1.25); }
 
   /* ---------- WhatsApp ---------- */
   .wa-fab  { @apply fixed bottom-5 right-5 z-50 inline-flex h-14 w-14 items-center justify-center rounded-pill bg-[#25D366] text-white shadow-glass-lg transition hover:brightness-110; }
@@ -360,7 +441,7 @@
     content: "";
     @apply absolute left-0 top-[0.72em] h-1 w-1 rounded-pill bg-brand;
   }
-  .legal-note    { @apply glass-soft max-w-[68ch] p-4 text-[0.85rem] leading-relaxed text-ink-faint; }
+  .legal-note    { @apply note-box max-w-[68ch]; }
   .legal-foot    { @apply mt-12 flex max-w-[68ch] flex-col items-start gap-4 border-t border-line pt-8; }
   .legal-link    { @apply text-brand-text underline decoration-brand/40 underline-offset-4 transition hover:decoration-brand; }
 
@@ -407,6 +488,18 @@
   .status-new      { @apply bg-brand/20 text-brand-text; }
   .status-read     { @apply bg-white/10 text-ink-muted; }
   .status-archived { @apply bg-white/[0.06] text-ink-faint; }
+}
+
+@layer components {
+  /* Nisangah yalnizca gercek bir fare varken calisir. Dokunmatik ekranda
+     imlec yoktur; hareket azaltma tercihinde de gosterilmez. Sira onemli:
+     ikinci blok birinciyi gec eder. */
+  @media (hover: hover) and (pointer: fine) {
+    .cursor { @apply block; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cursor { @apply hidden; }
+  }
 }
 
 @layer utilities {

@@ -12,7 +12,7 @@
         <p class="eyebrow-label">Yasal bilgilendirme</p>
         <h1 class="h-section mt-3"><?= e($page['title']) ?></h1>
         <p class="body-text mt-4"><?= e($page['lead']) ?></p>
-        <p class="field-hint mt-4">
+        <p class="note mt-4">
             Son güncelleme: <?= e($page['updated']) ?> · Metin sürümü: <?= e($page['version']) ?>
         </p>
     </header>

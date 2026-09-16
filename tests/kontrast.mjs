@@ -38,6 +38,12 @@ const SAYFALAR = [
 ];
 
 // Panel oturum ister. Kimlik bilgisi ortam degiskeninden gelir; betikte yazili degildir.
+// Ev kurali: notur gri yazilar AAA esigini tutar. Marka renkli yazi bu esige
+// cikamaz - kirmizinin 7:1 verdigi nokta somon tonudur, kurumsal kimlik orada
+// biter - bu yuzden marka renkli metin AA esiginde degerlendirilir ve yalnizca
+// kisa etiketlerde kullanilir. Paragraf hicbir yerde marka renginde degildir.
+const NOTUR_HEDEF = Number(process.env.HEDEF ?? 7);
+
 const PANEL_USER = process.env.PANEL_USER ?? '';
 const PANEL_PASS = process.env.PANEL_PASS ?? '';
 
@@ -113,7 +119,15 @@ const olcum = () => {
     const punto = parseFloat(s.fontSize);
     const kalin = parseInt(s.fontWeight, 10) >= 700;
     const iri = punto >= 24 || (punto >= 18.66 && kalin);
-    const esik = iri ? 3 : 4.5;
+    const wcag = iri ? 3 : 4.5;
+
+    // AAA hedefi yalnizca NOTUR YAZI + NOTUR ZEMIN icin gecerlidir.
+    // Marka renginin girdigi her yerde WCAG AA esigi kullanilir: beyaz yazi
+    // kurumsal kirmizi dolgu uzerinde 4,66:1 verir ve bunu yukseltmenin tek
+    // yolu kurumsal rengi degistirmektir.
+    const kroma = (c) => Math.max(c.r, c.g, c.b) - Math.min(c.r, c.g, c.b);
+    const notur = kroma(onPlan) <= 25 && kroma(arka) <= 25;
+    const esik = notur ? Math.max(wcag, window.__hedef) : wcag;
 
     sayilan++;
     if (deger < esik) {
@@ -123,6 +137,7 @@ const olcum = () => {
         punto: Math.round(punto * 10) / 10,
         olculen: Math.round(deger * 100) / 100,
         esik,
+        notur,
       });
     }
   }
@@ -151,7 +166,11 @@ for (const genislik of [390, 1440]) {
     }
 
     await sayfa.goto(TABAN + yol, { waitUntil: 'networkidle' });
-    await sayfa.evaluate(([k, a]) => { window.__kok = k ?? null; window.__atla = a ?? null; }, [kok ?? null, atla ?? null]);
+    await sayfa.evaluate(([k, a, h]) => {
+      window.__kok = k ?? null;
+      window.__atla = a ?? null;
+      window.__hedef = h;
+    }, [kok ?? null, atla ?? null, NOTUR_HEDEF]);
     const { sayilan, bulgular } = await sayfa.evaluate(olcum);
 
     toplamBulgu += bulgular.length;
@@ -159,7 +178,10 @@ for (const genislik of [390, 1440]) {
     console.log(`${genislik}px  ${ad.padEnd(34)} ${String(sayilan).padStart(3)} metin  ${durum}`);
 
     for (const b of bulgular) {
-      console.log(`         ${b.olculen}:1 (esik ${b.esik})  ${b.punto}px  "${b.metin}"  .${b.sinif}`);
+      console.log(
+        `         ${b.olculen}:1 (esik ${b.esik}${b.notur ? ' notur' : ' marka'})  ` +
+        `${b.punto}px  "${b.metin}"  .${b.sinif}`
+      );
     }
   }
 
@@ -167,5 +189,6 @@ for (const genislik of [390, 1440]) {
 }
 
 await tarayici.close();
+console.log(`Notur yazi hedefi: ${NOTUR_HEDEF}:1 · marka renkli yazi: WCAG AA`);
 console.log(`\nToplam esik alti: ${toplamBulgu}`);
 process.exit(toplamBulgu === 0 ? 0 : 1);

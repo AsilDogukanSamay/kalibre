@@ -10,7 +10,7 @@
         <div class="flex flex-col gap-2">
             <p class="eyebrow-label">Yönetim paneli</p>
             <h1 class="h-card">Giriş yapın</h1>
-            <p class="field-hint">Gelen randevu talepleri bu panelde listelenir.</p>
+            <p class="note">Gelen randevu talepleri bu panelde listelenir.</p>
         </div>
 
         <?php if ($error !== null): ?>
@@ -33,7 +33,7 @@
 
         <button class="btn-primary btn-block" type="submit">Giriş yap</button>
 
-        <p class="field-hint">
+        <p class="note">
             Kalan deneme hakkı: <?= e((string) $remaining) ?>.
             Hak bittiğinde giriş 15 dakika kilitlenir.
         </p>

@@ -75,7 +75,7 @@ $pageDescription = $pageDescription
                 <span><?= e($brand['hours'] ?? '') ?></span>
             </div>
         </div>
-        <p class="body-sm max-w-[62ch] text-ink-faint"><?= e($brand['address'] ?? '') ?></p>
+        <p class="body-sm max-w-[62ch]"><?= e($brand['address'] ?? '') ?></p>
 
         <nav class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm" aria-label="Yasal">
             <?php foreach ($legalPages as $legalPage): ?>
@@ -85,7 +85,7 @@ $pageDescription = $pageDescription
         </nav>
 
         <?php if ($brandTheme['disclaimer']): ?>
-            <p class="glass-soft max-w-[78ch] p-4 text-xs leading-relaxed text-ink-faint">
+            <p class="note-box max-w-[78ch]">
                 <strong class="text-ink-muted">Bilgilendirme:</strong>
                 Bu sayfa teknik yetkinlik değerlendirmesi için hazırlanmış bağımsız bir prototiptir.
                 <?= e($brandTheme['legal']) ?> ile ticari veya kurumsal bir bağlantısı yoktur; marka adı,
@@ -100,6 +100,8 @@ $pageDescription = $pageDescription
 <?= partial('partials/whatsapp', ['brand' => $brand]) ?>
 
 <div class="toast-layer" id="toastLayer" role="status" aria-live="polite"></div>
+
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-ring"></span></div>
 
 <!-- Schema.org LocalBusiness: adres, telefon ve calisma saatlerinin
      arama sonucunda zengin sonuc olarak cikabilmesi icin.

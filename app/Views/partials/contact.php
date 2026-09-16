@@ -85,7 +85,7 @@
                     </svg>
                 </button>
 
-                <p class="field-hint max-w-[62ch]">
+                <p class="note max-w-[62ch]">
                     Gönderdiğiniz bilgiler yalnızca randevu için kullanılır, üçüncü taraflarla paylaşılmaz.
                     Bu sitede çerez kullanılmaz &mdash; ayrıntı için
                     <a class="legal-link" href="/gizlilik">gizlilik ve çerez politikası</a>.

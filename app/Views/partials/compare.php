@@ -44,7 +44,7 @@
             <span>Sonrası <strong class="readout text-ink">129 &micro;m</strong></span>
             <span>Ölçülen parlaklık <strong class="readout text-ink">41 GU</strong> yerine <strong class="readout text-ink">94 GU</strong></span>
         </p>
-        <p class="field-hint mt-3 max-w-[86ch]">
+        <p class="note mt-3 max-w-[86ch]">
             Bu bölümdeki öncesi/sonrası kareleri ve ölçüm değerleri temsilidir; gerçek bir müşteri
             aracına ait değildir. Yayına alınırken atölyede aynı kadrajdan çekilen gerçek karelerle
             değiştirilmek üzere hazırlanmıştır.
