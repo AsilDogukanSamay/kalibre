@@ -9,6 +9,8 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\Validator;
 use App\Models\ContactMessage;
+use App\Support\LegalContent;
+use App\Support\Notifier;
 use RuntimeException;
 use Throwable;
 
@@ -24,6 +26,8 @@ final class ContactController extends Controller
         'email'     => 'required|email|max:180',
         'phone'     => 'required|phone|max:32',
         'message'   => 'required|min:10|max:2000',
+        // KVKK onayi olmadan kisisel veri kaydedilmez.
+        'consent'   => 'accepted',
     ];
 
     public function store(Request $request): void
@@ -62,19 +66,29 @@ final class ContactController extends Controller
             }
 
             // 4) Kayit
+            $kayit = [
+                'full_name' => $data['full_name'],
+                'email'     => $data['email'],
+                'phone'     => $data['phone'],
+                'message'   => $data['message'],
+            ];
+
+            // Onayin hangi metin surumune verildigi kayitla birlikte saklanir.
             $id = $repository->create(
-                [
-                    'full_name' => $data['full_name'],
-                    'email'     => $data['email'],
-                    'phone'     => $data['phone'],
-                    'message'   => $data['message'],
-                ],
+                $kayit,
                 $request->ip(),
-                $request->userAgent()
+                $request->userAgent(),
+                LegalContent::SURUM
             );
 
+            $reference = sprintf('KLB-%06d', $id);
+
+            // 5) Atolyeye bildirim. Gonderilemezse talep yine de kayitlidir,
+            //    bu yuzden sonucu kullanicinin yanitini etkilemez.
+            Notifier::newRequest($kayit, $reference);
+
             Response::ok('Talebiniz alındı. Servis danışmanımız aynı gün içinde dönüş yapacak.', [
-                'reference' => sprintf('KLB-%06d', $id),
+                'reference' => $reference,
             ]);
         } catch (RuntimeException $e) {
             // Veritabanina ulasilamadi

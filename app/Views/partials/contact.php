@@ -66,6 +66,17 @@
                     <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
                 </div>
 
+                <div class="field">
+                    <div class="consent">
+                        <input class="consent-box" id="consent" name="consent" type="checkbox" value="1" required>
+                        <label class="consent-text" for="consent">
+                            <a class="legal-link" href="/kvkk">KVKK Aydınlatma Metni</a>'ni okudum; ad, telefon
+                            ve e-posta bilgimin randevu talebim için işlenmesini kabul ediyorum.
+                        </label>
+                    </div>
+                    <p class="field-error" data-error-for="consent"></p>
+                </div>
+
                 <button class="btn-primary btn-block sm:w-fit" type="submit" data-submit>
                     <span data-submit-label>Talebi gönder</span>
                     <svg class="hidden h-4 w-4 animate-spin" data-submit-spinner viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -74,7 +85,11 @@
                     </svg>
                 </button>
 
-                <p class="field-hint max-w-[62ch]">Gönderdiğiniz bilgiler yalnızca randevu için kullanılır, üçüncü taraflarla paylaşılmaz.</p>
+                <p class="field-hint max-w-[62ch]">
+                    Gönderdiğiniz bilgiler yalnızca randevu için kullanılır, üçüncü taraflarla paylaşılmaz.
+                    Bu sitede çerez kullanılmaz &mdash; ayrıntı için
+                    <a class="legal-link" href="/gizlilik">gizlilik ve çerez politikası</a>.
+                </p>
             </form>
         </div>
 

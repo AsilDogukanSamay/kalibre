@@ -71,6 +71,11 @@ final class Validator
                 ? $fail(sprintf('En fazla %d karakter olabilir.', (int) $param))
                 : false,
 
+            // KVKK onayi. Isaretlenmemis kutu FormData'ya hic girmez, bos gelir.
+            'accepted' => !in_array(strtolower($value), ['1', 'true', 'on', 'yes'], true)
+                ? $fail('Devam edebilmek için onay kutusunu işaretleyin.')
+                : false,
+
             default => false,
         };
     }

@@ -18,6 +18,10 @@ CREATE TABLE IF NOT EXISTS `contact_messages` (
     `ip_address` VARCHAR(45)   NOT NULL DEFAULT '',   -- IPv6 icin 45 karakter
     `user_agent` VARCHAR(255)  NOT NULL DEFAULT '',
     `status`     ENUM('new','read','archived') NOT NULL DEFAULT 'new',
+    -- KVKK ispat yukumlulugu: onayin hangi metin surumune, ne zaman
+    -- verildigi kaydin kendisinde durur.
+    `consent_at`      DATETIME     NULL DEFAULT NULL,
+    `consent_version` VARCHAR(16)  NOT NULL DEFAULT '',
     `created_at` DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (`id`),
