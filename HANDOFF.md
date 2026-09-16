@@ -41,13 +41,18 @@ Bu projede bilinçli olarak konulmuş, bozulmaması gereken kurallar:
 5. **Glassmorphism tek kaynaktan türer:** `.glass`, `.glass-strong`,
    `.glass-soft`, `.glass-sheen`, `.glass-card`. Yeni cam yüzey için kural
    yazılmaz, bu sınıflar kullanılır.
+6. **Sunucuyu `npm run serve` ile başlat.** PHP'yi yönlendirici betiği olmadan
+   çalıştırırsan statik dosyalar `index.php`'ye uğramaz, Range desteği devre
+   dışı kalır ve scroll videosu ilk karesinde donar (sayaçlar çalışmaya devam
+   ettiği için hata gözden kaçar).
 
 ---
 
 ## 3. Nerede ne var
 
 ```
-app/Core/         Çerçeve: Router, Request, Response, Validator, View, Database, Env
+app/Core/         Çerçeve: Router, Request, Response, Validator, View, Database, Env,
+                  FileServer (Range destekli statik dosya sunucusu)
 app/Controllers/  HomeController, CaseStudyController, ContactController
 app/Models/       ContactMessage  (tek SQL noktası)
 app/Support/      SiteContent (tüm metinler), Brand (marka teması), CaseStudy
@@ -55,7 +60,7 @@ app/Views/        layouts/main.php + partials/*.php
 resources/css/    app.css  ← Tailwind kaynağı, TÜM component sınıfları burada
 public/           Web kökü. index.php + assets/{css,js,img,video}
 database/         schema.sql
-tests/run.php     Bağımlılıksız duman testleri (22 test)
+tests/run.php     Bağımlılıksız duman testleri (34 test)
 _eski/            Bu dönüşümden önceki tek dosyalık statik sürüm
 ```
 
@@ -72,7 +77,7 @@ npm run build        # CSS derle  (geliştirirken: npm run dev)
 npm run serve        # http://127.0.0.1:5174
                      # PHP yonlendirici betigi ile baslar; video sarma
                      # icin Range destegi buna bagli (bkz. README 8b)
-npm test             # 22 test
+npm test             # 34 test
 ```
 
 CSS derlenmeden sayfa stilsiz görünür. `public/assets/css/app.css` üretilen
@@ -125,7 +130,8 @@ Aşağıdakiler iddia değil, çalıştırılarak ölçüldü:
    bitene kadar hiç oynatma, yoksa sürgü hizalanmaz.
 2. **Bazı teknik değerler varsayım.** Hizmet açıklamalarındaki süreler ve
    garanti rakamları sektörde tipik değerler ama gerçek işletme verisi değil.
-3. `og:image` içindeki `alanadiniz.com` gerçek alan adıyla değiştirilmeli.
+3. `.env` içindeki `APP_URL` gerçek alan adıyla değiştirilmeli (canonical ve
+   og etiketleri ondan üretilir).
 4. Yönetim paneli: şemadaki `status` alanı (`new` / `read` / `archived`) bunun
    için hazır, arayüz yok.
 
