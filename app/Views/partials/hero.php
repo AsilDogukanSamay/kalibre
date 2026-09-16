@@ -1,4 +1,4 @@
-<?php /** @var array<string,mixed> $hero */ ?>
+<?php /** @var array<string,mixed> $hero @var string $campaignEndsAt */ ?>
 <section id="top" class="hero relative overflow-hidden border-b border-line">
 
     <div class="hero-bg" id="heroBg">
@@ -30,6 +30,8 @@
                 <a href="<?= e($hero['primary']['href']) ?>" class="btn-primary"><?= e($hero['primary']['label']) ?></a>
                 <a href="<?= e($hero['secondary']['href']) ?>" class="btn-ghost"><?= e($hero['secondary']['label']) ?></a>
             </div>
+
+            <?= partial('partials/countdown', ['campaignEndsAt' => $campaignEndsAt]) ?>
         </div>
 
         <!-- Olcum karti hero'nun ikinci yarisinin tamami. Onceki halde altinda

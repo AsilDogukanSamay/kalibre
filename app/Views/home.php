@@ -19,7 +19,7 @@
  */
 $chapters = [
     ['tone' => '',           'sections' => [
-        'partials/hero'         => ['hero' => $hero],
+        'partials/hero'         => ['hero' => $hero, 'campaignEndsAt' => $campaignEndsAt],
     ]],
     ['tone' => '',           'sections' => [
         'partials/stats'        => ['stats' => $stats],

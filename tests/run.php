@@ -205,7 +205,7 @@ check('bozuk baslik yok sayilir',        $coz('bytes=abc', 1000)   === [0, 999])
 // ---------------------------------------------------------------- Sablonlar
 echo "\nSablonlar\n";
 
-$html = View::render('home', App\Support\SiteContent::all() + ['appName' => 'Test']);
+$html = View::render('home', App\Support\SiteContent::all() + ['appName' => 'Test', 'campaignEndsAt' => '2027-01-03T23:59:59+03:00']);
 check('ana sayfa render edilir', str_contains($html, 'Boyayı ölçerek düzeltiyoruz.'));
 check('hicbir etikette style attribute yok', !preg_match('/<[^>]+\sstyle\s*=/i', $html));
 check('hero videosu bagli', str_contains($html, 'video/hero.mp4'));

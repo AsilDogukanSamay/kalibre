@@ -549,6 +549,11 @@
   .toast-body  { @apply mt-0.5 text-xs leading-relaxed text-ink-muted; }
   .toast-close { @apply -mr-1 -mt-1 ml-auto rounded-glass p-1 text-ink-faint transition hover:text-ink; }
 
+  /* ---------- Geri sayım ---------- */
+  .countdown-cell { @apply glass-soft flex flex-col items-center px-2 py-2.5 sm:px-3; }
+  .countdown-num  { @apply readout text-2xl text-ink sm:text-3xl; }
+  .countdown-lbl  { @apply text-[11px] uppercase tracking-[0.14em] text-ink-faint; }
+
   /* Menu baglantisi: alt cizgi soldan acilir. */
   .nav-link { @apply relative; }
   .nav-link::after {

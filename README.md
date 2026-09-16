@@ -14,7 +14,7 @@ altında bu bilgilendirme görünür.
 | Frontend | Tailwind CSS 3.4, glassmorphic bileşenler, vanilla JS |
 | Backend | PHP 8.4, framework yok, OOP + MVC, kendi PSR-4 autoloader'ı |
 | Veritabanı | MySQL / MariaDB, PDO prepared statements |
-| Test | 278 test + 4 tarayıcı denetimi, hepsi geçiyor |
+| Test | 280 test + 4 tarayıcı denetimi, hepsi geçiyor |
 
 > **Ayrıntılı gerekçeler:** [`docs/KARARLAR.md`](docs/KARARLAR.md) — her kararın
 > nedeni, denenip bırakılan alternatifler ve ölçüm sonuçları.
@@ -37,7 +37,7 @@ npm run start                     # CSS derle + sunucu -> http://127.0.0.1:5174
 |---|---|
 | `npm run start` | CSS derler ve sunucuyu başlatır |
 | `npm run dev` | Geliştirirken CSS'i izler |
-| `npm test` | 278 test (harici bağımlılık yok) |
+| `npm test` | 280 test (harici bağımlılık yok) |
 | `npm run denetim` | Testler + yerleşim + kontrast + hero denetimi |
 
 Yerleşim denetimi **tanımsız sınıf** da arar: işaretlemede kullanılıp hiçbir stylesheet'te karşılığı olmayan sınıf sessizce hiçbir şey yapmaz. Üç tane buldu; ayrıntı [`docs/KARARLAR.md`](docs/KARARLAR.md).
@@ -249,6 +249,7 @@ CONTACT_RATE_WINDOW_MINUTES=10
 
 
 ADMIN_USER=atolye               # yonetim paneli
+CAMPAIGN_ENDS_AT=2027-01-03T23:59:59+03:00   # bos ise geri sayim render edilmez
 ADMIN_PASSWORD_HASH=            # php -r "echo password_hash('parola', PASSWORD_BCRYPT);"
 
 NOTIFY_TRANSPORT=log            # log | mail
@@ -288,6 +289,7 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 | **Hero arka plan videosu** | Cam yüzeylerin hareketli görüntü üzerinde durması, glassmorphism'in en güçlü göründüğü senaryo |
 | **Scroll ile sürülen paso videosu** | Scroll ilerlemesi videonun zaman çizgisine bağlanır, mikron ve parlaklık sayaçları eşzamanlı sayar. `scroll` dinleyicisi yok: IntersectionObserver bölüm görünürken rAF döngüsü açar |
 | **Öncesi/sonrası sürgüsü** | Hizmetin çıktısını anlatmak yerine gösterir. `range` input kullanıldığı için klavye ve ekran okuyucu desteği hazır gelir |
+| **Kampanya geri sayımı** | Aciliyet. Bitiş tarihi `.env`'den gelir; boş bırakılırsa bölüm hiç render edilmez, süresi dolunca sayaç gizlenip bilgilendirmeye döner |
 | **Okuma ilerlemesi** | Menü şeridinin altındaki 1 piksellik çizgi okunan mesafeyi gösterir. Sayfanın dili ölçüm; rengi bu yüzden accent (canlı ölçüm değeri), marka kırmızısı değil. Değer tek kurallık bir stylesheet üzerinden taşınır, `style` attribute'u yazılmaz |
 | **Scroll'a bağlı paralaks** | Fotoğraflar kendi kutularının içinde scroll ile kayar, hero videosu yavaşça yaklaşır. **JavaScript yok:** `animation-timeline: view()`. `@supports` içinde durduğu için desteklemeyen tarayıcıda hiçbir şey eksilmez |
 | **Manifesto bölümü** | Sayfanın kalıbına uymayan tek bölüm: etiketi, kartı ve ızgarası yok. Altı bölümün aynı iskelette akmasını kıran editoryal duraklama |
@@ -315,7 +317,7 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 ## 9. Testler ve denetimler
 
 ```bash
-npm test          # 278 test (php tests/run.php) - harici bagimlilik yok
+npm test          # 280 test (php tests/run.php) - harici bagimlilik yok
 npm run yerlesim  # 6 genislik x 5 sayfa: yatay tasma, h1, baslik atlamasi, alt metni
 npm run kontrast  # WCAG AA, duz zeminler ve cam yuzeyler
 npm run hero      # piksel kontrasti: yazinin foto/video uzerinde durdugu sahneler
@@ -328,7 +330,7 @@ prepared statement kullanıldığı ve kullanıcı girdisinin SQL metnine
 birleştirilmediği doğrulanabilir. `.mjs` denetimleri `playwright-core` ve yerel
 bir Chrome ister, sunucu açıkken çalışır.
 
-**Mevcut durum:** 278 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0
+**Mevcut durum:** 280 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0
 (panel dahil) · hero eşik altı 0 · hareket 8/8.
 
 `npm run hareket` sayfanın **görünür** olmasını gerektirir: `document.hidden`

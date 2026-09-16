@@ -279,7 +279,7 @@ check('giris ekraninda style attribute yok', !preg_match('/<[^>]+\sstyle\s*=/i',
 // ---------------------------------------------------------------- Ana sayfa eklentileri
 echo "\nAna sayfa: yeni bolumler\n";
 
-$home = View::render('home', SiteContent::all() + ['appName' => 'Test']);
+$home = View::render('home', SiteContent::all() + ['appName' => 'Test', 'campaignEndsAt' => '2027-01-03T23:59:59+03:00']);
 check('onay kutusu formda', str_contains($home, 'name="consent"'));
 check('KVKK metnine bag var', str_contains($home, 'href="/kvkk"'));
 check('gizlilik metnine bag var', str_contains($home, 'href="/gizlilik"'));
@@ -638,17 +638,23 @@ check('bolum cizgisi de varsayilan olarak notur',
     (bool) preg_match('/\.section-head::before \{[^}]*bg-line-strong/', $css));
 
 /*
- * KAMPANYA GERI SAYIMI KALDIRILDI
- * Indirim sayaci, sayfanin geri kalaninin kazandigi olcum tonuyla
- * celisiyordu. Kalinti birakmadigini dogruluyoruz: sablon, JS, CSS ve
- * .env anahtari birlikte gitti.
+ * KAMPANYA GERI SAYIMI
+ * Gorev tanimindaki donusum artirici ogelerden biri. Bir tur kaldirilmisti
+ * (indirim sayacinin sayfanin olcum tonuyla celistigi gerekcesiyle), isveren
+ * beklentisi dogrultusunda geri kondu. Bes katman da yerinde olmali:
+ * sablon, isaretleme, davranis, stil ve yapilandirma.
  */
-check('geri sayim sablonu kalmadi', !is_file($root . '/app/Views/partials/countdown.php'));
-check('geri sayim isaretleri kalmadi', !str_contains($home, 'data-countdown'));
-check('geri sayim davranisi kalmadi', !str_contains($js, 'data-cd'));
-check('geri sayim stilleri kalmadi', !str_contains($css, '.countdown-'));
-check('geri sayim yapilandirmasi kalmadi',
-    !str_contains((string) file_get_contents($root . '/.env.example'), 'CAMPAIGN_ENDS_AT'));
+check('geri sayim sablonu var', is_file($root . '/app/Views/partials/countdown.php'));
+check('geri sayim isaretleri var', str_contains($home, 'data-countdown'));
+check('geri sayim davranisi var', str_contains($js, 'data-cd'));
+check('geri sayim stilleri var', str_contains($css, '.countdown-'));
+check('geri sayim yapilandirmasi var',
+    str_contains((string) file_get_contents($root . '/.env.example'), 'CAMPAIGN_ENDS_AT'));
+// Bitis tarihi bos birakilirsa bolum hic render edilmemeli.
+check('bos tarihte geri sayim render edilmez',
+    !str_contains(View::render('home', SiteContent::all() + ['appName' => 'Test', 'campaignEndsAt' => '']), 'data-countdown'));
+// Suresi dolunca sayac gizlenip bilgilendirmeye doner.
+check('suresi dolan kampanya icin bilgilendirme var', str_contains($home, 'data-countdown-expired'));
 
 /*
  * REFERANSLAR: YILDIZ YERINE OLCUM

@@ -673,4 +673,46 @@
 
     olc();
   })();
+
+  /* ------------------------------------------------------------------
+   * Kampanya geri sayimi
+   * ---------------------------------------------------------------- */
+  (function countdown() {
+    const root = document.querySelector('[data-countdown]');
+    if (!root) return;
+
+    const target = new Date(root.getAttribute('data-countdown')).getTime();
+    if (Number.isNaN(target)) return;
+
+    const cells = root.querySelector('[data-countdown-cells]');
+    const expired = root.querySelector('[data-countdown-expired]');
+    const out = {
+      days: root.querySelector('[data-cd="days"]'),
+      hours: root.querySelector('[data-cd="hours"]'),
+      minutes: root.querySelector('[data-cd="minutes"]'),
+      seconds: root.querySelector('[data-cd="seconds"]'),
+    };
+
+    const pad = (n) => String(n).padStart(2, '0');
+
+    function tick() {
+      const diff = target - Date.now();
+
+      if (diff <= 0) {
+        cells.classList.add('hidden');
+        if (expired) expired.classList.remove('hidden');
+        window.clearInterval(timer);
+        return;
+      }
+
+      const s = Math.floor(diff / 1000);
+      out.days.textContent = pad(Math.floor(s / 86400));
+      out.hours.textContent = pad(Math.floor((s % 86400) / 3600));
+      out.minutes.textContent = pad(Math.floor((s % 3600) / 60));
+      out.seconds.textContent = pad(s % 60);
+    }
+
+    tick();
+    const timer = window.setInterval(tick, 1000);
+  })();
 })();

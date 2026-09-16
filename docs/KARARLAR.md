@@ -905,6 +905,16 @@ uydurulmuş değil, yanlarındaki iki değerin farkı. Yön rengi ölçüm dilin
 geliyor: eksilen vernik mavi (skala), artan parlaklık yeşil (kazanım);
 kırmızı eylem rengi olarak dışarıda kaldı.
 
+**Sonradan geri kondu.** Görev tanımı geri sayım sayacını dönüşüm artırıcı
+öğelere örnek olarak sayıyor ve işveren beklentisi bu yönde netleşti. Sayaç
+beş katmanıyla birlikte geri geldi (şablon, işaretleme, davranış, stil,
+yapılandırma) ve testler artık varlığını doğruluyor: boş tarihte hiç render
+edilmediğini, süresi dolunca bilgilendirmeye döndüğünü de.
+
+Yukarıdaki tonal gerekçe hâlâ geçerli ve kayıtta duruyor; karar tasarımcının
+değil işin sahibinin. Kaydın burada kalmasının sebebi de bu: neyin neden
+tartışıldığı, sonuçtan bağımsız olarak okunabilir olmalı.
+
 ### Manifesto: kalıba uymayan tek bölüm
 
 Teklif bölümünün bitişi ile güven bölümünün başlangıcı arasına bir duraklama
@@ -1236,7 +1246,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 278 birim/duman testi  (php tests/run.php)
+npm test          # 280 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -1260,7 +1270,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **278 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **280 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin** (panel dahil 12 sayfa/genişlik
 kombinasyonu), hero kontrastında **eşik altı 0 metin**, hareket denetiminde
 **8/8**.
