@@ -214,7 +214,39 @@ Aşağıdakiler iddia değil, çalıştırılarak ölçüldü:
 5. **Veri sorumlusu bilgileri eksik.** Ticaret unvanı, MERSİS, vergi dairesi ve
    KEP adresi `LegalContent.php` içine eklenmelidir. Sayfada bu eksik gizlenmiyor,
    ilgili bölümün altında açıkça yazıyor.
-6. Yayın öncesi kontrol listesinin tamamı `README.md` §11'de.
+6. Yayın öncesi kontrol listesinin tamamı `README.md` §10'da.
+
+### Açık duran öneri (yapılmadı, karar bekliyor)
+
+Referans kartlarına **fotoğraf eklenmedi ve eklenmemeli**: referanslar kurgu,
+kurgu bir alıntıya kurgu bir yüz eklemek "temsili görsel" çizgisini aşıp
+"uydurulmuş kişi"ye geçer. Yerine önerilen: her referansın altına o araca ait
+**ölçüm sonucu** (`138 → 129 µm` gibi). Sayfanın ölçüm diliyle örtüşür, sosyal
+kanıtı kanıta çevirir, kimse uydurulmaz. Sahibi onay verirse yapılabilir.
+
+---
+
+## 5b. Son durum (16 Eylül 2026)
+
+Proje görev tanımındaki (mail) her maddeyi karşılıyor; maddeler canlı sayfada
+tek tek ölçülerek doğrulandı, 15/15 geçti. Logo dahil hiçbir açık madde kalmadı.
+
+Son oturumlarda yapılanlar, en yeniden eskiye:
+
+| Ne | Özet |
+|---|---|
+| Resmi Bosch logosu | Amblem **ve** kelime markası artık özgün vektör; kaynak dosya depoda, lisansı belgeli |
+| Baştan sona geçiş | Bölüm başlıkları tutarlı hale getirildi, etkileşim katmanı (sayaç, akordeon, kart derinliği, buton ışığı), alt bilgi üç sütuna ayrıldı |
+| Tanımsız sınıf denetimi | `.star`, `.stat-num`, `.eyebrow` sessizce hiçbir şey yapmıyordu; denetim eklendi, üçü de düzeltildi |
+| Ağırlık ölçeği | Koyu zeminde gövde 400 → 470; değerler `--wght-*` token'larında |
+| Çerçeve kuralı | Çerçeve başlığa değil **sonuca**; sayfada iki yerde, sayısı testle korunuyor |
+| Süreç şeridi | Dört aşama fotoğraflı şeride dönüştü, "elinize geçen" ve toplam süre eklendi |
+| Mobil veri | Görünmeyen video posteri her yüklemede 121 KB yiyordu; 598 → 503 KB |
+
+**Bu projede iki kez yanlış alarm yaşandı** ve ikisi de ölçülerek elendi:
+ekran görüntüsündeki "havada duran + işaretleri" (sabit konumlu nişangahın
+Playwright artefaktı) ve "fotoğrafsız kart" (tembel yükleme). Bir şeyi
+düzeltmeden önce ölç; bu kod tabanında bunu yapacak araçlar var.
 
 ---
 
