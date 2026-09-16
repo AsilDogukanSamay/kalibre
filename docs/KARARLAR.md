@@ -578,7 +578,49 @@ gönderilemezse talep yine de kaydedilmiştir ve kullanıcı başarı yanıtın�
 
 ---
 
-## 7c. Yazı zayıf görünüyordu; sebep font değil ağırlıktı
+## 7c. Sessizce hiçbir şey yapmayan üç sınıf
+
+Referans bölümündeki yıldızlar siyah ve kocaman çiziliyordu. Sebep basitti:
+**`.star` sınıfı hiçbir yerde tanımlı değildi.** SVG ne boyut ne dolgu alıyordu,
+tarayıcı varsayılanına düşüyordu. Sayfa açıldığından beri böyleydi.
+
+Tanımsız bir sınıf hata vermez, uyarı vermez — sessizce hiçbir şey yapmaz. Bu
+yüzden tek tek aramak yerine denetime bir kontrol eklendi: işaretlemede
+kullanılan her sınıf, yüklü stylesheet'lerden birinde tanımlı mı?
+
+Kontrol çalışır çalışmaz iki tane daha buldu:
+
+| Sınıf | Ne oluyordu |
+|---|---|
+| `.star` | Yıldızlar siyah ve varsayılan boyutta |
+| `.stat-num` | İstatistik rakamları gövde puntosunda kalıyordu; CSS'te `.fact-num` diye tanımlıydı ama şablon başka ad kullanıyordu |
+| `.eyebrow` | Referans bölümünün etiketi düz beyaz; doğrusu `.eyebrow-label` |
+
+`.fact-num` / `.fact-lbl` ise CSS'te tanımlı ama hiç kullanılmayan ölü
+kurallardı. Yarım kalmış bir yeniden adlandırmanın iki ucu: şablon bir adı,
+stil dosyası başka adı taşıyordu. Şablon `.fact-*` kullanacak şekilde
+düzeltildi; hem hata kapandı hem ölü CSS kalktı.
+
+### Denetimin kendisi iki kez yanlış çalıştı
+
+Bu kontrolü yazarken iki tuzağa düştüm ve ikisi de sessiz başarısızlıktı:
+
+1. **`CSSRuleList` yinelenebilir değil.** CSSOM'da `iterable<>` olarak
+   tanımlanmamış; `for...of` `TypeError` atıyor. `try/catch` bunu yutunca
+   toplayıcı boş kalıyor ve denetim "her sınıf tanımsız" diyordu.
+
+2. **"`cssRules` varsa kapsayıcıdır" varsayımı yanlış.** Chrome, CSS iç içe
+   yazım desteğiyle birlikte `CSSStyleRule`'a da `cssRules` verdi (boş liste).
+   Önce kapsayıcıyı kontrol edip `continue` eden döngü hiçbir stil kuralının
+   `selectorText`'ine ulaşamıyordu.
+
+İkisi de "çalışıyor gibi görünüp hiçbir şey ölçmeyen denetim" üretiyordu — ki
+bu, denetim olmamasından daha kötü. Bu yüzden denetim artık **kendini de
+kontrol ediyor**: toplayıcı yüzden az sınıf bulursa bunu kusur olarak bildiriyor.
+
+---
+
+## 7d. Yazı zayıf görünüyordu; sebep font değil ağırlıktı
 
 "Yazı karakterleri zayıf geliyor" denince önce fontun yüklenip yüklenmediği
 ölçüldü, çünkü en olası açıklama oydu: değişken font yüklenmezse tarayıcı yedek
@@ -619,7 +661,7 @@ Ağırlık ekseni gerçek bir font ekseni olduğu için her yerde aynı sonucu v
 
 ---
 
-## 7d. Çerçeve başlığa değil sonuca
+## 7e. Çerçeve başlığa değil sonuca
 
 Bölüm başlıklarının düz durduğu, çerçeveye alınabileceği önerildi. Yarısına
 katılıp yarısına katılmadım ve sebebini yazmak gerekiyor.
@@ -661,7 +703,7 @@ ve metin seçildiğinde parça parça kopyalanmasına yol açardı.
 
 ---
 
-## 7e. Tailwind katmanı bir kuralı sessizce yuttu
+## 7f. Tailwind katmanı bir kuralı sessizce yuttu
 
 Görünüme giriş animasyonu ilk yazıldığında `@layer components` içindeydi.
 Sayfa açıldı, bölümlerin yarısı görünmedi. Derlenmiş çıktıya bakınca sebep
@@ -692,7 +734,7 @@ geçerse testin bir değeri kalmaz.
 
 ---
 
-## 7f. SEO ve yerel işletme verisi
+## 7g. SEO ve yerel işletme verisi
 
 | Ne | Nerede |
 |---|---|

@@ -426,6 +426,12 @@
   .faq-icon    { @apply h-5 w-5 shrink-0 text-brand transition; }
   .faq-body    { @apply body-sm max-w-[62ch] px-5 pb-5; }
 
+  /* ---------- Yildiz derecelendirmesi ----------
+     Bu sinif sablonlarda kullaniliyordu ama CSS'te hic tanimli degildi: SVG
+     ne boyut ne dolgu aliyordu, tarayici varsayilanina duserek SIYAH ve kocaman
+     ciziyordu. Koyu zeminde neredeyse gorunmuyordu. */
+  .star { @apply h-4 w-4 shrink-0 fill-brand; }
+
   /* ---------- Fiyat ---------- */
   .plan       { @apply glass-card flex flex-col gap-5; }
   .plan-best  { @apply border-brand/40 bg-brand/[0.07]; }

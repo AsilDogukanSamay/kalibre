@@ -40,6 +40,8 @@ npm run start                     # CSS derle + sunucu -> http://127.0.0.1:5174
 | `npm test` | 184 test (harici bağımlılık yok) |
 | `npm run denetim` | Testler + yerleşim + kontrast + hero denetimi |
 
+Yerleşim denetimi **tanımsız sınıf** da arar: işaretlemede kullanılıp hiçbir stylesheet'te karşılığı olmayan sınıf sessizce hiçbir şey yapmaz. Üç tane buldu; ayrıntı [`docs/KARARLAR.md`](docs/KARARLAR.md).
+
 > `npm run serve` PHP'yi **yönlendirici betiğiyle** başlatır. Elle
 > `php -S ... -t public` yazılırsa HTTP Range desteği devre dışı kalır ve scroll
 > videosu ilk karesinde donar. Gerekçe: [`docs/KARARLAR.md`](docs/KARARLAR.md#8b-statik-dosyalar-ve-bayt-aralığı-range).
