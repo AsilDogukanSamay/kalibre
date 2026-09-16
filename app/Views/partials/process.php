@@ -39,17 +39,14 @@
                     <?php if ($gorsel): ?>
                         <div class="flow-media">
                             <img class="flow-photo" src="<?= e(asset('img/' . $step['image'])) ?>" alt=""
-                                 width="1200" height="500" loading="lazy" decoding="async">
+                                 width="1200" height="492" loading="lazy" decoding="async">
                             <span class="flow-media-scrim"></span>
-                            <span class="flow-no"><?= e($sira) ?></span>
                         </div>
                     <?php endif; ?>
 
                     <div class="flow-body">
                         <div class="flow-head">
-                            <?php if (!$gorsel): ?>
-                                <span class="flow-no-flat"><?= e($sira) ?></span>
-                            <?php endif; ?>
+                            <span class="flow-no-flat"><?= e($sira) ?></span>
                             <h3 class="flow-title"><?= e($step['title']) ?></h3>
                         </div>
                         <p class="body-sm"><?= e($step['body']) ?></p>

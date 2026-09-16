@@ -346,15 +346,18 @@
   }
   .flow-card:hover { @apply border-white/20; }
 
-  /* Gorsel VARSA fotograf kutusu, numara fotografin uzerinde durur. */
-  .flow-media       { @apply relative flex h-28 items-end overflow-hidden bg-surface-700/60 sm:h-32; }
+  /* Fotograf bandi. Numara fotografin UZERINDE durmuyor: 128px'lik bir kutuda
+     numarayi okunur kilmak icin gereken perde fotografi yutuyordu, olculdu.
+     Numara govdeye alindi; boylece fotografli ve fotografsiz kart ayni
+     basliga sahip ve fotograf tam gorunuyor. */
+  .flow-media       { @apply relative h-32 overflow-hidden bg-surface-700/60 sm:h-36; }
   .flow-photo       { @apply absolute inset-0 h-full w-full object-cover transition-transform duration-700; }
-  .flow-card:hover .flow-photo { @apply scale-[1.04]; }
-  .flow-media-scrim { @apply absolute inset-0 bg-gradient-to-t from-surface-900 via-surface-900/45 to-transparent; }
-  .flow-no          { @apply readout relative m-4 text-[1.6rem] leading-none text-brand-text; }
+  .flow-card:hover .flow-photo { @apply scale-[1.05]; }
+  /* Perde yalnizca alt kenarda: fotografin karta gecisini yumusatir, ustune
+     cikmaz. */
+  .flow-media-scrim { @apply absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-surface-900 to-transparent; }
 
-  /* Gorsel YOKSA bos gri kutu birakilmaz; numara govdenin basinda,
-     baslikla ayni satirda durur. Kart bu halde de dolu gorunur. */
+  /* Numara ve baslik ayni satirda - fotograf olsun olmasin. */
   .flow-head    { @apply flex items-baseline gap-3; }
   .flow-no-flat { @apply readout text-[1.35rem] leading-none text-brand-text; }
 

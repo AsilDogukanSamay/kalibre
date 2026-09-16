@@ -491,8 +491,34 @@ Uygulama detayı önemli: video kaynağı HTML'de `src` değil **`data-src`** ol
 çalışan JavaScript devreye girdiğinde iş işten geçmiş olurdu. Kaynak yalnızca
 koşullar sağlandığında atanır, aksi halde tek bayt inmez.
 
-Ölçülen: mobilde (375px) **393 KB**, hiç video isteği yok. Masaüstünde 8 MB,
+Ölçülen: mobilde (390px) ilk yükleme **503 KB** ham gövde boyutu, hiç video
+isteği yok. PHP'nin dahili sunucusu sıkıştırma yapmıyor; gzip ile aynı sayfa
+**~382 KB**'ye iniyor (CSS 77 → 10 KB, HTML 54 → 11 KB). Masaüstünde 7 MB,
 videolar poster yüklendikten sonra iniyor, ilk boyamayı etkilemiyor.
+
+### Görünmeyen bir poster her mobil yüklemede 121 KB yiyordu
+
+Süreç fotoğrafları eklendikten sonra sayfa ağırlığını yeniden ölçerken çıktı.
+İki ayrı kusur vardı ve ikisi de aynı yerdeydi:
+
+1. **Hero posteri tek kırpımdı.** 1920 piksel genişliğindeki dosya 390 piksellik
+   bir telefona da iniyordu — ekranın gösterebileceğinin beş katı veri.
+   `<picture>` ile ikinci bir kırpım eklendi: dar ekranda 960 piksellik sürüm,
+   124 KB yerine **27 KB**.
+
+2. **`<video poster="...">` niteliği posteri yine de indiriyordu.** `preload="none"`
+   olmasına ve mobilde videonun `src`'sinin hiç atanmamasına rağmen tarayıcı
+   poster dosyasını çekiyordu. Üstelik o poster hiç görünmüyor: video oynayana
+   kadar saydam ve arkasında zaten `<picture>` duruyor. Nitelik kaldırıldı.
+
+| | Önce | Sonra |
+|---|---|---|
+| Mobil ilk yükleme | 598 KB | **503 KB** |
+| İnen poster | 1920px, 124 KB | 960px, 27 KB |
+| Görünmeyen dosya için harcanan | 121 KB | 0 |
+
+Ders: "video indirilmiyor" demek yetmiyor, videonun *niteliklerinin* ne
+indirdiğini de ölçmek gerekiyor.
 
 ---
 
@@ -652,7 +678,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 155 birim/duman testi  (php tests/run.php)
+npm test          # 163 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -672,7 +698,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **155 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **163 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin**.
 
 | Katman | Test sayısı | Ne doğrulanıyor |
@@ -693,6 +719,7 @@ kontrast denetiminde **eşik altı 0 metin**.
 | İmleç nişangahı | 9 | Inline stil yokluğu, dokunmatik ve hareket azaltma davranışı |
 | Süreç şeridi | 11 | Adım verisi, ray/nokta işaretlemesi, görselsiz hâl |
 | Görünüme giriş | 6 | Derlenmiş CSS'te kuralların varlığı, JS-siz davranış |
+| Mobil veri | 8 | Tembel yükleme, iki kırpımlı poster, video niteliklerinin indirdiği |
 | Bildirim | 1 | Adres tanımsızsa akış sessizce atlanır |
 
 ### Rotalar

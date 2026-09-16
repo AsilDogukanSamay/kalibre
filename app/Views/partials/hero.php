@@ -2,11 +2,20 @@
 <section id="top" class="relative overflow-hidden border-b border-line">
 
     <div class="hero-bg" id="heroBg">
-        <img class="hero-media" src="<?= e(asset('img/hero-poster.webp')) ?>" alt="" aria-hidden="true"
-             width="1920" height="1080" fetchpriority="high" decoding="async">
+        <!-- Poster iki kirpimda. Onceki halde 1920 genislikteki dosya 390px'lik
+             bir telefona da iniyordu: ekranin gosterebileceginin bes kati veri.
+             Dar ekranda 960 genislikteki surum iniyor, 124 KB yerine 27 KB. -->
+        <picture>
+            <source media="(min-width: 640px)" srcset="<?= e(asset('img/hero-poster.webp')) ?>" width="1920" height="1080">
+            <img class="hero-media" src="<?= e(asset('img/hero-poster-dar.webp')) ?>" alt="" aria-hidden="true"
+                 width="960" height="540" fetchpriority="high" decoding="async">
+        </picture>
+        <!-- poster niteligi bilerek YOK. Tarayici poster'i preload="none" olsa
+             bile indiriyor; olculdu: mobilde 121 KB'lik dosya her yuklemede
+             iniyordu. Ustelik hic gorunmuyor, cunku video oynayana kadar
+             saydam ve arkasinda zaten <picture> duruyor. -->
         <video class="hero-media hero-video" id="heroVideo"
                data-src="<?= e(asset('video/hero.mp4')) ?>"
-               poster="<?= e(asset('img/hero-poster.webp')) ?>"
                muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
         <span class="hero-scrim"></span>
     </div>

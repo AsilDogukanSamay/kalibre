@@ -389,9 +389,21 @@ check('cikti etiketi sayfada', str_contains($home, 'Elinize geçen'));
 check('toplam sure sayfada', str_contains($home, $icerik['processSummary']['total']));
 check('adimlar sirayla aciliyor', str_contains($home, 'class="flow" data-reveal-group'));
 
-// Gorsel yoksa bos kutu birakilmaz.
-check('gorsel yokken fotograf kutusu basilmaz', !str_contains($home, 'flow-media'));
-check('gorsel yokken numara govdede', str_contains($home, 'flow-no-flat'));
+/*
+ * Fotograf kutusu yalnizca dosya gercekten varsa basilir. Test iki durumda da
+ * dogru kalsin diye sayiyor: kac adimin gorseli varsa o kadar kutu olmali.
+ * Boylece dosyalar eklendiginde veya kaldirildiginda test kendini gunceller.
+ */
+$gorselliAdim = count(array_filter(
+    $adimlar,
+    static fn (array $a): bool => !empty($a['image']) && asset_exists('img/' . $a['image'])
+));
+check(
+    'fotograf kutusu yalnizca dosya varken basilir',
+    substr_count($home, 'class="flow-media"') === $gorselliAdim,
+    sprintf('kutu %d, dosyasi olan adim %d', substr_count($home, 'class="flow-media"'), $gorselliAdim)
+);
+check('numara her halukarda govdede', substr_count($home, 'flow-no-flat') === count($adimlar));
 
 // ---------------------------------------------------------------- Gorunume giris
 echo "
@@ -413,3 +425,42 @@ check('JavaScript kapaliyken icerik gizli kalmaz', str_contains($derlenmis, 'scr
 check('hareket azaltmada animasyon yok', str_contains($css, '[data-reveal] { opacity: 1; transform: none; transition: none; }'));
 check('gozlemci tek seferlik', str_contains($js, 'gozlemci.unobserve(giris.target)'));
 check('destek yoksa hepsi aninda acilir', str_contains($js, 'hepsiniAc();'));
+
+// ---------------------------------------------------------------- Mobil veri
+echo "
+Mobil veri korumasi
+";
+
+check('surec fotograflari yerinde',
+    count(array_filter($adimlar, static fn (array $a): bool => asset_exists('img/' . $a['image']))) === 4);
+check('surec fotograflari tembel yuklenir', substr_count($home, 'class="flow-photo"') === 4
+    && substr_count($home, 'loading="lazy"') >= 4);
+
+// Hero posteri iki kirpimda: dar ekranda kucuk dosya iner.
+check('hero posteri iki kirpimda', str_contains($home, 'hero-poster-dar.webp')
+    && str_contains($home, 'media="(min-width: 640px)"'));
+check('dar poster gercekten daha kucuk',
+    filesize($root . '/public/assets/img/hero-poster-dar.webp')
+    < filesize($root . '/public/assets/img/hero-poster.webp') / 3);
+
+/*
+ * video poster niteligi bilerek YOK: preload="none" olsa ve mobilde src hic
+ * atanmasa bile tarayici poster dosyasini indiriyordu (olculdu: 121 KB).
+ * Ustelik hic gorunmuyor, cunku video oynayana kadar saydam.
+ */
+preg_match('/<video[^>]*id="heroVideo"[^>]*>/i', $home, $heroVideo);
+check('hero videosu poster niteligi tasimiyor',
+    isset($heroVideo[0]) && !str_contains($heroVideo[0], 'poster='));
+
+/*
+ * Scroll videosunun posteri KALIYOR ve bu bilincli: stage, loadedmetadata ile
+ * gorunur oluyor ama ilk kare henuz cizilmemis oluyor; poster o araligi
+ * kapatiyor. Ustelik arkasindaki <img> ile ayni dosya oldugu icin ek bayt
+ * maliyeti yok - tarayici onbellekten veriyor.
+ */
+preg_match('/<video[^>]*id="scrubVideo"[^>]*>/i', $home, $scrubVideo);
+check('scroll videosunun posteri duruyor',
+    isset($scrubVideo[0]) && str_contains($scrubVideo[0], 'poster='));
+check('scroll posteri arkadaki gorselle ayni dosya',
+    isset($scrubVideo[0]) && str_contains($scrubVideo[0], 'img/paso.webp'));
+check('video kaynagi hala data-src ile tutuluyor', str_contains($home, 'data-src="/assets/video/hero.mp4'));

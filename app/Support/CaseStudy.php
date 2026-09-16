@@ -123,12 +123,12 @@ final class CaseStudy
                     'note'  => 'Canlı DOM\'da style attribute\'u taşıyan eleman sayısı. Test otomatik doğruluyor.',
                 ],
                 [
-                    'value' => '393 KB',
+                    'value' => '503 KB',
                     'label' => 'Mobil veri',
-                    'note'  => '640px altında iki video da indirilmiyor. Kaynak data-src ile tutulur, koşul sağlanmazsa tek bayt inmez.',
+                    'note'  => '390 pikselde ilk yükleme, ham gövde boyutu; gzip ile 382 KB. Video isteği sıfır. Hero posteri de dar ekranda 960 piksellik sürümüyle iniyor.',
                 ],
                 [
-                    'value' => '155',
+                    'value' => '163',
                     'label' => 'Geçen test',
                     'note'  => 'Doğrulama, kurumsal kimlik, güvenlik başlıkları, CSRF, giriş freni, prepared statement ve şablon katmanları. Harici bağımlılık yok.',
                 ],
