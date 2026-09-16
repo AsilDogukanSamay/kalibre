@@ -1,25 +1,38 @@
 <?php
 /** @var string $content */
 /** @var array<string,mixed> $brand */
-$brand = $brand ?? [];
-$brandTheme = $brandTheme ?? App\Support\Brand::current();
+$brand       = $brand ?? [];
+$brandTheme  = $brandTheme ?? App\Support\Brand::current();
 $siteUrl     = rtrim((string) App\Core\Env::get('APP_URL', 'http://localhost:5174'), '/');
 $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+$nonce       = App\Core\Security::nonce();
+$legalPages  = App\Support\LegalContent::pages();
+
+// Sayfaya ozel baslik/aciklama verilmediyse ana sayfa metni kullanilir.
+$pageTitle = isset($pageTitle)
+    ? $pageTitle . ' · ' . $brandTheme['name']
+    : $brandTheme['name'] . ' · Boya düzeltme ve seramik kaplama, İstanbul';
+
+$pageDescription = $pageDescription
+    ?? $brandTheme['name'] . ", İstanbul Maslak'ta boya düzeltme ve seramik kaplama atölyesi. Her araç mikron ölçümüyle başlar, ölçüm raporuyla teslim edilir.";
 ?><!doctype html>
 <html lang="tr" data-brand="<?= e($brandTheme['key']) ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= e($brandTheme['name']) ?> · Boya düzeltme ve seramik kaplama, İstanbul</title>
-    <meta name="description" content="Kalibre, İstanbul Maslak'ta boya düzeltme ve seramik kaplama atölyesi. Her araç mikron ölçümüyle başlar, ölçüm raporuyla teslim edilir.">
+    <title><?= e($pageTitle) ?></title>
+    <meta name="description" content="<?= e($pageDescription) ?>">
     <meta name="theme-color" content="#101214">
-    <meta property="og:title" content="Kalibre · Boya düzeltme ve seramik kaplama">
-    <meta property="og:description" content="Her araç mikron ölçümüyle başlar, ölçüm raporuyla teslim edilir.">
+    <meta property="og:title" content="<?= e($pageTitle) ?>">
+    <meta property="og:description" content="<?= e($pageDescription) ?>">
     <meta property="og:type" content="website">
     <meta property="og:image" content="<?= e($siteUrl . '/assets/img/og-kapak.jpg') ?>">
     <meta property="og:url" content="<?= e($siteUrl . $currentPath) ?>">
     <meta name="twitter:card" content="summary_large_image">
     <link rel="canonical" href="<?= e($siteUrl . $currentPath) ?>">
+
+    <link rel="icon" type="image/svg+xml" href="<?= e(asset($brandTheme['favicon'])) ?>">
+    <link rel="apple-touch-icon" href="<?= e(asset($brandTheme['favicon'])) ?>">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,18 +47,18 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 
 <header class="nav-bar">
     <div class="shell nav-in">
-        <a href="#top" class="shrink-0 no-underline"><?= partial($brandTheme['logo'], ['size' => 'h-8 w-8']) ?></a>
+        <a href="/" class="shrink-0 no-underline"><?= partial($brandTheme['logo'], ['size' => 'h-8 w-8']) ?></a>
 
         <nav class="ml-auto hidden items-center gap-7 lg:flex" aria-label="Ana menü">
-            <a href="#calismalar" class="nav-link">Çalışmalar</a>
-            <a href="#hizmetler" class="nav-link">Hizmetler</a>
-            <a href="#surec" class="nav-link">Süreç</a>
-            <a href="#fiyat" class="nav-link">Fiyat</a>
-            <a href="#sss" class="nav-link">SSS</a>
+            <a href="/#calismalar" class="nav-link">Çalışmalar</a>
+            <a href="/#hizmetler" class="nav-link">Hizmetler</a>
+            <a href="/#surec" class="nav-link">Süreç</a>
+            <a href="/#fiyat" class="nav-link">Fiyat</a>
+            <a href="/#sss" class="nav-link">SSS</a>
             <a href="/case" class="nav-link">Vaka çalışması</a>
         </nav>
 
-        <a href="#iletisim" class="btn-primary btn-sm ml-auto lg:ml-6">Randevu al</a>
+        <a href="/#iletisim" class="btn-primary btn-sm ml-auto lg:ml-6">Randevu al</a>
     </div>
 </header>
 
@@ -63,6 +76,14 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
             </div>
         </div>
         <p class="body-sm max-w-[62ch] text-ink-faint"><?= e($brand['address'] ?? '') ?></p>
+
+        <nav class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm" aria-label="Yasal">
+            <?php foreach ($legalPages as $legalPage): ?>
+                <a class="nav-link" href="<?= e($legalPage['path']) ?>"><?= e($legalPage['nav']) ?></a>
+            <?php endforeach; ?>
+            <a class="nav-link" href="/case">Vaka çalışması</a>
+        </nav>
+
         <?php if ($brandTheme['disclaimer']): ?>
             <p class="glass-soft max-w-[78ch] p-4 text-xs leading-relaxed text-ink-faint">
                 <strong class="text-ink-muted">Bilgilendirme:</strong>
@@ -70,6 +91,7 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
                 <?= e($brandTheme['legal']) ?> ile ticari veya kurumsal bir bağlantısı yoktur; marka adı,
                 amblem ve renkler yalnızca kurumsal kimliğe sadık arayüz tasarımını göstermek amacıyla
                 kullanılmıştır. Tüm marka hakları <?= e($brandTheme['legal']) ?>'ye aittir.
+                Sayfadaki atölye bilgileri, çalışma görselleri ve referanslar temsilidir.
             </p>
         <?php endif; ?>
     </div>
@@ -80,8 +102,9 @@ $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 <div class="toast-layer" id="toastLayer" role="status" aria-live="polite"></div>
 
 <!-- Schema.org LocalBusiness: adres, telefon ve calisma saatlerinin
-     arama sonucunda zengin sonuc olarak cikabilmesi icin. -->
-<script type="application/ld+json">
+     arama sonucunda zengin sonuc olarak cikabilmesi icin.
+     nonce: CSP script-src satir ici bloklari nonce ile kabul eder. -->
+<script type="application/ld+json" nonce="<?= e($nonce) ?>">
 <?= json_encode([
     '@context'  => 'https://schema.org',
     '@type'     => 'AutoDetailing',

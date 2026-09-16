@@ -13,6 +13,7 @@ use App\Core\Env;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\Router;
+use App\Core\View;
 
 $root = dirname(__DIR__);
 
@@ -50,9 +51,34 @@ $router->get('/', 'HomeController@index');
 $router->get('/case', 'CaseStudyController@index');
 $router->post('/api/contact', 'ContactController@store');
 
+// Yasal metinler. Yol tablosu App\Support\LegalContent::pages() ile eslesir.
+$router->get('/kvkk', 'LegalController@show');
+$router->get('/gizlilik', 'LegalController@show');
+
+// Arama motoru dosyalari. Statik dosya degil, rota: icerideki mutlak
+// adresler .env'deki APP_URL'den uretilir, tek kaynak korunur.
+$router->get('/robots.txt', 'SeoController@robots');
+$router->get('/sitemap.xml', 'SeoController@sitemap');
+
+// Yonetim paneli. Oturum yalnizca bu rotalarda acilir; ziyaretci
+// tarafinda hicbir cerez olusmaz.
+$router->get('/yonetim', 'AdminController@index');
+$router->get('/yonetim/giris', 'AdminController@loginForm');
+$router->post('/yonetim/giris', 'AdminController@login');
+$router->post('/yonetim/cikis', 'AdminController@logout');
+$router->post('/yonetim/durum', 'AdminController@updateStatus');
+
+$request = Request::capture();
+
 try {
-    $router->dispatch(Request::capture());
+    $router->dispatch($request);
 } catch (Throwable $e) {
+    // Teknik detay yalnizca gunluge yazilir; ziyaretciye genel mesaj doner.
     error_log('[kernel] ' . $e->getMessage());
-    Response::fail('Sunucu hatası.', [], 500);
+
+    if ($request->expectsJson()) {
+        Response::fail('Sunucu hatası.', [], 500);
+    } else {
+        Response::html(View::render('errors/500'), 500);
+    }
 }

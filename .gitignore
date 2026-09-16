@@ -5,3 +5,6 @@
 .DS_Store
 Thumbs.db
 /_db
+/storage/*.json
+/storage/logs/*
+!/storage/logs/.gitignore
