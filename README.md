@@ -14,7 +14,7 @@ altında bu bilgilendirme görünür.
 | Frontend | Tailwind CSS 3.4, glassmorphic bileşenler, vanilla JS |
 | Backend | PHP 8.4, framework yok, OOP + MVC, kendi PSR-4 autoloader'ı |
 | Veritabanı | MySQL / MariaDB, PDO prepared statements |
-| Test | 198 test + 3 tarayıcı denetimi, hepsi geçiyor |
+| Test | 202 test + 3 tarayıcı denetimi, hepsi geçiyor |
 
 > **Ayrıntılı gerekçeler:** [`docs/KARARLAR.md`](docs/KARARLAR.md) — her kararın
 > nedeni, denenip bırakılan alternatifler ve ölçüm sonuçları.
@@ -37,7 +37,7 @@ npm run start                     # CSS derle + sunucu -> http://127.0.0.1:5174
 |---|---|
 | `npm run start` | CSS derler ve sunucuyu başlatır |
 | `npm run dev` | Geliştirirken CSS'i izler |
-| `npm test` | 198 test (harici bağımlılık yok) |
+| `npm test` | 202 test (harici bağımlılık yok) |
 | `npm run denetim` | Testler + yerleşim + kontrast + hero denetimi |
 
 Yerleşim denetimi **tanımsız sınıf** da arar: işaretlemede kullanılıp hiçbir stylesheet'te karşılığı olmayan sınıf sessizce hiçbir şey yapmaz. Üç tane buldu; ayrıntı [`docs/KARARLAR.md`](docs/KARARLAR.md).
@@ -112,12 +112,22 @@ yüzey için kural yazılmaz, sınıf kullanılır.
 
 ## 4. Kurumsal kimlik
 
-**Amblem özgün vektördür.** Bosch armatür sembolünün orijinal path verisi
-`app/Views/partials/logo-bosch.php` içinde gömülüdür; rengi `currentColor` ile
-tasarım sisteminden gelir. Kelime markası bir dosya slotu üzerinden çalışır:
-`public/assets/img/wordmark-bosch.svg` bırakıldığında şablon değişmeden devreye
-girer. Dosya yokken tipografik kilit kullanılır, çünkü Bosch Sans lisanslı bir
-yazı tipidir ve prototipe dahil edilmemiştir.
+**Amblem ve kelime markası özgün vektördür.** İkisi de Bosch'un kendi marka
+rehberinden (`brandguide.bosch.com`) çıkan resmi dosyadan alınmıştır; dosyanın
+kendisi `public/assets/img/bosch-logo-kaynak.svg` içinde saklanır.
+Kaynak: Wikimedia Commons, *File:Bosch-logo.svg* — eşik altı olduğu için kamu
+malı (PD-textlogo), ayrıca ticari marka bildirimi taşır.
+
+Renk `currentColor` ile tasarım sisteminden gelir: koyu zeminde markanın negatif
+kullanımına uygun olarak yazı açık tonda basılır, kurumsal kırmızı amblemde
+yaşar. Aynı resmi amblem favicon'da da kullanılır.
+
+"Car Service" alt tanımlayıcısı resmi dosyada yoktur; tipografiktir ve bu
+şablonda açıkça yazılıdır. Bosch Sans lisanslı olduğu için ikinci bir yazı tipi
+projeye dahil edilmemiştir.
+
+Testler bunu path verisinin ayırt edici bir parçasını arayarak doğrular —
+"benzerini çizip koymak" testi geçiremez.
 
 **Kurumsal palet — üç rol, üçü de kullanılıyor:**
 
@@ -303,7 +313,7 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 ## 9. Testler ve denetimler
 
 ```bash
-npm test          # 198 test (php tests/run.php) - harici bagimlilik yok
+npm test          # 202 test (php tests/run.php) - harici bagimlilik yok
 npm run yerlesim  # 6 genislik x 5 sayfa: yatay tasma, h1, baslik atlamasi, alt metni
 npm run kontrast  # WCAG AA, duz zeminler ve cam yuzeyler
 npm run hero      # hero kontrasti, piksel yontemi (video uzerinde)
@@ -315,7 +325,7 @@ prepared statement kullanıldığı ve kullanıcı girdisinin SQL metnine
 birleştirilmediği doğrulanabilir. `.mjs` denetimleri `playwright-core` ve yerel
 bir Chrome ister, sunucu açıkken çalışır.
 
-**Mevcut durum:** 198 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0 ·
+**Mevcut durum:** 202 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0 ·
 hero eşik altı 0.
 
 ### API sözleşmesi
@@ -352,10 +362,9 @@ adına çıkarken yapılması gerekenlerdir.
 | 4 | `NOTIFY_TRANSPORT=mail` ve çalışan gönderici adresi | `.env` |
 | 5 | Veri sorumlusu bilgileri: ticaret unvanı, MERSİS, KEP | `LegalContent.php` |
 | 6 | Öncesi/sonrası kareleri gerçek atölye çekimiyle değişsin | `public/assets/img/` |
-| 7 | Lisanslı kelime markası varlığı slota bırakılsın | `public/assets/img/wordmark-bosch.svg` |
-| 8 | Web sunucusu kökü `public/`, HTTPS açık | sunucu yapılandırması |
+| 7 | Web sunucusu kökü `public/`, HTTPS açık | sunucu yapılandırması |
 
-Maddeler 5, 6 ve 7 gerçek işletme varlığı gerektirir. Prototipte eksik oldukları
+Maddeler 5 ve 6 gerçek işletme verisi gerektirir. Prototipte eksik oldukları
 gizlenmiyor; öncesi/sonrası görsellerinin temsili olduğu sayfanın üzerinde yazıyor.
 
 ---

@@ -192,16 +192,32 @@ $cssKimlik = (string) file_get_contents($root . '/resources/css/app.css');
 $twKimlik  = (string) file_get_contents($root . '/tailwind.config.js');
 $logo      = View::partial('partials/logo-bosch', ['size' => 'h-8 w-8']);
 
-// Degerlendirmenin oncelikli kriteri: markanin ozgun vektor amblemi.
-check('amblem ozgun vektor path olarak gomulu',
-    str_contains($logo, 'M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12'));
-check('amblem rengi tasarim sisteminden gelir', str_contains($logo, 'currentColor'));
+/*
+ * Degerlendirmenin oncelikli kriteri: markanin ozgun vektor logosu.
+ * Amblem de kelime markasi da Bosch'un marka rehberinden cikan resmi dosyadan
+ * geliyor; kaynak dosya depoda duruyor. Imza olarak path verisinin ayirt edici
+ * bir parcasi aranir - bir gun "benzerini cizip" koymak isteyen olursa test
+ * tutmaz.
+ */
+$resmiKaynak = $root . '/public/assets/img/bosch-logo-kaynak.svg';
+check('resmi logo dosyasi depoda', is_file($resmiKaynak));
+
+$kaynakSvg = is_file($resmiKaynak) ? (string) file_get_contents($resmiKaynak) : '';
+$amblemImza = 'M48.2.18a48.2,48.2,0,1,0,48.2,48.2';
+$kelimeImza = 'M185.2,46.88a13.77,13.77,0,0,0,8.8-13';
+
+check('amblem resmi dosyadaki vektorun aynisi',
+    str_contains($logo, $amblemImza) && str_contains($kaynakSvg, $amblemImza));
+check('kelime markasi da vektor, tipografi degil',
+    str_contains($logo, $kelimeImza) && str_contains($kaynakSvg, $kelimeImza));
+check('kelime markasi bes harf yolundan olusur', substr_count($logo, 'fill="currentColor"') >= 7);
+check('logo rengi tasarim sisteminden gelir', str_contains($logo, 'currentColor'));
 check('amblemin erisilebilir adi var', str_contains($logo, 'aria-label="Bosch"'));
-check('kelime markasi dosyayla degistirilebilir',
-    str_contains(
-        (string) file_get_contents($root . '/app/Views/partials/logo-bosch.php'),
-        'wordmark-bosch.svg'
-    ));
+check('kaynagi ve lisansi sablonda yazili',
+    str_contains((string) file_get_contents($root . '/app/Views/partials/logo-bosch.php'), 'brandguide.bosch.com')
+    && str_contains((string) file_get_contents($root . '/app/Views/partials/logo-bosch.php'), 'PD-textlogo'));
+check('favicon da ayni resmi amblemi kullanir',
+    str_contains((string) file_get_contents($root . '/public/assets/img/favicon-bosch.svg'), $amblemImza));
 
 // Kurumsal palet: primary, secondary, accent
 check('primary kodu tanimli',   str_contains($cssKimlik, '--brand:           234   0  22'));

@@ -578,7 +578,54 @@ gönderilemezse talep yine de kaydedilmiştir ve kullanıcı başarı yanıtın�
 
 ---
 
-## 7c. Baştan sona geçiş: tutarlılık ve etkileşim
+## 7c. Logo: tipografik kilitten resmi vektöre
+
+Görev tanımı şunu **öncelikli kriter** diyor: *"AI'ın ürettiği jenerik metin
+logolar yerine markanın özgün vektörel logosu."*
+
+Uzun süre elimizde yalnızca amblem vardı (Simple Icons, CC0). Kelime markası
+Archivo ile dizilmiş tipografik bir kilitti, çünkü Bosch Sans lisanslı ve resmi
+kelime markası dosyası elimizde yoktu. Bu eksik gizlenmedi, belgelendi.
+
+İki yol vardı ve biri tuzaktı:
+
+| Yol | Neden |
+|---|---|
+| Kendi markamızı koymak | Görev tanımının ana şartını çiğner: gerçek bir firmanın kimliği isteniyor |
+| Bosch'un kelime markasını **benzeterek çizmek** | Tescilli bir logotype'ı hafızadan çizip "özgün" diye sunmak olurdu. Üstelik markayı bilen biri yanlış harf biçimini ilk bakışta yakalar — tipografik kilitten daha kötü |
+| **Resmi dosyayı bulmak** | Tek doğru yol |
+
+Resmi dosya Wikimedia Commons'ta bulundu: *File:Bosch-logo.svg*, kaynağı
+Bosch'un kendi marka rehberi (`brandguide.bosch.com`). Eşik altı olduğu için
+kamu malı (PD-textlogo), ayrıca ticari marka bildirimi taşıyor.
+
+Dosya körlemesine kullanılmadı. Önce tarandı: `<script>`, `onload`, `<use>`,
+`<image>`, `<foreignObject>`, dış `href`, `@import` — hiçbiri yok. İçinde
+yalnızca 6 `path` ve 1 `polygon` var, iki grupta: `logotype` ve `symbol`.
+
+Sonra sınırları tarayıcıda ölçüldü (`getBBox`), göz kararı `viewBox` yazılmadı:
+
+| Grup | Sınır |
+|---|---|
+| `symbol` | `0 0.18 96.4 96.4` |
+| `logotype` | `144.4 14.68 288.6 66.8` |
+
+İkisi de şablona gömüldü. Resmi dosyadaki `#ed0007` dolgusu korunmadı,
+`currentColor`'a çevrildi: koyu zeminde markanın **negatif kullanımı** doğru
+olan; kurumsal kırmızı amblemde yaşamaya devam ediyor. Favicon da aynı resmi
+amblemden üretildi, böylece tek kaynak kaldı.
+
+Kaynak dosyanın kendisi depoda (`public/assets/img/bosch-logo-kaynak.svg`) —
+iddia değil, kanıt. Testler path verisinin ayırt edici parçasını hem şablonda
+hem kaynak dosyada arıyor; "benzerini çizip koymak" testi geçiremez.
+
+Kelime markası ile "Car Service" alt tanımlayıcısının genişlikleri ölçülerek
+eşitlendi (79 px / 79 px). Alt tanımlayıcı resmi dosyada yok, tipografik — bu da
+şablonda yazılı.
+
+---
+
+## 7d. Baştan sona geçiş: tutarlılık ve etkileşim
 
 Sayfa baştan sona, bölüm bölüm gözden geçirildi. İki tür bulgu çıktı.
 
@@ -622,7 +669,7 @@ görüntüsü alınırken henüz inmemişti. **İkisi de düzeltilmeden önce ö
 
 ---
 
-## 7d. Sessizce hiçbir şey yapmayan üç sınıf
+## 7e. Sessizce hiçbir şey yapmayan üç sınıf
 
 Referans bölümündeki yıldızlar siyah ve kocaman çiziliyordu. Sebep basitti:
 **`.star` sınıfı hiçbir yerde tanımlı değildi.** SVG ne boyut ne dolgu alıyordu,
@@ -664,7 +711,7 @@ kontrol ediyor**: toplayıcı yüzden az sınıf bulursa bunu kusur olarak bildi
 
 ---
 
-## 7e. Yazı zayıf görünüyordu; sebep font değil ağırlıktı
+## 7f. Yazı zayıf görünüyordu; sebep font değil ağırlıktı
 
 "Yazı karakterleri zayıf geliyor" denince önce fontun yüklenip yüklenmediği
 ölçüldü, çünkü en olası açıklama oydu: değişken font yüklenmezse tarayıcı yedek
@@ -705,7 +752,7 @@ Ağırlık ekseni gerçek bir font ekseni olduğu için her yerde aynı sonucu v
 
 ---
 
-## 7f. Çerçeve başlığa değil sonuca
+## 7g. Çerçeve başlığa değil sonuca
 
 Bölüm başlıklarının düz durduğu, çerçeveye alınabileceği önerildi. Yarısına
 katılıp yarısına katılmadım ve sebebini yazmak gerekiyor.
@@ -747,7 +794,7 @@ ve metin seçildiğinde parça parça kopyalanmasına yol açardı.
 
 ---
 
-## 7g. Tailwind katmanı bir kuralı sessizce yuttu
+## 7h. Tailwind katmanı bir kuralı sessizce yuttu
 
 Görünüme giriş animasyonu ilk yazıldığında `@layer components` içindeydi.
 Sayfa açıldı, bölümlerin yarısı görünmedi. Derlenmiş çıktıya bakınca sebep
@@ -778,7 +825,7 @@ geçerse testin bir değeri kalmaz.
 
 ---
 
-## 7h. SEO ve yerel işletme verisi
+## 7i. SEO ve yerel işletme verisi
 
 | Ne | Nerede |
 |---|---|
@@ -847,7 +894,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 198 birim/duman testi  (php tests/run.php)
+npm test          # 202 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -867,7 +914,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **198 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **202 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin**.
 
 | Katman | Test sayısı | Ne doğrulanıyor |

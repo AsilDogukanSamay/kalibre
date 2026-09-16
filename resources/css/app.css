@@ -237,8 +237,11 @@
   .nav-bar  { @apply sticky top-0 z-40 h-16 border-b border-line bg-surface-900/85 backdrop-blur-glass; }
   .nav-in   { @apply flex h-full items-center gap-10; }
   .nav-link { @apply text-[0.92rem] text-ink-muted transition hover:text-ink; }
+  /* Kelime markasi artik tipografi degil, resmi vektor. Yukseklik sabit,
+     genislik orandan gelir. */
+  .wordmark-svg { @apply block h-[1.15rem] w-auto text-ink; }
   .wordmark     { @apply text-[1.08rem] text-ink; font-variation-settings: "wdth" 116, "wght" 800; letter-spacing: 0.055em; }
-  .wordmark-sub { @apply mt-0.5 text-[11px] uppercase tracking-[0.16em] text-ink-faint; font-variation-settings: "wdth" 96, "wght" var(--wght-label); }
+  .wordmark-sub { @apply text-[10px] uppercase tracking-[0.12em] text-ink-faint; font-variation-settings: "wdth" 92, "wght" var(--wght-label); }
 
   /* ---------- Hero ---------- */
   .hero-bg    { @apply absolute inset-0 z-0 overflow-hidden bg-surface-800; }
