@@ -22,9 +22,24 @@ if (!function_exists('partial')) {
 }
 
 if (!function_exists('asset')) {
+    /**
+     * Varlik adresi + surum damgasi.
+     *
+     * Statik dosyalar uzun sureli onbelleklenir. Adres sabit kalsaydi,
+     * yayina alinan yeni CSS/JS geri donen ziyaretciye gunlerce ulasmazdi;
+     * gelistirirken de tarayici eski kopyayi sunmaya devam ederdi.
+     * Dosyanin degisme zamani adrese eklenince adres de degisir, yani
+     * "surum atlamayi unutma" diye bir adim kalmaz.
+     */
     function asset(string $path): string
     {
-        return '/assets/' . ltrim($path, '/');
+        $rel = ltrim($path, '/');
+        $url = '/assets/' . $rel;
+        $tam = dirname(__DIR__, 2) . '/public/assets/' . $rel;
+
+        $zaman = is_file($tam) ? filemtime($tam) : false;
+
+        return $zaman === false ? $url : $url . '?v=' . dechex($zaman);
     }
 }
 

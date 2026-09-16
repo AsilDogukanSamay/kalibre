@@ -1,6 +1,6 @@
 <?php /** @var string $campaignEndsAt */ ?>
 <?php if (($campaignEndsAt ?? '') !== ''): ?>
-<div class="glass-soft w-full max-w-md p-4" data-countdown="<?= e($campaignEndsAt) ?>">
+<div class="glass-strong w-full max-w-md p-4" data-countdown="<?= e($campaignEndsAt) ?>">
     <p class="mb-3 text-xs  uppercase tracking-[0.14em] text-brand-text">
         Kış bakım kampanyası &middot; seramik kaplamada yüzde 20 indirim
     </p>

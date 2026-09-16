@@ -57,7 +57,12 @@ final class FileServer
         header('Content-Type: ' . $tip);
         header('Accept-Ranges: bytes');
         header('ETag: ' . $etag);
-        header('Cache-Control: public, max-age=86400');
+        // Adres surum damgasi tasiyorsa icerik o adres icin degismez:
+        // bir yil + immutable guvenlidir. Damgasiz adreste ihtiyatli davranilir.
+        parse_str($_SERVER['QUERY_STRING'] ?? '', $sorgu);
+        header(isset($sorgu['v']) && $sorgu['v'] !== ''
+            ? 'Cache-Control: public, max-age=31536000, immutable'
+            : 'Cache-Control: public, max-age=3600');
         header('X-Content-Type-Options: nosniff');
 
         if (($_SERVER['HTTP_IF_NONE_MATCH'] ?? '') === $etag) {
