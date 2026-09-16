@@ -298,7 +298,80 @@
   .cell-price { @apply readout inline-flex w-fit rounded-glass border border-brand/40 bg-brand/[0.10] px-3 py-1 text-xs text-ink; }
 
 
-  /* ---------- Süreç ---------- */
+  /* ---------- Süreç şeridi ----------
+     Kartlar yan yana duruyordu ama aralarindaki sira gorunmuyordu. Artik bir
+     seride diziliyorlar: her adimin bir noktasi, noktalar arasinda bir cizgi
+     var ve cizgi adim goruse girdiginde doluyor.
+
+     Ray dar ekranda dikey (kartin solunda), xl'de yatay (kartin ustunde).
+     Ayni isaretleme iki yonde de calisiyor; degisen yalnizca flex yonu. */
+  .flow      { @apply grid gap-x-5 gap-y-7 xl:grid-cols-4 xl:gap-y-0; }
+  /* xl'de iki satir: ray (sabit) ve kart (kalan yukseklik). 1fr olmazsa
+     satirlar icerik yuksekligine gore buyuyor ve kartlar farkli hizalarda
+     basliyor - olcerek goruldu. */
+  .flow-step { @apply relative grid grid-cols-[1rem_minmax(0,1fr)] gap-x-4 xl:grid-cols-1 xl:grid-rows-[1rem_1fr] xl:gap-y-4; }
+
+  .flow-rail { @apply relative flex flex-col items-center xl:h-4 xl:w-full xl:flex-row; }
+  .flow-dot  {
+    @apply relative z-10 grid h-4 w-4 shrink-0 place-items-center rounded-pill
+           border border-brand/50 bg-surface-900 transition-colors duration-500;
+  }
+  .flow-dot-core {
+    @apply block h-1.5 w-1.5 rounded-pill bg-brand;
+    transform: scale(0);
+    transition: transform 460ms cubic-bezier(0.16, 1, 0.3, 1) 140ms;
+  }
+  .flow-line      { @apply relative w-px flex-1 overflow-hidden bg-line xl:h-px xl:w-full xl:flex-1; }
+  .flow-line-fill {
+    @apply absolute left-0 top-0 block w-full bg-brand;
+    height: 0;
+    transition: height 760ms cubic-bezier(0.16, 1, 0.3, 1) 180ms;
+  }
+
+  .flow-step.is-in .flow-dot      { @apply border-brand; }
+  .flow-step.is-in .flow-dot-core { transform: scale(1); }
+  .flow-step.is-in .flow-line-fill { height: 100%; }
+
+  @media (min-width: 1280px) {
+    .flow-line-fill {
+      height: 100%;
+      width: 0;
+      transition: width 760ms cubic-bezier(0.16, 1, 0.3, 1) 180ms;
+    }
+    .flow-step.is-in .flow-line-fill { width: 100%; }
+  }
+
+  .flow-card {
+    @apply glass-card flex flex-col gap-4 overflow-hidden p-0 transition-colors duration-300;
+  }
+  .flow-card:hover { @apply border-white/20; }
+
+  /* Gorsel VARSA fotograf kutusu, numara fotografin uzerinde durur. */
+  .flow-media       { @apply relative flex h-28 items-end overflow-hidden bg-surface-700/60 sm:h-32; }
+  .flow-photo       { @apply absolute inset-0 h-full w-full object-cover transition-transform duration-700; }
+  .flow-card:hover .flow-photo { @apply scale-[1.04]; }
+  .flow-media-scrim { @apply absolute inset-0 bg-gradient-to-t from-surface-900 via-surface-900/45 to-transparent; }
+  .flow-no          { @apply readout relative m-4 text-[1.6rem] leading-none text-brand-text; }
+
+  /* Gorsel YOKSA bos gri kutu birakilmaz; numara govdenin basinda,
+     baslikla ayni satirda durur. Kart bu halde de dolu gorunur. */
+  .flow-head    { @apply flex items-baseline gap-3; }
+  .flow-no-flat { @apply readout text-[1.35rem] leading-none text-brand-text; }
+
+  .flow-body     { @apply flex flex-1 flex-col gap-2.5 p-5; }
+  .flow-media + .flow-body { @apply pt-0; }
+  .flow-title    { @apply text-lg tracking-tight text-ink; font-variation-settings: "wdth" 102, "wght" 660; }
+  .flow-meta     { @apply mt-auto flex flex-col gap-2.5 border-t border-line pt-3.5; }
+  .flow-meta-key { @apply text-[11px] uppercase tracking-[0.14em] text-ink-faint; }
+  .flow-meta-val { @apply readout mt-0.5 text-sm text-brand-text; }
+  .flow-meta-out { @apply mt-0.5 text-[0.85rem] leading-snug text-ink; }
+
+  .flow-total      { @apply mt-10 flex flex-col gap-1.5 border-t border-line pt-6 xl:mt-12; }
+  .flow-total-key  { @apply text-[11px] uppercase tracking-[0.14em] text-ink-faint; }
+  .flow-total-val  { @apply readout text-[clamp(1.5rem,2.6vw,2rem)] leading-none text-ink; }
+  .flow-total-note { @apply mt-1.5; }
+
+  /* ---------- Süreç (eski kart bileşenleri, geri uyum) ---------- */
   .step      { @apply glass-card flex flex-col gap-2; }
   .step-rule { @apply h-0.5 w-8 bg-brand; }
   .step-time { @apply readout mt-auto pt-3 text-sm text-brand-text; }
@@ -347,6 +420,20 @@
   .countdown-cell { @apply glass-soft flex flex-col items-center px-2 py-2.5 sm:px-3; }
   .countdown-num  { @apply readout text-2xl text-ink sm:text-3xl; }
   .countdown-lbl  { @apply text-[11px] uppercase tracking-[0.14em] text-ink-faint; }
+
+  /* Menu baglantisi: alt cizgi soldan acilir. */
+  .nav-link { @apply relative; }
+  .nav-link::after {
+    content: "";
+    @apply absolute -bottom-1 left-0 block h-px w-full origin-left bg-brand;
+    transform: scaleX(0);
+    transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .nav-link:hover::after,
+  .nav-link:focus-visible::after { transform: scaleX(1); }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-link::after { transition: none; }
+  }
 
   /* ---------- Ölçüm nişangahı (imleç) ----------
      Jenerik bir takip noktası değil, sayfanın diline ait: ince bir halka ve
@@ -504,4 +591,47 @@
 
 @layer utilities {
   .text-balance { text-wrap: balance; }
+}
+
+
+/* ============================================================
+   Görünüme giriş - KATMAN DIŞINDA
+
+   Bu kurallar bilerek @layer components dışında duruyor. Tailwind, katman
+   içindeki kuralları kullanılmayan sınıflara göre budar; seçicide Tailwind'in
+   tanıdığı bir sınıf yoksa kural tamamen düşüyor. Burada tam olarak bu oldu:
+   `[data-reveal].is-in` kuralı derlenmiş dosyaya hiç girmedi ve
+   `[data-reveal-group] >` birleştiricisi kırpıldı; sonuç olarak bölümler
+   açılmadı, sayfanın yarısı görünmez kaldı. Ekran görüntüsü almaya
+   çalışırken fark edildi.
+
+   Seçiciler sınıf değil nitelik (attribute) üzerine kurulu olduğu için
+   çözüm katmanın dışına çıkmak. Kural sırası korunuyor: bu blok
+   utilities'ten sonra geldiği için utility sınıfları yine ezebilir.
+   ============================================================ */
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 640ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 640ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-reveal].is-in { opacity: 1; transform: none; }
+
+/* Grup içinde sırayla gelsin. Gecikme JavaScript'ten inline stille değil,
+   sıraya göre CSS'te tanımlı; style attribute kuralı bozulmuyor. */
+[data-reveal-group] > [data-reveal]:nth-child(2) { transition-delay: 80ms; }
+[data-reveal-group] > [data-reveal]:nth-child(3) { transition-delay: 160ms; }
+[data-reveal-group] > [data-reveal]:nth-child(4) { transition-delay: 240ms; }
+[data-reveal-group] > [data-reveal]:nth-child(5) { transition-delay: 320ms; }
+[data-reveal-group] > [data-reveal]:nth-child(6) { transition-delay: 400ms; }
+
+/* JavaScript kapalıysa hiçbir şey gizli kalmaz. Aynı güvence JS tarafında
+   da var: IntersectionObserver desteklenmiyorsa tüm hedefler anında açılır. */
+@media (scripting: none) {
+  [data-reveal] { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+  [data-reveal-group] > [data-reveal] { transition-delay: 0ms; }
 }

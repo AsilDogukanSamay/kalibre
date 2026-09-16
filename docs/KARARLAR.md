@@ -552,7 +552,38 @@ gönderilemezse talep yine de kaydedilmiştir ve kullanıcı başarı yanıtın�
 
 ---
 
-## 7c. SEO ve yerel işletme verisi
+## 7c. Tailwind katmanı bir kuralı sessizce yuttu
+
+Görünüme giriş animasyonu ilk yazıldığında `@layer components` içindeydi.
+Sayfa açıldı, bölümlerin yarısı görünmedi. Derlenmiş çıktıya bakınca sebep
+çıktı:
+
+```css
+/* kaynakta yazan */
+[data-reveal].is-in { opacity: 1; transform: none; }
+[data-reveal-group] > [data-reveal]:nth-child(2) { transition-delay: 80ms; }
+
+/* derlenmiş dosyaya giren */
+[data-reveal]:nth-child(2) { transition-delay: 80ms; }
+```
+
+Birinci kural tamamen düştü, ikincisinde `[data-reveal-group] >` kırpıldı.
+Tailwind katman içindeki kuralları kullanılmayan sınıflara göre budar; bu
+seçicilerde Tailwind'in tanıdığı bir sınıf yok, çünkü hepsi **nitelik**
+seçicisi. Sonuç: elemanlar `opacity: 0`'da kaldı ve hiçbir şey onları
+açmadı.
+
+Kırpılan ikinci kural daha sinsi: `>` birleştiricisi gidince kural her
+`[data-reveal]` elemanına uyguluyordu, yani gruba ait olmayan elemanlar da
+gecikmeli açılıyordu. Görünürde çalışıyor ama yanlış çalışıyor.
+
+Çözüm katmanın dışına çıkmak oldu. Test de kaynağı değil **derlenmiş
+çıktıyı** kontrol ediyor — kural kaynakta doğru ama çıktıda yoksa test
+geçerse testin bir değeri kalmaz.
+
+---
+
+## 7d. SEO ve yerel işletme verisi
 
 | Ne | Nerede |
 |---|---|
@@ -621,7 +652,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 138 birim/duman testi  (php tests/run.php)
+npm test          # 155 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -641,7 +672,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **138 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **155 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin**.
 
 | Katman | Test sayısı | Ne doğrulanıyor |
@@ -660,6 +691,8 @@ kontrast denetiminde **eşik altı 0 metin**.
 | Varlık sürümleme | 4 | Adres damgası, eksik dosya davranışı |
 | Okunabilirlik | 12 | Token eşikleri, açıklama metni bileşeni |
 | İmleç nişangahı | 9 | Inline stil yokluğu, dokunmatik ve hareket azaltma davranışı |
+| Süreç şeridi | 11 | Adım verisi, ray/nokta işaretlemesi, görselsiz hâl |
+| Görünüme giriş | 6 | Derlenmiş CSS'te kuralların varlığı, JS-siz davranış |
 | Bildirim | 1 | Adres tanımsızsa akış sessizce atlanır |
 
 ### Rotalar

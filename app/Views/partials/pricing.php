@@ -1,15 +1,15 @@
 <?php /** @var array<int,array<string,mixed>> $plans */ ?>
 <section id="fiyat" class="section shell">
-    <div class="section-head">
+    <div class="section-head" data-reveal>
         <h2 class="h-section text-balance">İki paket, ikisi de ölçümle başlıyor.</h2>
         <p class="body-text">Fiyatlar orta sınıf sedan içindir. SUV ve ticari araçlarda yüzey alanına göre fark uygulanır, ölçüm sonrası net fiyat verilir.</p>
         <p class="body-sm">İç detaylı temizlik ve şeffaf koruma filmi paket dışında, tek tek de alınabilir. Başlangıç fiyatları hizmetler bölümünde.</p>
         <p class="text-xs text-ink-faint">Son güncelleme: Eylül 2026</p>
     </div>
 
-    <div class="grid gap-4 lg:grid-cols-2">
+    <div class="grid gap-4 lg:grid-cols-2" data-reveal-group>
         <?php foreach ($plans as $plan): ?>
-            <article class="glass-card flex flex-col gap-5 <?= $plan['featured'] ? 'border-brand/40 bg-brand/[0.07]' : '' ?>">
+            <article class="glass-card flex flex-col gap-5 <?= $plan['featured'] ? 'border-brand/40 bg-brand/[0.07]' : '' ?>" data-reveal>
                 <div class="flex items-start justify-between gap-4">
                     <h3 class="h-card"><?= e($plan['name']) ?></h3>
                     <?php if ($plan['featured']): ?>

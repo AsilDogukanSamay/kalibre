@@ -6,7 +6,7 @@
 <section id="calismalar" class="section">
 
     <div class="shell">
-        <div class="section-head">
+        <div class="section-head" data-reveal>
             <span class="eyebrow-label">Aynı kaput, iki paso</span>
             <h2 class="h-section">Önce ve sonra, aynı kadrajdan.</h2>
             <p class="body-text">Sürgüyü kaydırın. Soldaki kayıt işlem öncesi ölçümde, sağdaki iki kademeli düzeltme ve seramik uygulamasından sonra çekildi.</p>

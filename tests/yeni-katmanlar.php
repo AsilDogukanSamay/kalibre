@@ -369,3 +369,47 @@ check('bosta rAF dongusu kapanir', str_contains($js, 'doner = false;'));
 // pointermove/down/up ucu de passive: tarayici kaydirmayi beklemeden surdurur.
 check('isaretci dinleyicileri passive', substr_count($js, '{ passive: true }') >= 3);
 check('dokunmatikte CSS de gizler', str_contains($css, '@media (hover: hover) and (pointer: fine)'));
+
+// ---------------------------------------------------------------- Surec seridi
+echo "
+Surec seridi
+";
+
+$icerik = App\Support\SiteContent::all();
+$adimlar = $icerik['process'];
+
+check('dort adim var', count($adimlar) === 4);
+check('her adimda sure var', count(array_filter($adimlar, static fn ($a) => ($a['time'] ?? '') !== '')) === 4);
+check('her adimda cikti var', count(array_filter($adimlar, static fn ($a) => ($a['output'] ?? '') !== '')) === 4);
+check('toplam sure ayri bilgi', ($icerik['processSummary']['total'] ?? '') !== '');
+
+check('seride ray ve nokta basiliyor', str_contains($home, 'flow-rail') && str_contains($home, 'flow-dot'));
+check('son adimda cizgi yok', substr_count($home, 'flow-line"') === 3);
+check('cikti etiketi sayfada', str_contains($home, 'Elinize geçen'));
+check('toplam sure sayfada', str_contains($home, $icerik['processSummary']['total']));
+check('adimlar sirayla aciliyor', str_contains($home, 'class="flow" data-reveal-group'));
+
+// Gorsel yoksa bos kutu birakilmaz.
+check('gorsel yokken fotograf kutusu basilmaz', !str_contains($home, 'flow-media'));
+check('gorsel yokken numara govdede', str_contains($home, 'flow-no-flat'));
+
+// ---------------------------------------------------------------- Gorunume giris
+echo "
+Gorunume giris
+";
+
+$derlenmis = (string) file_get_contents($root . '/public/assets/css/app.css');
+
+/*
+ * Bu kurallar Tailwind katmaninin DISINDA durmak zorunda. Katman icindeyken
+ * Tailwind, secicide tanidigi bir sinif bulamadigi icin `.is-in` kuralini
+ * tamamen budadi ve `>` birlestiricisini kirpti; sonucta bolumler acilmadi.
+ * Test derlenmis ciktiyi kontrol ediyor, kaynagi degil.
+ */
+check('acilma kurali derlenmis CSSte var', str_contains($derlenmis, '[data-reveal].is-in'));
+check('grup gecikmesi birlestiriciyi koruyor',
+    str_contains($derlenmis, '[data-reveal-group]>[data-reveal]:nth-child(2)'));
+check('JavaScript kapaliyken icerik gizli kalmaz', str_contains($derlenmis, 'scripting:none'));
+check('hareket azaltmada animasyon yok', str_contains($css, '[data-reveal] { opacity: 1; transform: none; transition: none; }'));
+check('gozlemci tek seferlik', str_contains($js, 'gozlemci.unobserve(giris.target)'));
+check('destek yoksa hepsi aninda acilir', str_contains($js, 'hepsiniAc();'));

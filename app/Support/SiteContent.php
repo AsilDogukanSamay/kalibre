@@ -72,11 +72,52 @@ final class SiteContent
                 ],
             ],
 
+            /*
+             * Sureç adimlari. Her adimda uc soru cevaplanir:
+             * ne yapiliyor (body), ne kadar suruyor (time) ve
+             * musterinin eline ne geciyor (output). Ucuncusu eklendi:
+             * "ne oluyor" sorusunun karsiligi zaten vardi, "bana ne
+             * kaliyor" sorusununki yoktu.
+             *
+             * image: public/assets/img altinda varsa kullanilir, yoksa
+             * numara plakasina dusulur (services bolumuyle ayni kural).
+             */
             'process' => [
-                ['title' => 'Ölçüm',            'body' => '11 noktadan kalınlık, panel panel parlaklık ve inceleme lambası altında hasar kaydı.',                 'time' => '45 dakika'],
-                ['title' => 'Dekontaminasyon',  'body' => 'İki kovalı yıkama, kil ve demir tozu sökücü. Yüzeyde iz bırakan ne varsa düzeltmeden önce gider.',      'time' => '3 saat'],
-                ['title' => 'Düzeltme',         'body' => 'Test alanında pad ve pasta seçimi, ardından kademeli pasolar. Her paso sonrası yeniden ölçüm.',          'time' => '1 ile 3 gün'],
-                ['title' => 'Koruma ve teslim', 'body' => 'Kaplama uygulanır, 12 saat kürlenir. Teslimde ölçüm raporu ve bakım takvimi birlikte verilir.',          'time' => '1 gün'],
+                [
+                    'title'  => 'Ölçüm',
+                    'body'   => '11 noktadan kalınlık, panel panel parlaklık ve inceleme lambası altında hasar kaydı.',
+                    'time'   => '45 dakika',
+                    'output' => 'Ölçüm tablosu ve hasar haritası',
+                    'image'  => 'surec-olcum.webp',
+                ],
+                [
+                    'title'  => 'Dekontaminasyon',
+                    'body'   => 'İki kovalı yıkama, kil ve demir tozu sökücü. Yüzeyde iz bırakan ne varsa düzeltmeden önce gider.',
+                    'time'   => '3 saat',
+                    'output' => 'Temizlenen yüzeyin öncesi/sonrası kaydı',
+                    'image'  => 'surec-dekontaminasyon.webp',
+                ],
+                [
+                    'title'  => 'Düzeltme',
+                    'body'   => 'Test alanında pad ve pasta seçimi, ardından kademeli pasolar. Her paso sonrası yeniden ölçüm.',
+                    'time'   => '1 ile 3 gün',
+                    'output' => 'Paso başına kalınlık ve parlaklık kaydı',
+                    'image'  => 'surec-duzeltme.webp',
+                ],
+                [
+                    'title'  => 'Koruma ve teslim',
+                    'body'   => 'Kaplama uygulanır, 12 saat kürlenir. Teslimde ölçüm raporu ve bakım takvimi birlikte verilir.',
+                    'time'   => '1 gün',
+                    'output' => 'Ölçüm raporu, garanti belgesi ve bakım takvimi',
+                    'image'  => 'surec-teslim.webp',
+                ],
+            ],
+
+            /* Sürecin toplamı. Musterinin ilk sordugu sey aracin kac gun
+               atolyede kalacagi; bu bilgi adimlarin icine gomulu kalmasin. */
+            'processSummary' => [
+                'total' => '2 ile 5 iş günü',
+                'note'  => 'Süreyi belirleyen tek şey düzeltme aşaması: boyanın durumu kaç paso gerektiriyorsa süre ona göre uzuyor. Ölçüm bittiğinde net gün sayısını söylüyoruz.',
             ],
 
             'plans' => [

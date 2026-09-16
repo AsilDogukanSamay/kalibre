@@ -170,6 +170,9 @@ for (const genislik of [390, 1440]) {
       window.__kok = k ?? null;
       window.__atla = a ?? null;
       window.__hedef = h;
+      // Goruse girme animasyonu: ekran altindaki elemanlar saydam basliyor
+      // ve olcumden kacarlardi. Olcum oncesi hepsi acilir.
+      document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-in'));
     }, [kok ?? null, atla ?? null, NOTUR_HEDEF]);
     const { sayilan, bulgular } = await sayfa.evaluate(olcum);
 

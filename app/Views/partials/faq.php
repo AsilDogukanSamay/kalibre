@@ -5,9 +5,9 @@
             <h2 class="h-section text-balance">Sık sorulanlar</h2>
         </div>
 
-        <div class="flex flex-col gap-3 lg:col-span-8">
+        <div class="flex flex-col gap-3 lg:col-span-8" data-reveal-group>
             <?php foreach ($faq as $item): ?>
-                <details class="faq-item group">
+                <details class="faq-item group" data-reveal>
                     <summary class="faq-summary">
                         <span><?= e($item['q']) ?></span>
                         <svg class="faq-icon group-open:rotate-45" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

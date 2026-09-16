@@ -22,7 +22,7 @@ Sonra şunu yapmanı istiyorum: ...
 ```bash
 npm run db        # veritabani, ayri bir terminalde acik kalmali
 npm run start     # CSS derle + sunucu -> http://127.0.0.1:5174
-npm test          # 138 test
+npm test          # 155 test
 npm run denetim   # testler + yerlesim + kontrast + hero denetimi
 ```
 
@@ -49,7 +49,7 @@ Teknik değerlendirme (iş başvurusu case study) olarak hazırlandı.
 
 ---
 
-## 2. Bilmen gereken dokuz kural
+## 2. Bilmen gereken on kural
 
 Bu projede bilinçli olarak konulmuş, bozulmaması gereken kurallar:
 
@@ -79,7 +79,12 @@ Bu projede bilinçli olarak konulmuş, bozulmaması gereken kurallar:
 8. **Yasal metin değişirse `LegalContent::SURUM` yükselt.** Forma verilen onay,
    onaylanan metnin sürümüyle birlikte kaydedilir. Sürümü yükseltmeden metni
    değiştirmek, eski kayıtların hangi metne onay verdiğini belirsizleştirir.
-9. **Sunucuyu `npm run serve` ile başlat.** PHP'yi yönlendirici betiği olmadan
+9. **JavaScript'in taktığı sınıflara bağlı CSS kuralları `@layer` dışında durur.**
+   Tailwind, katman içinde seçicide tanıdığı bir sınıf bulamazsa kuralı budar;
+   `[data-reveal].is-in` tam olarak böyle kayboldu ve sayfanın yarısı görünmez
+   kaldı. Nitelik (attribute) seçicili kurallar `app.css` sonundaki katman dışı
+   blokta. Test derlenmiş çıktıyı kontrol ediyor.
+10. **Sunucuyu `npm run serve` ile başlat.** PHP'yi yönlendirici betiği olmadan
    çalıştırırsan statik dosyalar `index.php`'ye uğramaz, Range desteği devre
    dışı kalır ve scroll videosu ilk karesinde donar (sayaçlar çalışmaya devam
    ettiği için hata gözden kaçar).
@@ -102,7 +107,7 @@ resources/css/    app.css  ← Tailwind kaynağı, TÜM component sınıfları b
 public/           Web kökü. index.php + assets/{css,js,img,video}
 database/         schema.sql + migrations/
 storage/          Bildirim günlüğü ve giriş deneme sayacı (versiyonlanmaz)
-tests/run.php     Bağımlılıksız duman testleri (138 test)
+tests/run.php     Bağımlılıksız duman testleri (155 test)
 tests/*.mjs       Yerleşim, kontrast ve hero denetimleri (playwright-core ister)
 docs/KARARLAR.md  Ayrıntılı gerekçeler ve ölçümler (README'nin eşlikçisi)
 _eski/            Bu dönüşümden önceki tek dosyalık statik sürüm
@@ -190,7 +195,7 @@ Aşağıdakiler iddia değil, çalıştırılarak ölçüldü:
 | Yerleşim (6 genişlik × 5 sayfa) | 0 kusur |
 | Kontrast (390 ve 1440 px, panel dahil) | Eşik altı 0 metin |
 | Hero kontrastı (piksel yöntemi) | Eşik altı 0 metin |
-| Testler | 138/138 |
+| Testler | 155/155 |
 
 ---
 

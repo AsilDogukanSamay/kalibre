@@ -65,6 +65,39 @@
   })();
 
   /* ------------------------------------------------------------------
+   * Gorunume giris
+   * Bolumler ve kartlar goruse girdiginde bir kez aciliyor. Tek seferlik:
+   * acilan eleman gozlemden cikariliyor, geri kaydirinca tekrar oynamiyor.
+   * ---------------------------------------------------------------- */
+  (function gorunumeGiris() {
+    const hedefler = document.querySelectorAll('[data-reveal]');
+    if (!hedefler.length) return;
+
+    const hepsiniAc = () => hedefler.forEach((el) => el.classList.add('is-in'));
+
+    // Hareket azaltma tercihi veya destek yoksa animasyon hic olmaz,
+    // ama icerik de gizli kalmaz.
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      hepsiniAc();
+      return;
+    }
+
+    const gozlemci = new IntersectionObserver((girisler) => {
+      girisler.forEach((giris) => {
+        if (!giris.isIntersecting) return;
+        giris.target.classList.add('is-in');
+        gozlemci.unobserve(giris.target);
+      });
+    }, {
+      // Eleman ekranin alt kenarindan biraz iceri girince aciliyor.
+      threshold: 0,
+      rootMargin: '0px 0px -10% 0px',
+    });
+
+    hedefler.forEach((el) => gozlemci.observe(el));
+  })();
+
+  /* ------------------------------------------------------------------
    * Olcum nisangahi (imlec)
    * Yerli imleci gizlemez, yanina ince bir halka koyar. Tiklanabilir bir
    * hedefin uzerinde halka acilir, icindeki tikler cekilir.

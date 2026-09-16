@@ -1,13 +1,13 @@
 <?php /** @var array<int,array<string,mixed>> $testimonials */ ?>
 <section class="section shell">
-    <div class="section-head">
+    <div class="section-head" data-reveal>
         <span class="eyebrow">Müşteri geri bildirimi</span>
         <h2 class="h-section text-balance">Teslimde rapor veriyoruz, fark oradan başlıyor.</h2>
     </div>
 
-    <div class="grid gap-4 md:grid-cols-3">
+    <div class="grid gap-4 md:grid-cols-3" data-reveal-group>
         <?php foreach ($testimonials as $t): ?>
-            <figure class="glass-card flex flex-col gap-4">
+            <figure class="glass-card flex flex-col gap-4" data-reveal>
                 <div class="flex gap-1" aria-label="<?= e((string) $t['rating']) ?> yıldız">
                     <?php for ($i = 0; $i < (int) $t['rating']; $i++): ?>
                         <svg class="star" viewBox="0 0 20 20" aria-hidden="true">

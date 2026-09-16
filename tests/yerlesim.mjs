@@ -47,6 +47,10 @@ for (const genislik of GENISLIKLER) {
 
   for (const yol of YOLLAR) {
     await sayfa.goto(TABAN + yol, { waitUntil: 'networkidle' });
+    // Goruse girme animasyonundaki elemanlar olcumden once acilir.
+    await sayfa.evaluate(() => {
+      document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-in'));
+    });
     const r = await sayfa.evaluate(denetle);
 
     const kusurlar = [];

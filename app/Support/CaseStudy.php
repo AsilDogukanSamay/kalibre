@@ -128,7 +128,7 @@ final class CaseStudy
                     'note'  => '640px altında iki video da indirilmiyor. Kaynak data-src ile tutulur, koşul sağlanmazsa tek bayt inmez.',
                 ],
                 [
-                    'value' => '138',
+                    'value' => '155',
                     'label' => 'Geçen test',
                     'note'  => 'Doğrulama, kurumsal kimlik, güvenlik başlıkları, CSRF, giriş freni, prepared statement ve şablon katmanları. Harici bağımlılık yok.',
                 ],

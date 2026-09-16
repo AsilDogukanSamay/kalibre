@@ -9,7 +9,7 @@ $sections = [
     'partials/compare'      => [],
     'partials/scrub'        => [],
     'partials/services'     => ['services' => $services],
-    'partials/process'      => ['process' => $process],
+    'partials/process'      => ['process' => $process, 'processSummary' => $processSummary],
     'partials/pricing'      => ['plans' => $plans],
     'partials/testimonials' => ['testimonials' => $testimonials],
     'partials/faq'          => ['faq' => $faq],
