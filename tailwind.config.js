@@ -1,14 +1,34 @@
 /**
- * KALİBRE kurumsal kimliğine göre özelleştirilmiş Tailwind yapılandırması.
+ * Tailwind yapilandirmasi - kurumsal kimlige gore ozellestirilmis.
  *
- * Palet kaynağı: atölyenin kendi görsel dili.
- *   brand  #4B7BFF  primary  — detaycıların çizik bulmak için kullandığı
- *                             mavi inceleme lambasının rengi
- *   ink   #101214  zemin    — saf siyah değil, grafit
- *   paper #E9ECEF  metin
+ * ETKIN KIMLIK: Bosch Car Service  (.env -> APP_BRAND=bosch)
  *
- * Tipografi: tek aile (Archivo variable). İkinci bir yazı tipi yerine
- * genişlik ekseni (wdth) kullanılır: başlıklar 118, gövde 92, ölçümler 70.
+ *   Rol        Kod        Token                Nerede kullanilir
+ *   primary    #EA0016    brand                Buton, vurgu, ikon, kenarlik
+ *   hover      #B8000F    brand-dark           Buton hover
+ *   secondary  #00509D    brand-secondary      Olcum gostergesinin kanali
+ *   accent     #008ECF    brand-accent         Canli olcum degeri, isik seridi
+ *   metin      #FF374E    brand-text           Koyu zeminde marka renkli YAZI
+ *
+ * Ikinci kimlik: Kalibre  (APP_BRAND=kalibre)
+ *   primary #4B7BFF · secondary #3D6BF0 · accent #7A9CFF
+ *
+ * NEDEN RENKLER BURADA HEX OLARAK YAZILI DEGIL
+ * Token'lar CSS degiskenlerini okur (`rgb(var(--brand) / <alpha-value>)`).
+ * Hex degerleri resources/css/app.css icindeki :root bloklarinda durur ve
+ * `:root[data-brand="..."]` ile degisir. Boylece marka degistirmek tek bir
+ * .env satiridir; hicbir Tailwind sinifi, sablon veya bilesen degismez.
+ * Alfa destegi korunur: bg-brand/20, text-brand-accent/60 calisir.
+ *
+ * NEDEN AYRI BIR brand-text TOKEN'I VAR
+ * #EA0016 koyu zeminde METIN olarak 4,03:1 veriyor, WCAG AA esigi 4,5.
+ * Dolgu ve ikonlar kurumsal rengi kullanmaya devam eder; yalnizca yazi
+ * acilmis varyanta gecer. Olcum ayrintisi README bolum 6'da.
+ *
+ * TIPOGRAFI
+ * Tek aile: Archivo (variable). Bosch Sans lisansli oldugu icin kullanilmadi.
+ * Ikinci bir yazi tipi yerine genislik ekseni (wdth) ikinci ses olarak
+ * kullanilir: baslik 112, govde 96, olcum okumasi 72.
  */
 module.exports = {
   content: [
@@ -24,7 +44,8 @@ module.exports = {
           DEFAULT: 'rgb(var(--brand) / <alpha-value>)',
           dark:    'rgb(var(--brand-dark) / <alpha-value>)',
           tint:    'rgb(var(--brand-tint) / <alpha-value>)',
-          alt:     'rgb(var(--brand-alt) / <alpha-value>)',
+          secondary: 'rgb(var(--brand-secondary) / <alpha-value>)',
+          accent:    'rgb(var(--brand-accent) / <alpha-value>)',
           text:    'rgb(var(--brand-text) / <alpha-value>)',
         },
         surface: {
