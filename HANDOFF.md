@@ -226,7 +226,7 @@ kanıtı kanıta çevirir, kimse uydurulmaz. Sahibi onay verirse yapılabilir.
 
 ---
 
-## 5b. Son durum (16 Eylül 2026)
+## 6b. Son durum (16 Eylül 2026)
 
 Proje görev tanımındaki (mail) her maddeyi karşılıyor; maddeler canlı sayfada
 tek tek ölçülerek doğrulandı, 15/15 geçti. Logo dahil hiçbir açık madde kalmadı.
