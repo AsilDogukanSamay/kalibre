@@ -73,14 +73,42 @@ final class CaseStudy
                     'why'      => 'Sayfa yenilemesi kullanıcıyı hero videosundan ve okuduğu bağlamdan koparıyor. Takip numarası da soyut bir "teşekkürler" yerine somut bir çıktı.',
                     'tradeoff' => 'JavaScript kapalıysa form çalışmaz. Telefon ve WhatsApp her ekranda erişilebilir tutularak dengelendi.',
                 ],
+                [
+                    'n'        => '06',
+                    'title'    => 'Kurumsal paletin üçü de rol aldı',
+                    'decision' => 'Primary kırmızı marka ve eylem rengi olarak kaldı; secondary ve accent mavileri ölçüm diline verildi. Gösterge kanalı secondary, canlı ölçüm değeri ve ışık şeridi accent.',
+                    'why'      => 'Tek aksanla kalmak paleti eksik kullanmak olurdu. Renklere rol vermek, ikisini de kullanmanın dağıtmayan yolu: kırmızı "bir şey yap" der, mavi "bir şey ölçülüyor" der.',
+                    'tradeoff' => 'İki renk ailesi yönetmek gerekiyor. Rol ayrımı net olduğu için sayfada karışmıyorlar.',
+                ],
+                [
+                    'n'        => '07',
+                    'title'    => 'Kişisel veri toplayan form, aydınlatma metni olmadan yayına çıkamaz',
+                    'decision' => 'KVKK aydınlatma metni ve gizlilik politikası sayfaları eklendi, formda onay kutusu zorunlu kılındı. Onayın anı ve onaylanan metnin sürümü kayıtla birlikte saklanıyor.',
+                    'why'      => 'Yalnızca "onay alındı" demek ispat değildir. Metin zamanla değişir; hangi kaydın hangi metne onay verdiği bilinmiyorsa ispat yükümlülüğü karşılanmaz. Sürüm numarası bunu çözüyor.',
+                    'tradeoff' => 'Formda bir adım daha. Dönüşümde küçük bir kayıp karşılığında sayfa gerçekten yayına çıkabilir hâle geldi.',
+                ],
+                [
+                    'n'        => '08',
+                    'title'    => 'Talebi alan vardı, haber veren yoktu',
+                    'decision' => 'Gönderim sonrası atölyeye bildirim katmanı ve gelen talepleri durum akışıyla yöneten bir panel eklendi. Şemadaki status alanı zaten bunun için hazırdı.',
+                    'why'      => 'Form veritabanına yazıyordu ama kimse haberdar olmuyordu. Hizmete açık bir sayfada bu, cevaplanmayan randevu demektir.',
+                    'tradeoff' => 'Panel yeni bir saldırı yüzeyi açıyor. Oturum yenileme, CSRF belirteci, IP başına giriş freni ve açık yönlendirme koruması bu yüzden aynı anda yazıldı.',
+                ],
+                [
+                    'n'        => '09',
+                    'title'    => 'Çerez onayı yerine çerez kullanmamak',
+                    'decision' => 'Ziyaretçi tarafında tek çerez oluşturulmuyor; onay penceresi de yok. Oturum çerezi yalnızca yönetim paneli yolunda oluşuyor.',
+                    'why'      => 'Onay penceresi bir çözüm değil, bir bedeldir. Çerez gerçekten gerekmiyorsa doğru cevap pencereyi güzelleştirmek değil, çerezi kaldırmaktır.',
+                    'tradeoff' => 'Sayfada analitik yok. Ölçüm gerekirse çerezsiz bir analitik eklenmeli ve gizlilik metni de o gün güncellenmeli.',
+                ],
             ],
 
             /* -------------------------------------------------- Ölçümler */
             'metrics' => [
                 [
-                    'value' => '5,2:1',
+                    'value' => '4,62:1',
                     'label' => 'Hero yazı kontrastı',
-                    'note'  => 'Videonun 10 karesi × 4 ekran genişliğinde en kötü değer. WCAG AA eşiği 4,5.',
+                    'note'  => 'Videonun 10 karesi, üç ekran genişliği, hero içindeki her metin elemanı. En kötü değer bu; WCAG AA eşiği 4,5. Yazı gizlenip kare fotoğraflanarak ölçüldü, hesaplanmadı.',
                 ],
                 [
                     'value' => '0',
@@ -93,9 +121,29 @@ final class CaseStudy
                     'note'  => '640px altında iki video da indirilmiyor. Kaynak data-src ile tutulur, koşul sağlanmazsa tek bayt inmez.',
                 ],
                 [
-                    'value' => '22',
+                    'value' => '117',
                     'label' => 'Geçen test',
-                    'note'  => 'Doğrulama, XSS, prepared statement ve şablon katmanları. Harici bağımlılık yok.',
+                    'note'  => 'Doğrulama, kurumsal kimlik, güvenlik başlıkları, CSRF, giriş freni, prepared statement ve şablon katmanları. Harici bağımlılık yok.',
+                ],
+                [
+                    'value' => '0',
+                    'label' => 'Eşik altı metin',
+                    'note'  => 'Kontrast denetimi iki genişlikte, panel dahil beş sayfada çalıştırıldı. WCAG AA eşiğinin altında kalan metin yok.',
+                ],
+                [
+                    'value' => '1',
+                    'label' => 'Denetimin bulduğu kusur',
+                    'note'  => 'Panelde telefon ve e-posta bağlantıları 12 piksel boyutunda 4,44:1 veriyordu. Renk değil rol değişti: yazı ink oldu, marka rengi alt çizgide kaldı.',
+                ],
+                [
+                    'value' => '0',
+                    'label' => 'Ziyaretçi çerezi',
+                    'note'  => 'Onay penceresi bu yüzden yok. Oturum çerezi yalnızca yönetim paneli yolunda oluşuyor.',
+                ],
+                [
+                    'value' => '0',
+                    'label' => 'Yerleşim kusuru',
+                    'note'  => 'Altı genişlik, beş sayfa: yatay taşma yok, her sayfada tek h1, başlık atlaması yok, alt metni olmayan görsel yok.',
                 ],
             ],
 
@@ -114,13 +162,17 @@ final class CaseStudy
                 ['layer' => 'Models',           'role' => 'Tek SQL noktası. Yalnızca prepared statement.'],
                 ['layer' => 'Core\\View',       'role' => 'Şablon + XSS kaçışı. Kaçışsız değer basılmaz.'],
                 ['layer' => 'Core\\Response',   'role' => 'Tek JSON sözleşmesi. Tüm uçlar aynı biçimde döner.'],
+                ['layer' => 'Core\\Security',   'role' => 'CSP ve güvenlik başlıkları. Nonce istek başına üretilir.'],
+                ['layer' => 'Core\\Session',    'role' => 'Panel oturumu ve CSRF belirteci. Ziyaretçi tarafında hiç çalışmaz.'],
+                ['layer' => 'Support',          'role' => 'İçerik ve yan servisler: metinler, yasal metinler, marka, bildirim, giriş freni.'],
             ],
 
             'next' => [
-                'Yönetim paneli: gelen talepleri durum akışıyla (yeni / okundu / arşiv) takip etmek. Şema buna hazır.',
                 'Randevu takvimi: müsait slot seçimi, çift rezervasyon kilidi.',
                 'Ölçüm raporunun PDF çıktısı; teslimde verilen dosyanın dijital eşi.',
                 'Gerçek atölye çekimi: mevcut görseller yapay zeka üretimi, before/after kareleri gerçek işle değiştirilmeli.',
+                'Veri sorumlusu bilgileri: ticaret unvanı, MERSİS ve KEP adresi yasal metne eklenmeli.',
+                'Bildirim şu an günlük dosyasına yazıyor; gerçek e-posta için SMTP yapılandırması gerekiyor.',
             ],
         ];
     }

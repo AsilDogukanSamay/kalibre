@@ -2,91 +2,71 @@
 
 İstanbul Maslak'ta boya düzeltme ve seramik kaplama atölyesi için landing page.
 Tailwind CSS ile glassmorphic arayüz, saf PHP 8.4 ile OOP/MVC backend,
-AJAX tabanlı iletişim formu ve MySQL kaydı.
+fetch tabanlı iletişim formu ve MySQL kaydı.
+
+**Kurumsal kimlik:** Bosch Car Service. Özgün vektör amblem, kurumsal renk kodları
+ve bu kimliğe göre özelleştirilmiş Tailwind yapılandırması kullanılır.
+Bu bağımsız bir prototiptir; marka hakları Robert Bosch GmbH'ye aittir ve sayfa
+altında bu bilgilendirme görünür.
+
+| | |
+|---|---|
+| Frontend | Tailwind CSS 3.4, glassmorphic bileşenler, vanilla JS |
+| Backend | PHP 8.4, framework yok, OOP + MVC, kendi PSR-4 autoloader'ı |
+| Veritabanı | MySQL / MariaDB, PDO prepared statements |
+| Test | 117 test + 3 tarayıcı denetimi, hepsi geçiyor |
+
+> **Ayrıntılı gerekçeler:** [`docs/KARARLAR.md`](docs/KARARLAR.md) — her kararın
+> nedeni, denenip bırakılan alternatifler ve ölçüm sonuçları.
+> Canlı karşılığı `/case` sayfasıdır.
 
 ---
 
-## 0. İki sayfa
+## 1. Kurulum
+
+```bash
+npm install
+cp .env.example .env              # DB bilgilerini düzenleyin
+mysql -u root -p < database/schema.sql
+npm run start                     # CSS derle + sunucu -> http://127.0.0.1:5174
+```
+
+Üretimde web sunucusunun kök dizini **`public/`** olmalıdır.
+
+| Komut | Ne yapar |
+|---|---|
+| `npm run start` | CSS derler ve sunucuyu başlatır |
+| `npm run dev` | Geliştirirken CSS'i izler |
+| `npm test` | 117 test (harici bağımlılık yok) |
+| `npm run denetim` | Testler + yerleşim + kontrast + hero denetimi |
+
+> `npm run serve` PHP'yi **yönlendirici betiğiyle** başlatır. Elle
+> `php -S ... -t public` yazılırsa HTTP Range desteği devre dışı kalır ve scroll
+> videosu ilk karesinde donar. Gerekçe: [`docs/KARARLAR.md`](docs/KARARLAR.md#8b-statik-dosyalar-ve-bayt-aralığı-range).
+
+---
+
+## 2. Sayfalar
 
 | Yol | Ne |
 |---|---|
-| `/` | Ürünün kendisi. Landing page. |
-| `/case` | Ürün kararları. Problem, alınan kararlar ve bedelleri, canlı tasarım sistemi, mimari, ölçülen sonuçlar. |
-
-`/case` sayfası ekran görüntüsü değil: gösterdiği token'lar ve cam yüzeyler,
-sitenin gerçekten kullandığı CSS sınıflarıyla render edilir.
-
----
-
-## 1. Görsel kimlik ve marka katmanı
-
-Tasarım sistemi **marka bağımsızdır**. Renkler CSS değişkenlerinde tutulur,
-Tailwind token'ları o değişkenleri okur. Marka değiştirmek tek bir `.env` satırıdır;
-hiçbir sınıf, şablon veya bileşen değişmez.
-
-```ini
-APP_BRAND=bosch     # veya: kalibre
-```
-
-| Tema | Logo | Primary | Secondary | Accent |
-|---|---|---|---|---|
-| `bosch` (varsayılan) | Gerçek Bosch amblemi, orijinal vektör yolu | `#EA0016` | `#00509D` | `#008ECF` |
-| `kalibre` | Atölyenin kendi markası | `#4B7BFF` | `#3D6BF0` | `#7A9CFF` |
-
-**Neden iki tema:** Ajans işinde aynı iskelet farklı markalara giydirilir. Sınıf
-adlarına marka gömmek her projede yeniden yazmak demektir. `app/Support/Brand.php`
-tek kaynak, `:root[data-brand="..."]` tek geçiş noktası.
-
-Bosch teması etkinken sayfa altında, çalışmanın bağımsız bir prototip olduğunu ve
-marka haklarının Robert Bosch GmbH'ye ait olduğunu belirten bilgilendirme
-otomatik görünür.
-
-### Palet gerekçesi
-
-| Rol | Token | Değer | Gerekçe |
-|---|---|---|---|
-| Primary | `brand` | markaya göre | Aktif markanın kurumsal rengi. Sayfanın **tek** aksanı. |
-| Primary (koyu) | `brand-dark` | markaya göre | Hover durumu |
-| Zemin | `surface-900` | `#101214` | Saf siyah değil, grafit |
-| Yüzey | `surface-800` / `700` | `#15181B` / `#1B1F24` | Yükseltilmiş katmanlar |
-| Metin | `ink` | `#E9ECEF` | Birincil |
-| Metin (ikincil) | `ink-muted` | `#8B949C` | Koyu zeminde AA geçer |
-| Hata | `warn` | `#FF9A8B` | Form hataları, hata toast'ı |
-| Başarı | `good` | `#5BD08A` | Başarı toast'ı |
-
-Zemin ve metin skalası her iki markada ortaktır; yalnızca `brand-*` değişir.
-
-**Aksan kilidi:** sayfanın tamamında tek aksan rengi kullanılır.
-**Tema kilidi:** sayfa tek modda (koyu) çalışır, bölümler arası mod değişmez.
-
-### Tipografi
-
-Tek yazı tipi ailesi: **Archivo** (variable). İkinci bir yazı tipi yerine
-**genişlik ekseni** ikinci bir ses olarak kullanılır. Üç net karakter:
-
-| Rol | `wdth` | `wght` | Harf aralığı | Satır aralığı | Sınıf |
-|---|---|---|---|---|---|
-| Başlık | 112 | 730 | −0,032em | 0,98 | `.display` |
-| Gövde | 96 | 400 | 0 | 1,68 | `.body-text` |
-| Ölçüm okuması | 72 | 650 | +0,005em | — | `.readout` |
-| Bölüm etiketi | 104 | 640 | +0,2em | — | `.eyebrow-label` |
-
-Büyük puntoda harf aralığı negatife çekilir, küçük puntoda pozitife: optik
-düzeltme. Başlıklar 0,98 satır aralığıyla sıkışır, gövde 1,68 ile nefes alır;
-bu zıtlık iki sesi birbirinden ayırır. Bölüm etiketleri dağınık utility
-sınıflarından tek bir `.eyebrow-label` bileşenine toplandı.
-
-### Köşe yarıçapı
-
-Tek ölçek: `3px` (`rounded-glass`). Atölye dili keskindir; istisna yalnızca
-pill butonlar ve yuvarlak göstergelerdir (`rounded-pill`).
+| `/` | Landing page |
+| `/case` | Ürün kararları: problem, alınan kararlar ve bedelleri, canlı tasarım sistemi, ölçülen sonuçlar |
+| `/kvkk` · `/gizlilik` | Aydınlatma metni ve gizlilik politikası |
+| `/yonetim` | Gelen taleplerin yönetim paneli (parola korumalı) |
+| `/robots.txt` · `/sitemap.xml` | Rota olarak üretilir; adresler `.env`'deki `APP_URL`'den gelir |
 
 ---
 
-## 2. Mimari
+## 3. Mimari
 
 Framework kullanılmadı; **saf PHP 8.4 ile OOP + MVC** katmanlı yapı.
 Composer bağımlılığı yok, PSR-4 uyumlu kendi autoloader'ı var.
+Spagetti PHP yoktur: hiçbir dosyada HTML ile sorgu iç içe geçmez.
+
+```
+public/index.php  →  Router  →  Controller  →  Validator / Model  →  Response | View
+```
 
 ```
 kalibre-landing/
@@ -102,30 +82,68 @@ kalibre-landing/
 │   │   ├── Request.php      HTTP isteği sarmalayıcı
 │   │   ├── Response.php     JSON / HTML çıktı sözleşmesi
 │   │   ├── Validator.php    kural tabanlı doğrulama
-│   │   ├── Controller.php   soyut taban
 │   │   ├── View.php         şablon motoru + XSS kaçışı
-│   │   └── helpers.php      e() / partial() / asset()
-│   ├── Controllers/         HomeController, CaseStudyController, ContactController
-│   ├── Models/              ContactMessage (veri erişimi)
-│   ├── Support/             Brand (marka katmanı), SiteContent, CaseStudy
+│   │   ├── Security.php     CSP ve güvenlik başlıkları
+│   │   ├── Session.php      panel oturumu + CSRF
+│   │   └── FileServer.php   Range destekli statik dosya sunucusu
+│   ├── Controllers/         Home, CaseStudy, Contact, Legal, Seo, Admin
+│   ├── Models/              ContactMessage  ← tek SQL noktası
+│   ├── Support/             SiteContent, LegalContent, Brand, CaseStudy,
+│   │                        Notifier, LoginThrottle
 │   └── Views/               layouts, partials, errors
-├── database/schema.sql
 ├── resources/css/app.css    ← Tailwind kaynağı + component katmanı
 ├── tailwind.config.js       ← kurumsal kimlik yapılandırması
-├── tests/run.php            ← bağımlılıksız duman testleri
-├── _eski/index.static.html  ← bu dönüşümden önceki tek dosyalık sürüm
-└── .env                     ← versiyonlanmaz
+├── database/                schema.sql + migrations/
+├── tests/                   run.php (PHP) + *.mjs (tarayıcı denetimleri)
+└── docs/KARARLAR.md         ← ayrıntılı gerekçeler ve ölçümler
 ```
-
-**İstek akışı:** `public/index.php` → `Router` → `Controller` → (`Validator` / `Model`)
-→ `Response` veya `View`. Spagetti PHP yoktur; hiçbir dosyada HTML ile sorgu iç içe geçmez.
 
 **Katman sorumlulukları:** doğrulama `Validator`'da, SQL yalnızca `Models/` altında,
 çıktı kaçışı yalnızca `View`'da, yapılandırma yalnızca `Env`'de.
 
+**DRY:** tüm metinler `SiteContent`, yasal metinler `LegalContent`, marka teması
+`Brand` sınıfında tek kaynaktan gelir. Cam yüzeyler beş sınıftan türer
+(`glass`, `glass-strong`, `glass-soft`, `glass-sheen`, `glass-card`); yeni bir cam
+yüzey için kural yazılmaz, sınıf kullanılır.
+
 ---
 
-## 3. Veritabanı şeması
+## 4. Kurumsal kimlik
+
+**Amblem özgün vektördür.** Bosch armatür sembolünün orijinal path verisi
+`app/Views/partials/logo-bosch.php` içinde gömülüdür; rengi `currentColor` ile
+tasarım sisteminden gelir. Kelime markası bir dosya slotu üzerinden çalışır:
+`public/assets/img/wordmark-bosch.svg` bırakıldığında şablon değişmeden devreye
+girer. Dosya yokken tipografik kilit kullanılır, çünkü Bosch Sans lisanslı bir
+yazı tipidir ve prototipe dahil edilmemiştir.
+
+**Kurumsal palet — üç rol, üçü de kullanılıyor:**
+
+| Rol | Kod | Token | Nerede |
+|---|---|---|---|
+| primary | `#EA0016` | `brand` | Buton, vurgu, ikon, kenarlık |
+| hover | `#B8000F` | `brand-dark` | Buton hover |
+| secondary | `#00509D` | `brand-secondary` | Ölçüm göstergesinin kanalı |
+| accent | `#008ECF` | `brand-accent` | Canlı ölçüm değeri, ışık şeridi |
+| metin | `#FF374E` | `brand-text` | Koyu zeminde marka renkli **yazı** |
+
+Kırmızı marka ve eylem rengidir; mavi tonlar ölçüm dilidir. Ayrı bir `brand-text`
+token'ı vardır çünkü `#EA0016` koyu zeminde metin olarak 4,03:1 verir, WCAG AA
+eşiği 4,5. Dolgu ve ikonlar kurumsal rengi kullanmaya devam eder; yalnızca yazı
+açılmış varyanta geçer.
+
+**Tasarım sistemi marka bağımsızdır.** Tailwind token'ları CSS değişkenlerini
+okur, değişkenler `:root[data-brand="..."]` ile değişir. Marka değiştirmek tek bir
+`.env` satırıdır (`APP_BRAND=bosch | kalibre`); hiçbir sınıf, şablon veya bileşen
+değişmez. Test bunu doğrular: marka adı şablonlara gömülü değildir.
+
+**Tipografi:** tek aile (Archivo variable). İkinci bir yazı tipi yerine genişlik
+ekseni ikinci ses olarak kullanılır — başlık `wdth 112`, gövde `96`, ölçüm
+okuması `72`.
+
+---
+
+## 5. Veritabanı şeması
 
 ```sql
 CREATE TABLE `contact_messages` (
@@ -134,35 +152,41 @@ CREATE TABLE `contact_messages` (
     `email`      VARCHAR(180)  NOT NULL,
     `phone`      VARCHAR(32)   NOT NULL,
     `message`    TEXT          NOT NULL,
-    `ip_address` VARCHAR(45)   NOT NULL DEFAULT '',
+    `ip_address` VARCHAR(45)   NOT NULL DEFAULT '',   -- IPv6 icin 45 karakter
     `user_agent` VARCHAR(255)  NOT NULL DEFAULT '',
     `status`     ENUM('new','read','archived') NOT NULL DEFAULT 'new',
+    `consent_at`      DATETIME     NULL DEFAULT NULL,
+    `consent_version` VARCHAR(16)  NOT NULL DEFAULT '',
     `created_at` DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
     PRIMARY KEY (`id`),
     KEY `idx_created_at` (`created_at`),
     KEY `idx_email`      (`email`),
-    KEY `idx_ip_created` (`ip_address`, `created_at`),
+    KEY `idx_ip_created` (`ip_address`, `created_at`),   -- spam freni sorgusu
     KEY `idx_status`     (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
 
 - `utf8mb4` — Türkçe karakter güvenliği.
-- `ip_address` 45 karakter — IPv6 uzunluğu.
 - `idx_ip_created` — spam freni sorgusu (ip + zaman aralığı) tam bu indeksi kullanır.
-- `status` — talebin operasyonel takibi; panel eklenirse şema değişmez.
+- `status` — talebin operasyonel takibi; yönetim paneli bu alanı kullanır.
+- `consent_at` / `consent_version` — KVKK onayının anı ve onaylanan metnin sürümü.
+  Mevcut kurulumlar için `database/migrations/2026_09_16_kvkk_onayi.sql`.
 
 ---
 
-## 4. .env yapılandırması
+## 6. .env yapılandırması
 
 Hassas bilgi kod tabanında tutulmaz. `.env` `.gitignore` içindedir,
 `.env.example` şablon olarak versiyonlanır.
 
 ```ini
 APP_NAME="Kalibre"
-APP_ENV=local
-APP_DEBUG=true
+APP_URL=http://127.0.0.1:5174   # yayinda kendi alan adiniz
+APP_ENV=local                   # yayinda: production
+APP_DEBUG=true                  # yayinda MUTLAKA false
 APP_TIMEZONE=Europe/Istanbul
+APP_BRAND=bosch                 # bosch | kalibre
 
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -172,274 +196,82 @@ DB_USERNAME=root
 DB_PASSWORD=
 DB_CHARSET=utf8mb4
 
-CONTACT_RATE_LIMIT=5
+CONTACT_RATE_LIMIT=5            # spam freni: pencere basina gonderim
 CONTACT_RATE_WINDOW_MINUTES=10
 
-CAMPAIGN_ENDS_AT=2026-12-31T23:59:59+03:00
+CAMPAIGN_ENDS_AT=2026-12-31T23:59:59+03:00   # bos ise geri sayim render edilmez
+
+ADMIN_USER=atolye               # yonetim paneli
+ADMIN_PASSWORD_HASH=            # php -r "echo password_hash('parola', PASSWORD_BCRYPT);"
+
+NOTIFY_TRANSPORT=log            # log | mail
+NOTIFY_TO=randevu@ornek.com
+NOTIFY_FROM=no-reply@ornek.com
 ```
 
-`CAMPAIGN_ENDS_AT` boş bırakılırsa geri sayım bölümü hiç render edilmez.
+`APP_URL` canonical, og etiketleri ve sitemap'in kaynağıdır.
+`ADMIN_PASSWORD_HASH` boşsa panel hiçbir parolayı kabul etmez.
+`NOTIFY_TO` boşsa bildirim adımı sessizce atlanır.
 
 ---
 
-## 5. Güvenlik
+## 7. Güvenlik
 
 | Önlem | Nerede |
 |---|---|
-| **SQL Injection** | `Models/ContactMessage.php` — tüm sorgular PDO named prepared statement. `ATTR_EMULATE_PREPARES => false` ile gerçek sunucu tarafı hazırlama. |
-| **XSS** | `View::e()` / `e()` — `htmlspecialchars` + `ENT_QUOTES` + `ENT_SUBSTITUTE`. Şablonda kaçışsız dinamik değer basılmaz. İstemcide `textContent` kullanılır, `innerHTML` kullanılmaz. |
-| **Validation** | `Core/Validator.php` — `required`, `email`, `phone`, `min`, `max`. Kontrol karakterleri temizlenir, değerler trim edilir. |
-| **Hata sızıntısı** | PDO istisnası yakalanır, kullanıcıya genel mesaj döner, teknik detay `error_log`'a yazılır. |
-| **Spam** | Bal küpü (honeypot) + IP bazlı oran sınırı (varsayılan 10 dakikada 5). |
-| **Başlıklar** | `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`. |
-| **Dizin güvenliği** | Web kökü `public/`. `app/`, `.env`, `database/` web'den erişilemez. |
+| **SQL Injection** | `Models/ContactMessage.php` — tüm sorgular PDO named prepared statement, `ATTR_EMULATE_PREPARES => false` ile gerçek sunucu tarafı hazırlama |
+| **XSS** | `View::e()` — `htmlspecialchars` + `ENT_QUOTES` + `ENT_SUBSTITUTE`. İstemcide `innerHTML` değil `textContent` kullanılır |
+| **Validation** | `Core/Validator.php` — `required`, `email`, `phone`, `min`, `max`, `accepted`. Kontrol karakterleri temizlenir |
+| **Hata sızıntısı** | PDO istisnası yakalanır, kullanıcıya genel mesaj döner, teknik detay `error_log`'a yazılır |
+| **Spam** | Bal küpü (honeypot) + IP bazlı oran sınırı |
+| **CSP** | `Core/Security.php` — `script-src` istek başına üretilen nonce ile kilitli, `frame-ancestors 'none'`, `object-src 'none'`, `form-action 'self'` |
+| **Diğer başlıklar** | `nosniff`, `Referrer-Policy`, `X-Frame-Options: DENY`, `Permissions-Policy`, HTTPS altında HSTS |
+| **Panel** | bcrypt parola özeti, oturum yenileme, CSRF belirteci, IP başına giriş freni, açık yönlendirme koruması |
+| **Dizin güvenliği** | Web kökü `public/`. `app/`, `.env`, `database/`, `storage/` web'den erişilemez |
+
+CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
+[`docs/KARARLAR.md`](docs/KARARLAR.md) içinde.
 
 ---
 
-## 6. Frontend
-
-- **Tailwind CSS 3.4**, `tailwind.config.js` kurumsal kimliğe göre özelleştirilmiş.
-- **Hiçbir HTML etiketinde `style="..."` attribute'u yoktur.** Test bunu otomatik
-  doğrular; canlı DOM'da da `document.querySelectorAll('[style]').length === 0`.
-- Dinamik konum değerleri (sürgü, scroll ilerlemesi) inline stil ile değil, sayfaya
-  bir kez eklenen **tek kurallık bir stylesheet** üzerinden taşınan CSS custom
-  property ile yönetilir (`--compare-pos`, `--scrub-p`). Kırpma ve konumlandırma
-  kuralları `resources/css/app.css` içinde kalır.
-- Glassmorphism tek kaynaktan türer: `.glass`, `.glass-strong`, `.glass-soft`,
-  `.glass-sheen`, `.glass-card`. Yeni cam yüzey için kural yazılmaz, sınıf kullanılır (DRY).
-- `prefers-reduced-motion` ve `prefers-reduced-transparency` tercihlerine uyulur.
-- Klavye erişilebilirliği: `focus-visible` halkası, "İçeriğe atla" bağlantısı,
-  hatalı alanlarda `aria-invalid`, toast'ta `aria-live="polite"`.
-
-### Cam yüzeyler videonun üzerinde
-
-Cam paneller `bg-white/[0.09]` ile kurulmuştu; bu, zemini arkadaki videonun
-parlaklığına bırakıyordu. Ölçüldü:
-
-| Videonun o bölgedeki parlaklığı | İkincil metin kontrastı |
-|---|---|
-| Koyu kare (25) | 4,42:1 |
-| Orta (60) | 2,72:1 |
-| Parlak kare (160) | **1,30:1** |
-
-Yani belirli karelerde yazı pratik olarak görünmez oluyordu. Zemin, yüzey
-rengiyle **%86 opaklığa** sabitlendi; `backdrop-blur` korunduğu için buzlu cam
-etkisi kaybolmadı. Dört farklı parlaklık değerinde yeniden ölçüldü, en kötü
-sonuç **4,61:1**. %86, eşiği geçen en saydam değer (%82'de 4,27'ye düşüyor).
-
-### Erişilebilirlik denetimi
-
-Sayfadaki her metin, gerçek zemin rengine karşı ölçülerek denetlendi.
-İlk taramada **33 eleman** WCAG AA eşiğinin altındaydı; iki sistematik sebep vardı:
-
-1. **Marka kırmızısı koyu zeminde metin olarak yetersiz.** `#EA0016` grafit üzerinde
-   4,03:1 veriyor. Çözüm renk değiştirmek değil, **ayrı bir metin token'ı** eklemek
-   oldu: `--brand-text`. Dolgu, kenarlık ve ikonlar kurumsal `--brand` rengini
-   kullanmaya devam ediyor; yalnızca yazı açılmış varyanta geçti.
-   Bosch 5,05:1 · Kalibre 7,18:1.
-2. **`--ink-faint` çok koyuydu** (4,11:1) ve 10px etiketlerde kullanılıyordu.
-   5,12:1'e açıldı, en küçük etiket 11px'e çıkarıldı.
-
-Ayrıca düzeltilenler:
-
-| Bulgu | Önce | Sonra |
-|---|---|---|
-| SSS başlığı tıklama alanı | 24 px | 64 px (mobilde 88 px) |
-| En uzun satır | 149 karakter | 66 karakter |
-| Geri sayım, 360 px | 3+1 sarıyordu | tek satır |
-| AA eşiği altındaki metin | 33 | **0** |
-
-Doğrulanan diğer maddeler: tek `h1`, başlık hiyerarşisinde atlama yok, tüm
-görsellerde `alt`, landmark'lar (`header`/`nav`/`main`/`footer`) yerinde,
-360 px'de yatay kaydırma yok.
-
-### Yerleşim kuralı: kısıtlı metin, taşan görsel
-
-Öncesi/sonrası bölümü önce `.shell` içindeydi (1320 px), hemen altındaki scroll
-bölümü ise tam ekrandı. İki gösterim bölümü farklı dil konuşuyordu ve asıl
-fotoğraf küçük kalan taraftaydı. 1880 px'lik ekranda ölçüldü: görsel 1254 px,
-kenarlarda 570 px boşluk.
-
-Editoryal kurala geçildi: **metin okunabilir genişlikte kalır, görsel tam ekrana
-taşar.** Başlık ve alt bilgi `.shell` içinde, görsel `.shell` dışında.
-
-| | Önce | Sonra |
-|---|---|---|
-| Görsel genişliği (1880 px ekran) | 1254 px | 1865 px |
-| Scroll bölümüyle tutarlılık | yok | ikisi de tam ekran |
-| Mobilde karşılaştırma yüksekliği | 220 px (16:9) | 260 px (3:2) |
-
-### Sanat yönetimi: her kırılma noktasına kendi kırpımı
-
-Tam ekrana taşıyınca yeni bir sorun çıktı: 16:9 görsel 2,59 oranındaki bir bandın
-içine `object-fit: cover` ile oturunca **%31,5'i kırpılıyordu** ve kesim kötü bir
-yerden geçiyordu (duvardaki nesneler yarıdan bölünüyordu).
-
-Çözüm yükseklik sınırı değil, **kaynağı her kırılma noktası için ayrı kırpmak** oldu:
-
-| | Kırpım | Kullanım |
-|---|---|---|
-| `kaput-*-genis.webp` | 1600×667 (2,40:1) | 640 px üstü, tam ekran bant |
-| `kaput-*-dar.webp` | 1341×894 (1,50:1) | 640 px altı |
-
-Kap oranı da o kırpımla eşleşiyor (`aspect-[12/5]` / `aspect-[3/2]`), yani
-tarayıcının kırpacağı bir şey kalmıyor:
-
-| | Önce | Sonra |
-|---|---|---|
-| Kırpılan alan, 1880 px | %31,5 | **%0,4** |
-| Kırpılan alan, 390 px | %16 | **%0** |
-
-İki kare de **aynı offset'ten** kesildi; farklı kesilseydi sürgü kaydırıldığında
-kareler birbirine oturmaz, karşılaştırma bozulurdu.
-
-Yan fayda: geniş kırpım, atölye diline uymayan arka plan nesnelerini kadraj
-dışında bırakıyor.
-
-### Hero yazısının okunabilirliği
-
-Hero'da yazı hareketli video üzerinde durur. Perde (scrim) göz kararı değil,
-ölçülerek ayarlanmıştır: videonun 10 karesi × 4 ekran genişliği üzerinden en kötü
-kontrast **5.2:1** (WCAG AA eşiği 4.5). Perdeyi bir kademe açmak bu değeri 3.9'a
-düşürür ve alt paragraf eşiğin altında kalır. Ayrıca perdeden bağımsız ikinci
-güvence olarak yazıya ince bir gölge uygulanmıştır.
-
-Perde 1320px altında yataydan dikeye döner: `.shell` maksimum genişliğine o noktada
-ulaşır, altında yazı bloğu tam genişliğe yayıldığı için yatay perde işe yaramaz.
-
----
-
-## 7. Ekstra modüller ve gerekçeleri
+## 8. Ekstra modüller ve gerekçeleri
 
 | Modül | Gerekçe |
 |---|---|
-| **Hero arka plan videosu** | Sessiz, 20 sn dikişsiz döngü (ileri-geri birleştirilmiş). Cam yüzeylerin hareketli görüntü üzerinde durması glassmorphism'in en güçlü göründüğü senaryo. |
-| **Scroll ile sürülen paso videosu** | Scroll ilerlemesi videonun zaman çizgisine bağlanır, mikron ve parlaklık sayaçları eşzamanlı sayar. `scroll` dinleyicisi yoktur: IntersectionObserver bölüm görünürken bir rAF döngüsü açar, çıkınca kapatır. Video 3 karede bir keyframe ile kodlanmıştır, seek pürüzsüzdür. Kliple scroll mesafesi birlikte ayarlanır (aşağıya bakın). |
-| **Öncesi/sonrası sürgüsü** | Hizmetin çıktısını anlatmak yerine gösterir. `range` input kullanıldığı için klavye ve ekran okuyucu desteği hazır gelir. |
-| **Kampanya geri sayımı** | Aciliyet duygusu. Bitiş tarihi `.env`'den; süresi dolunca sayaç gizlenip bilgilendirme mesajına döner. |
-| **WhatsApp destek butonu** | Türkiye'de servis randevusu için birincil kanal. Hazır mesaj metniyle açılır. |
-| **Referans kartları** | Sosyal kanıt. Yıldız derecelendirmesi ve araç modeli, genel ifadelere göre daha inandırıcı. |
-| **Honeypot + oran sınırı** | Bot gönderimlerini CAPTCHA eklemeden azaltır. |
-| **Referans numarası** | Başarılı gönderimde `KLB-004271` biçiminde numara döner. Kullanıcıya somut geri bildirim, operasyona takip anahtarı. |
-| **`SiteContent` sınıfı** | Tüm metinler tek kaynakta. Şablonlarda dizi tekrarı yok, içerik güncellemesi HTML'e dokunmadan yapılır. |
-
-### Scroll mesafesi klibe göre ayarlanır
-
-Scroll bölümünün yüksekliği keyfi değil; videodaki gerçek hareket miktarına göre
-belirlendi. İlk klipte pasta makinesinin yatay konumu kare kare ölçüldü:
-
-| | İlk klip | Kullanılan klip |
-|---|---|---|
-| Net ilerleme (0-1) | 0,02 | **0,31** |
-| Katedilen kare genişliği | %16 | **%34** |
-| Çözünürlük | 1280×720 | 1920×1080 kaynak |
-| Scroll mesafesi | 190vh'ye indirilmişti | **260vh** |
-
-İlk klipte makine karenin dar bir bandında dönüp başladığı yere dönüyordu; bölüm
-"pasoyu izleyin" diyordu ama izlenecek bir ilerleme yoktu, o yüzden scroll
-mesafesi kısaltılmıştı. İkinci klip tek yönde ilerlediği için mesafe geri açıldı.
-
-Kodlama ayarı da ölçülerek seçildi: 1600 px çıktı, 1280 px'e göre hiç ek detay
-vermiyordu (kenar enerjisi 1,963'e karşı 1,965) ama %46 daha ağırdı.
-
-### Mobil veri koruması
-
-640px altında iki video da **hiç indirilmez**; poster görselleri kalır ve scroll
-bölümü sayaç + ışık şeridi efektiyle çalışmaya devam eder. `saveData` açıksa veya
-`prefers-reduced-motion` seçiliyse de indirilmez.
-
-Uygulama detayı önemli: video kaynağı HTML'de `src` değil **`data-src`** olarak durur.
-`src` ile yazılsaydı tarayıcı sayfayı ayrıştırırken indirmeye başlar, `defer` ile
-çalışan JavaScript devreye girdiğinde iş işten geçmiş olurdu. Kaynak yalnızca
-koşullar sağlandığında atanır, aksi halde tek bayt inmez.
-
-Ölçülen: mobilde (375px) **393 KB**, hiç video isteği yok. Masaüstünde 8 MB,
-videolar poster yüklendikten sonra iniyor, ilk boyamayı etkilemiyor.
+| **Hero arka plan videosu** | Cam yüzeylerin hareketli görüntü üzerinde durması, glassmorphism'in en güçlü göründüğü senaryo |
+| **Scroll ile sürülen paso videosu** | Scroll ilerlemesi videonun zaman çizgisine bağlanır, mikron ve parlaklık sayaçları eşzamanlı sayar. `scroll` dinleyicisi yok: IntersectionObserver bölüm görünürken rAF döngüsü açar |
+| **Öncesi/sonrası sürgüsü** | Hizmetin çıktısını anlatmak yerine gösterir. `range` input kullanıldığı için klavye ve ekran okuyucu desteği hazır gelir |
+| **Kampanya geri sayımı** | Aciliyet. Bitiş tarihi `.env`'den; süresi dolunca sayaç gizlenip bilgilendirmeye döner |
+| **WhatsApp destek butonu** | Türkiye'de servis randevusu için birincil kanal. Hazır mesaj metniyle açılır |
+| **Referans kartları** | Sosyal kanıt. Yıldız derecelendirmesi ve araç modeli, genel ifadelere göre daha inandırıcı |
+| **Referans numarası** | Başarılı gönderimde `KLB-004271` biçiminde numara. Kullanıcıya somut geri bildirim, operasyona takip anahtarı |
+| **KVKK katmanı** | Kişisel veri toplayan form aydınlatma metni olmadan yayına çıkamaz. Onayın anı **ve metnin sürümü** kayıtla saklanır; metin değişince hangi kaydın neye onay verdiği belli kalır |
+| **Yönetim paneli** | Talep veritabanına yazılıyordu ama kimse haberdar olmuyordu. `status` alanı şemada zaten hazırdı, arayüzü yoktu |
+| **Bildirim katmanı** | Yeni talep atölyeye düşer. `log` modunda dosyaya yazar (SMTP yokken de akış doğrulanabilir), `mail` modunda gönderir |
+| **Mobil veri koruması** | 640px altında iki video da **hiç** indirilmez. Kaynak `data-src` ile tutulur; `src` yazılsaydı tarayıcı ayrıştırma sırasında indirmeye başlardı. Ölçülen: 375px'te 393 KB |
+| **Range destekli dosya sunucusu** | `video.currentTime` ancak sunucu HTTP Range desteklerse çalışır. PHP'nin dahili sunucusu `206` yerine `200` döner; `Core/FileServer.php` bunu çözer |
+| **Varlık sürümleme** | `asset()` dosyanın değişme zamanını adrese ekler (`app.css?v=6aaa55f3`). Sürümlü adres bir yıl + `immutable`, sürümsüz adres bir saat önbelleklenir. Yayına alınan yeni CSS geri dönen ziyaretçiye anında ulaşır; "sürüm atlamayı unutma" diye bir adım kalmaz |
+| **SEO** | Schema.org `AutoDetailing` JSON-LD, canonical/og etiketleri, favicon, `robots.txt`, `sitemap.xml` |
 
 ---
 
-## 7b. SEO ve yerel işletme verisi
-
-| Ne | Nerede |
-|---|---|
-| `canonical` · `og:url` | `.env` içindeki `APP_URL` üzerinden üretilir, sayfaya göre değişir |
-| `og:image` · `twitter:card` | Paylaşımda kapak görseli |
-| **Schema.org `AutoDetailing`** | Adres, telefon, koordinat ve çalışma saatleri JSON-LD olarak gömülü; Google'da zengin sonuç için |
-| Haritada gör | İletişim bölümünde Google Maps bağlantısı |
-
-`APP_URL` yayına alırken gerçek alan adıyla değiştirilmelidir; canonical ve
-og etiketleri otomatik olarak ona göre üretilir.
-
----
-
-## 8. Kurulum
+## 9. Testler ve denetimler
 
 ```bash
-npm install
-cp .env.example .env              # DB bilgilerini düzenleyin
-mysql -u root -p < database/schema.sql
-npm run build                     # geliştirme için: npm run dev
-npm run serve                     # http://127.0.0.1:5174
+npm test          # 117 test (php tests/run.php) - harici bagimlilik yok
+npm run yerlesim  # 6 genislik x 5 sayfa: yatay tasma, h1, baslik atlamasi, alt metni
+npm run kontrast  # WCAG AA, duz zeminler ve cam yuzeyler
+npm run hero      # hero kontrasti, piksel yontemi (video uzerinde)
+npm run denetim   # dordu birden
 ```
 
-MySQL kurulu değilse taşınabilir MariaDB ile de çalışır (yönetici izni gerekmez);
-ayrıntı `HANDOFF.md` içinde.
+Veri erişim katmanı sahte bir PDO ile test edilir; **MySQL kurulu olmadan da**
+prepared statement kullanıldığı ve kullanıcı girdisinin SQL metnine
+birleştirilmediği doğrulanabilir. `.mjs` denetimleri `playwright-core` ve yerel
+bir Chrome ister, sunucu açıkken çalışır.
 
-Üretimde web sunucusunun kök dizini **`public/`** olmalıdır.
-
----
-
-## 8b. Statik dosyalar ve bayt aralığı (Range)
-
-Scroll ile sürülen video bölümü, `video.currentTime` atayarak çalışır. Tarayıcı
-bir videoyu ancak sunucu **HTTP Range** isteklerini destekliyorsa "sarılabilir"
-sayar; desteklemiyorsa dosyayı tamamen indirse bile `seekable` aralığı boş kalır
-ve `currentTime` atamaları **sessizce yok sayılır**.
-
-PHP'nin dahili geliştirme sunucusu Range isteklerine `206` yerine `200` döner.
-Sonuç: video ilk karesinde donar, sayaçlar çalışmaya devam ettiği için hata
-fark edilmez.
-
-`app/Core/FileServer.php` bunu çözer:
-
-| Durum | Yanıt |
-|---|---|
-| Aralık istenmemiş | `200` + `Accept-Ranges: bytes` |
-| `bytes=0-1023` | `206` + `Content-Range: bytes 0-1023/3200823` |
-| `bytes=-500` (son 500 bayt) | `206` |
-| Dosya dışı aralık | `416` |
-| Dizin dışına çıkma denemesi | `404` (`realpath` ile doğrulanır) |
-
-Ayrıca `ETag` + `304` ve `Cache-Control` üretir.
-
-Bu yüzden `npm run serve` komutu PHP'yi **yönlendirici betiği** ile başlatır
-(`php -S ... public/index.php`); aksi halde dahili sunucu statik dosyaları
-`index.php`'ye hiç uğratmadan kendi sunar ve sınıf devreye girmez.
-
-Üretimde Apache/nginx statik dosyaları kendi sunar ve Range'i zaten destekler;
-bu katman oraya uğramaz.
-
----
-
-## 9. Testler
-
-```bash
-npm test          # veya: php tests/run.php
-```
-
-Harici bağımlılık gerektirmez. Veri erişim katmanı sahte bir PDO ile test edilir,
-böylece **MySQL kurulu olmadan da** prepared statement kullanıldığı ve kullanıcı
-girdisinin SQL metnine birleştirilmediği doğrulanabilir.
-
-Mevcut durum: **34 test, hepsi geçiyor.**
-
-### Rotalar
-
-| Metot | Yol | Denetleyici |
-|---|---|---|
-| GET | `/` | `HomeController@index` |
-| GET | `/case` | `CaseStudyController@index` |
-| POST | `/api/contact` | `ContactController@store` |
+**Mevcut durum:** 117 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0 ·
+hero eşik altı 0.
 
 ### API sözleşmesi
 
@@ -452,25 +284,48 @@ Mevcut durum: **34 test, hepsi geçiyor.**
 | Oran sınırı | 429 | `{"ok":false,"message":"...","errors":[]}` |
 | Veritabanı erişilemez | 503 | `{"ok":false,"message":"...","errors":[]}` |
 
+### Uçtan uca doğrulanan senaryolar
+
+Gerçek bir veritabanına karşı çalıştırıldı (MariaDB 11.4, PDO `mysql`):
+form gönderimi ve kayıt · Türkçe karakter · SQL injection denemesi (düz metin
+olarak kaydedildi, tablo bozulmadı) · boş form · geçersiz e-posta · honeypot ·
+oran sınırı · veritabanı kapalı · KVKK onayı olan ve olmayan gönderim ·
+panel girişi. Tam liste ve ölçümler: [`docs/KARARLAR.md`](docs/KARARLAR.md).
+
 ---
 
-## 10. Uçtan uca doğrulama
+## 10. Yayın öncesi kontrol listesi
 
-Form akışı gerçek bir veritabanına karşı çalıştırıldı (MariaDB 11.4, PDO `mysql`
-sürücüsü). Ölçülen sonuçlar:
+Bu proje bir case study olarak teslim ediliyor; aşağıdakiler gerçek bir alan
+adına çıkarken yapılması gerekenlerdir.
 
-| Senaryo | Sonuç |
-|---|---|
-| Tarayıcıdan form gönderimi | 200, `KLB-000001` referansı, kayıt tabloda |
-| Türkçe karakter (`Melis Arıkan`, `için`) | `utf8mb4` ile bozulmadan kaydedildi |
-| SQL injection denemesi (`'); DROP TABLE ...`) | Düz metin olarak kaydedildi, tablo bozulmadı |
-| Boş form | 422 + dört alan için ayrı hata mesajı |
-| Geçersiz e-posta | 422, yalnızca `email` alanı işaretlendi |
-| Honeypot dolu (bot) | 200, kayıt oluşturulmadı |
-| Oran sınırı (10 dk / 5) | 5. kayıttan sonra 429 |
-| Veritabanı kapalı | 503, kontrollü mesaj, uygulama çökmüyor |
+| # | Yapılacak | Nerede |
+|---|---|---|
+| 1 | `APP_DEBUG=false`, `APP_ENV=production` | `.env` |
+| 2 | `APP_URL` gerçek alan adı | `.env` |
+| 3 | `ADMIN_PASSWORD_HASH` yeni parolayla üretilsin | `.env` |
+| 4 | `NOTIFY_TRANSPORT=mail` ve çalışan gönderici adresi | `.env` |
+| 5 | Veri sorumlusu bilgileri: ticaret unvanı, MERSİS, KEP | `LegalContent.php` |
+| 6 | Öncesi/sonrası kareleri gerçek atölye çekimiyle değişsin | `public/assets/img/` |
+| 7 | Lisanslı kelime markası varlığı slota bırakılsın | `public/assets/img/wordmark-bosch.svg` |
+| 8 | Web sunucusu kökü `public/`, HTTPS açık | sunucu yapılandırması |
 
-## 11. Önceki sürüm
+Maddeler 5, 6 ve 7 gerçek işletme varlığı gerektirir. Prototipte eksik oldukları
+gizlenmiyor; öncesi/sonrası görsellerinin temsili olduğu sayfanın üzerinde yazıyor.
+
+---
+
+## 11. Marka kullanımı
+
+Varsayılan tema Bosch Car Service kurumsal kimliğini kullanır. Bu **bağımsız bir
+prototiptir**, Robert Bosch GmbH ile ticari veya kurumsal bağlantısı yoktur;
+marka adı, amblem ve renkler yalnızca kurumsal kimliğe sadık arayüz tasarımını
+göstermek amacıyla kullanılmıştır. Marka hakları Robert Bosch GmbH'ye aittir ve
+sayfa altında bu bilgilendirme görünür.
+
+`APP_BRAND=kalibre` ile proje kendi markasıyla da çalışır.
+
+---
 
 Bu dönüşümden önceki tek dosyalık statik sürüm `_eski/index.static.html`
-içinde korunmuştur. Görseller ve videolar `public/assets/` altına taşınmıştır.
+içinde korunmuştur.

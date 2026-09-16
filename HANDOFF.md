@@ -12,6 +12,7 @@ sıfırdan anlatmaktan hızlıdır.
 
 ```
 Önce kalibre-landing/HANDOFF.md ve kalibre-landing/README.md dosyalarını oku.
+Ayrıntılı gerekçeler kalibre-landing/docs/KARARLAR.md içinde.
 Bu bir iş başvurusu case study'si, oradaki kurallara sadık kalman önemli.
 Sonra şunu yapmanı istiyorum: ...
 ```
@@ -21,7 +22,8 @@ Sonra şunu yapmanı istiyorum: ...
 ```bash
 npm run db        # veritabani, ayri bir terminalde acik kalmali
 npm run start     # CSS derle + sunucu -> http://127.0.0.1:5174
-npm test          # 34 test
+npm test          # 117 test
+npm run denetim   # testler + yerlesim + kontrast + hero denetimi
 ```
 
 **Önemli:** `npm run serve` PHP'yi yönlendirici betiğiyle başlatır. Elle
@@ -42,11 +44,12 @@ Teknik değerlendirme (iş başvurusu case study) olarak hazırlandı.
 | Frontend | Tailwind CSS 3.4, glassmorphic bileşenler, vanilla JS |
 | Backend | PHP 8.4, framework yok, OOP + MVC, kendi PSR-4 autoloader'ı |
 | Veritabanı | MySQL / MariaDB, PDO prepared statements |
-| Rotalar | `/` landing · `/case` vaka çalışması · `POST /api/contact` |
+| Rotalar | `/` landing · `/case` vaka çalışması · `/kvkk` · `/gizlilik` · `/yonetim` panel · `POST /api/contact` |
+| Yasal | KVKK aydınlatma metni, gizlilik politikası, formda zorunlu onay (sürümüyle kaydedilir) |
 
 ---
 
-## 2. Bilmen gereken beş kural
+## 2. Bilmen gereken sekiz kural
 
 Bu projede bilinçli olarak konulmuş, bozulmaması gereken kurallar:
 
@@ -64,7 +67,14 @@ Bu projede bilinçli olarak konulmuş, bozulmaması gereken kurallar:
 5. **Glassmorphism tek kaynaktan türer:** `.glass`, `.glass-strong`,
    `.glass-soft`, `.glass-sheen`, `.glass-card`. Yeni cam yüzey için kural
    yazılmaz, bu sınıflar kullanılır.
-6. **Sunucuyu `npm run serve` ile başlat.** PHP'yi yönlendirici betiği olmadan
+6. **Ziyaretçi tarafında çerez oluşturma.** Gizlilik metni "bu sitede çerez
+   kullanılmıyor" diyor ve bu bir iddia değil, korunması gereken bir durum.
+   Oturum çerezi yalnızca `/yonetim` yolunda oluşur (`Session.php` cookie yolunu
+   oraya kısıtlar). Analitik veya izleme eklenecekse metin de değişmeli.
+7. **Yasal metin değişirse `LegalContent::SURUM` yükselt.** Forma verilen onay,
+   onaylanan metnin sürümüyle birlikte kaydedilir. Sürümü yükseltmeden metni
+   değiştirmek, eski kayıtların hangi metne onay verdiğini belirsizleştirir.
+8. **Sunucuyu `npm run serve` ile başlat.** PHP'yi yönlendirici betiği olmadan
    çalıştırırsan statik dosyalar `index.php`'ye uğramaz, Range desteği devre
    dışı kalır ve scroll videosu ilk karesinde donar (sayaçlar çalışmaya devam
    ettiği için hata gözden kaçar).
@@ -75,15 +85,21 @@ Bu projede bilinçli olarak konulmuş, bozulmaması gereken kurallar:
 
 ```
 app/Core/         Çerçeve: Router, Request, Response, Validator, View, Database, Env,
+                  Security (CSP + başlıklar), Session (oturum + CSRF),
                   FileServer (Range destekli statik dosya sunucusu)
-app/Controllers/  HomeController, CaseStudyController, ContactController
+app/Controllers/  Home, CaseStudy, Contact, Legal (/kvkk, /gizlilik),
+                  Seo (robots, sitemap), Admin (/yonetim)
 app/Models/       ContactMessage  (tek SQL noktası)
-app/Support/      SiteContent (tüm metinler), Brand (marka teması), CaseStudy
-app/Views/        layouts/main.php + partials/*.php
+app/Support/      SiteContent (tüm metinler), LegalContent (yasal metinler),
+                  Brand (marka teması), CaseStudy, Notifier, LoginThrottle
+app/Views/        layouts/{main,admin}.php + partials/*.php + legal.php + admin/*
 resources/css/    app.css  ← Tailwind kaynağı, TÜM component sınıfları burada
 public/           Web kökü. index.php + assets/{css,js,img,video}
-database/         schema.sql
-tests/run.php     Bağımlılıksız duman testleri (34 test)
+database/         schema.sql + migrations/
+storage/          Bildirim günlüğü ve giriş deneme sayacı (versiyonlanmaz)
+tests/run.php     Bağımlılıksız duman testleri (117 test)
+tests/*.mjs       Yerleşim, kontrast ve hero denetimleri (playwright-core ister)
+docs/KARARLAR.md  Ayrıntılı gerekçeler ve ölçümler (README'nin eşlikçisi)
 _eski/            Bu dönüşümden önceki tek dosyalık statik sürüm
 ```
 
@@ -121,6 +137,31 @@ npm run db:sql    # baglan:  SELECT * FROM contact_messages;
 
 Normal MySQL kuruluysa `.env` içinde `DB_PORT=3306` yap.
 
+### Yönetim paneli
+
+`http://127.0.0.1:5174/yonetim` — kullanıcı adı `.env` içindeki `ADMIN_USER`.
+Parolanın kendisi hiçbir dosyada yazılı değildir, yalnızca bcrypt özeti durur.
+Parolayı kaybedersen yenisini üret:
+
+```bash
+php -r "echo password_hash('yeni-parola', PASSWORD_BCRYPT), PHP_EOL;"
+```
+
+Çıkan değeri `.env` içindeki `ADMIN_PASSWORD_HASH` satırına yaz. Beş hatalı
+denemeden sonra o IP 15 dakika kilitlenir; kilidi açmak için
+`storage/login-denemeleri.json` dosyasını sil.
+
+### Denetim betikleri
+
+`npm run yerlesim` ve `npm run kontrast`, `playwright-core` ile yerel bir Chrome
+ister ve **sunucu açıkken** çalışır. `playwright-core` bu projenin kendi
+bağımlılığı değildir; üst klasörde bulunduğu için çözülüyor. Başka bir makinede
+`npm i -D playwright-core` gerekir. Chrome başka bir yoldaysa:
+
+```bash
+CHROME="/yol/chrome.exe" npm run kontrast
+```
+
 ---
 
 ## 5. Doğrulanmış durum
@@ -134,9 +175,17 @@ Aşağıdakiler iddia değil, çalıştırılarak ölçüldü:
 | Türkçe karakter | `utf8mb4` ile sorunsuz |
 | Oran sınırı | 5. kayıttan sonra 429 |
 | Inline stil | Canlı DOM'da 0 |
-| Hero yazı kontrastı | En kötü 5,2:1 (WCAG AA eşiği 4,5) |
+| Hero yazı kontrastı | En kötü 4,62:1, eşik altı 0 (10 kare × 3 genişlik, her eleman) |
 | Mobil veri (375px) | 393 KB, hiç video indirilmiyor |
-| Testler | 34/34 |
+| KVKK onayı işaretsiz | 422, kayıt oluşmuyor |
+| KVKK onayı işaretli | `consent_at` + `consent_version` tabloda |
+| Yeni talep bildirimi | `storage/logs/bildirimler.log` dosyasına düştü |
+| Panel girişi | Hatalı parolada sayaç düşüyor, doğru parolada liste açılıyor |
+| CSP altında sürgü ve scroll videosu | İkisi de çalışıyor, konsolda hata yok |
+| Yerleşim (6 genişlik × 5 sayfa) | 0 kusur |
+| Kontrast (390 ve 1440 px, panel dahil) | Eşik altı 0 metin |
+| Hero kontrastı (piksel yöntemi) | Eşik altı 0 metin |
+| Testler | 117/117 |
 
 ---
 
@@ -150,8 +199,12 @@ Aşağıdakiler iddia değil, çalıştırılarak ölçüldü:
    garanti rakamları sektörde tipik değerler ama gerçek işletme verisi değil.
 3. `.env` içindeki `APP_URL` gerçek alan adıyla değiştirilmeli (canonical ve
    og etiketleri ondan üretilir).
-4. Yönetim paneli: şemadaki `status` alanı (`new` / `read` / `archived`) bunun
-   için hazır, arayüz yok.
+4. **Bildirim `log` modunda.** Gerçek e-posta için `.env` içinde
+   `NOTIFY_TRANSPORT=mail` yapmak ve çalışan bir gönderici adresi vermek gerekir.
+5. **Veri sorumlusu bilgileri eksik.** Ticaret unvanı, MERSİS, vergi dairesi ve
+   KEP adresi `LegalContent.php` içine eklenmelidir. Sayfada bu eksik gizlenmiyor,
+   ilgili bölümün altında açıkça yazıyor.
+6. Yayın öncesi kontrol listesinin tamamı `README.md` §11'de.
 
 ---
 

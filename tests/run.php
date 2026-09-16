@@ -20,6 +20,9 @@ require $root . '/app/Core/Autoloader.php';
 Autoloader::register($root . '/app');
 require $root . '/app/Core/helpers.php';
 
+// CSRF testleri oturum gerektirir; cikti baslamadan once acilir.
+@session_start();
+
 $pass = 0;
 $fail = 0;
 
@@ -130,6 +133,15 @@ final class FakeStatement extends PDOStatement
     {
         return 2;
     }
+    /** Panel listesi sorgulari fetchAll kullanir. */
+    public function fetchAll(int $mode = PDO::FETCH_DEFAULT, mixed ...$args): array
+    {
+        return [];
+    }
+    public function rowCount(): int
+    {
+        return 1;
+    }
 }
 
 final class FakePdo extends PDO
@@ -199,6 +211,8 @@ check('hicbir etikette style attribute yok', !preg_match('/<[^>]+\sstyle\s*=/i',
 check('hero videosu bagli', str_contains($html, 'video/hero.mp4'));
 check('scroll videosu bagli', str_contains($html, 'video/paso.mp4'));
 check('cam yuzey siniflari kullanilir', substr_count($html, 'glass') > 10);
+
+require __DIR__ . '/yeni-katmanlar.php';
 
 printf("\n%d gecti, %d kaldi\n\n", $pass, $fail);
 exit($fail === 0 ? 0 : 1);
