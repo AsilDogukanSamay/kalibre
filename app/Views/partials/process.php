@@ -39,7 +39,7 @@
                     <?php if ($gorsel): ?>
                         <div class="flow-media">
                             <img class="flow-photo" src="<?= e(asset('img/' . $step['image'])) ?>" alt=""
-                                 width="640" height="420" loading="lazy" decoding="async">
+                                 width="1200" height="500" loading="lazy" decoding="async">
                             <span class="flow-media-scrim"></span>
                             <span class="flow-no"><?= e($sira) ?></span>
                         </div>
