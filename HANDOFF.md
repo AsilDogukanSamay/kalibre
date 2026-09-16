@@ -22,7 +22,7 @@ Sonra şunu yapmanı istiyorum: ...
 ```bash
 npm run db        # veritabani, ayri bir terminalde acik kalmali
 npm run start     # CSS derle + sunucu -> http://127.0.0.1:5174
-npm test          # 163 test
+npm test          # 176 test
 npm run denetim   # testler + yerlesim + kontrast + hero denetimi
 ```
 
@@ -107,7 +107,7 @@ resources/css/    app.css  ← Tailwind kaynağı, TÜM component sınıfları b
 public/           Web kökü. index.php + assets/{css,js,img,video}
 database/         schema.sql + migrations/
 storage/          Bildirim günlüğü ve giriş deneme sayacı (versiyonlanmaz)
-tests/run.php     Bağımlılıksız duman testleri (163 test)
+tests/run.php     Bağımlılıksız duman testleri (176 test)
 tests/*.mjs       Yerleşim, kontrast ve hero denetimleri (playwright-core ister)
 docs/KARARLAR.md  Ayrıntılı gerekçeler ve ölçümler (README'nin eşlikçisi)
 _eski/            Bu dönüşümden önceki tek dosyalık statik sürüm
@@ -195,7 +195,7 @@ Aşağıdakiler iddia değil, çalıştırılarak ölçüldü:
 | Yerleşim (6 genişlik × 5 sayfa) | 0 kusur |
 | Kontrast (390 ve 1440 px, panel dahil) | Eşik altı 0 metin |
 | Hero kontrastı (piksel yöntemi) | Eşik altı 0 metin |
-| Testler | 163/163 |
+| Testler | 176/176 |
 
 ---
 

@@ -1,7 +1,7 @@
 <?php /** @var array<int,array<string,mixed>> $plans */ ?>
 <section id="fiyat" class="section shell">
     <div class="section-head" data-reveal>
-        <h2 class="h-section text-balance">İki paket, ikisi de ölçümle başlıyor.</h2>
+        <h2 class="h-section text-balance" data-satir>İki paket, ikisi de ölçümle başlıyor.</h2>
         <p class="body-text">Fiyatlar orta sınıf sedan içindir. SUV ve ticari araçlarda yüzey alanına göre fark uygulanır, ölçüm sonrası net fiyat verilir.</p>
         <p class="body-sm">İç detaylı temizlik ve şeffaf koruma filmi paket dışında, tek tek de alınabilir. Başlangıç fiyatları hizmetler bölümünde.</p>
         <p class="text-xs text-ink-faint">Son güncelleme: Eylül 2026</p>

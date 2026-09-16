@@ -2,7 +2,7 @@
 <section class="section shell">
     <div class="section-head" data-reveal>
         <span class="eyebrow">Müşteri geri bildirimi</span>
-        <h2 class="h-section text-balance">Teslimde rapor veriyoruz, fark oradan başlıyor.</h2>
+        <h2 class="h-section text-balance" data-satir>Teslimde rapor veriyoruz, fark oradan başlıyor.</h2>
     </div>
 
     <div class="grid gap-4 md:grid-cols-3" data-reveal-group>

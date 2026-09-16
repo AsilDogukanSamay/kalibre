@@ -4,7 +4,7 @@
 <section class="shell pb-8 pt-4">
     <div class="grid items-end gap-8 lg:grid-cols-12 lg:gap-14">
         <div class="flex flex-col gap-3 lg:col-span-7">
-            <h2 class="h-section text-balance">Pasoyu kendi hızınızda izleyin.</h2>
+            <h2 class="h-section text-balance" data-satir>Pasoyu kendi hızınızda izleyin.</h2>
             <p class="body-text">Aşağı kaydırdıkça video ilerler ve ölçüm değerleri onunla birlikte değişir. Kesme pasosu boyadan birkaç mikron alır; bu yüzden her adımda yeniden ölçüyoruz.</p>
         </div>
 

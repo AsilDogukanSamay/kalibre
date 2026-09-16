@@ -464,3 +464,33 @@ check('scroll videosunun posteri duruyor',
 check('scroll posteri arkadaki gorselle ayni dosya',
     isset($scrubVideo[0]) && str_contains($scrubVideo[0], 'img/paso.webp'));
 check('video kaynagi hala data-src ile tutuluyor', str_contains($home, 'data-src="/assets/video/hero.mp4'));
+
+// ---------------------------------------------------------------- Baslik ve sonuc
+echo "
+Baslik ve sonuc kutusu
+";
+
+// Cerceve BASLIGA degil SONUCA uygulanir. Bu bir tasarim kurali; test
+// cercevenin baslik bileseninde bitmedigini dogrular.
+check('bolum basligi cerceveli degil', !str_contains($css, '.section-head { @apply glass'));
+check('bolum basliginda cizilen aksan cizgisi var', str_contains($css, '.section-head::before'));
+check('her bolum basligi acilisa bagli', substr_count($home, 'class="section-head') === substr_count($home, 'section-head" data-reveal')
+    + substr_count($home, 'section-head mb-0" data-reveal'));
+
+check('sonuc kutusu cam yuzeyden turer', str_contains($css, '.verdict      { @apply glass '));
+// Yalnizca kapsayici sayilir; verdict-key/val/note ayni onekle basliyor.
+$sonucKutusu = preg_match_all('/class="verdict\s/', $home);
+check('sayfada sonuc kutusu ender', $sonucKutusu === 2, 'adet: ' . $sonucKutusu);
+check('surec toplami sonuc kutusunda', str_contains($home, 'Araç atölyede toplam')
+    && str_contains($home, 'verdict-val'));
+check('olcum degerleri sonuc kutusunda',
+    str_contains($home, 'Boya kalınlığı, kaput') && str_contains($home, 'Ölçülen parlaklık'));
+
+// Satir satir baslik acilisi
+check('basliklar satir acilisina isaretli', substr_count($home, 'data-satir') >= 6);
+// Yorum satirlarinda kelime gecebilir; aranan sey GERCEK kullanim.
+check('istemci tarafinda innerHTML atamasi yok', preg_match('/\.innerHTML\s*=/', $js) === 0);
+check('satir kutusu alt cikintilara pay birakiyor', str_contains($css, 'padding-bottom: 0.14em; margin-bottom: -0.14em;'));
+check('yazi tipi yuklenmeden olculmuyor', str_contains($js, 'document.fonts.ready'));
+check('animasyon sonunda metin eski haline doner', str_contains($js, 'el.textContent = orijinal;'));
+check('hareket azaltmada satir animasyonu yok', str_contains($css, '.satir-ic { transform: none; transition: none; }'));

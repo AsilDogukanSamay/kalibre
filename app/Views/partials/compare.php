@@ -8,7 +8,7 @@
     <div class="shell">
         <div class="section-head" data-reveal>
             <span class="eyebrow-label">Aynı kaput, iki paso</span>
-            <h2 class="h-section">Önce ve sonra, aynı kadrajdan.</h2>
+            <h2 class="h-section" data-satir>Önce ve sonra, aynı kadrajdan.</h2>
             <p class="body-text">Sürgüyü kaydırın. Soldaki kayıt işlem öncesi ölçümde, sağdaki iki kademeli düzeltme ve seramik uygulamasından sonra çekildi.</p>
         </div>
     </div>
@@ -39,11 +39,18 @@
     </div>
 
     <div class="shell">
-        <p class="compare-meta">
-            <span>Boya kalınlığı öncesi <strong class="readout text-ink">138 &micro;m</strong></span>
-            <span>Sonrası <strong class="readout text-ink">129 &micro;m</strong></span>
-            <span>Ölçülen parlaklık <strong class="readout text-ink">41 GU</strong> yerine <strong class="readout text-ink">94 GU</strong></span>
-        </p>
+        <!-- Bolumun sonucu: iki olculmus deger. Cerceve buraya ait, basliga degil. -->
+        <div class="verdict mt-8" data-reveal>
+            <span class="verdict-rule" aria-hidden="true"></span>
+            <p class="shrink-0">
+                <span class="verdict-key">Boya kalınlığı, kaput</span>
+                <strong class="verdict-val">138 &rarr; 129 <span class="verdict-birim">&micro;m</span></strong>
+            </p>
+            <p class="shrink-0 verdict-note">
+                <span class="verdict-key">Ölçülen parlaklık</span>
+                <strong class="verdict-val">41 &rarr; 94 <span class="verdict-birim">GU</span></strong>
+            </p>
+        </div>
         <p class="note mt-3 max-w-[86ch]">
             Bu bölümdeki öncesi/sonrası kareleri ve ölçüm değerleri temsilidir; gerçek bir müşteri
             aracına ait değildir. Yayına alınırken atölyede aynı kadrajdan çekilen gerçek karelerle

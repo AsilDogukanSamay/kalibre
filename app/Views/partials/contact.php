@@ -3,8 +3,8 @@
     <div class="grid gap-8 lg:grid-cols-12 lg:gap-14">
 
         <div class="flex flex-col gap-6 lg:col-span-5" data-reveal>
-            <div class="section-head mb-0">
-                <h2 class="h-section text-balance">Önce aracı görelim.</h2>
+            <div class="section-head mb-0" data-reveal>
+                <h2 class="h-section text-balance" data-satir>Önce aracı görelim.</h2>
                 <p class="body-text">Ölçüm ve durum tespiti ücretsiz, yaklaşık 45 dakika sürüyor. Formu bırakın, aynı gün içinde arıyoruz.</p>
             </div>
 

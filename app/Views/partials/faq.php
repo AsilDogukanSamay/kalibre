@@ -2,7 +2,7 @@
 <section id="sss" class="section shell">
     <div class="grid gap-8 lg:grid-cols-12 lg:gap-14">
         <div class="lg:col-span-4">
-            <h2 class="h-section text-balance">Sık sorulanlar</h2>
+            <h2 class="h-section text-balance" data-satir>Sık sorulanlar</h2>
         </div>
 
         <div class="flex flex-col gap-3 lg:col-span-8" data-reveal-group>

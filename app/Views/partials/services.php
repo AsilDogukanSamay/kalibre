@@ -1,7 +1,7 @@
 <?php /** @var array<int,array<string,mixed>> $services */ ?>
 <section id="hizmetler" class="section shell">
     <div class="section-head" data-reveal>
-        <h2 class="h-section text-balance">Dört iş yapıyoruz, dördünü de sonuna kadar.</h2>
+        <h2 class="h-section text-balance" data-satir>Dört iş yapıyoruz, dördünü de sonuna kadar.</h2>
         <p class="body-text">Araç kabul edilmeden önce hangi işlemin gerektiğine ölçüm karar verir. Gerekmeyen işlemi satmıyoruz.</p>
     </div>
 

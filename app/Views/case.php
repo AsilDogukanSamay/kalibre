@@ -39,7 +39,7 @@
 
 <!-- Problem -->
 <section class="shell section">
-    <div class="section-head">
+    <div class="section-head" data-reveal>
         <h2 class="h-section">Başlangıç noktası</h2>
         <p class="body-text">Atölye sahibiyle konuşulduğunda üç sorun tekrar ediyor.</p>
     </div>
@@ -56,7 +56,7 @@
 
 <!-- Kararlar -->
 <section class="shell section pt-0">
-    <div class="section-head">
+    <div class="section-head" data-reveal>
         <h2 class="h-section">Tasarım kararları</h2>
         <p class="body-text">Her kararın bir gerekçesi ve bir bedeli var. İkisi birlikte yazılmazsa karar değil, tercih olur.</p>
     </div>
@@ -88,7 +88,7 @@
 
 <!-- Tasarım sistemi -->
 <section class="shell section pt-0">
-    <div class="section-head">
+    <div class="section-head" data-reveal>
         <h2 class="h-section">Tasarım sistemi</h2>
         <p class="body-text">Aşağıdaki değerler ekran görüntüsü değil. Sayfanın gerçekten kullandığı CSS değişkenlerinden okunuyor.</p>
     </div>
@@ -153,7 +153,7 @@
 
 <!-- Mimari -->
 <section class="shell section pt-0">
-    <div class="section-head">
+    <div class="section-head" data-reveal>
         <h2 class="h-section">İstek nasıl akıyor</h2>
         <p class="body-text">Her katmanın tek bir sorumluluğu var. Sorgu yalnızca modelde, kaçış yalnızca görünümde, yapılandırma yalnızca Env'de.</p>
     </div>

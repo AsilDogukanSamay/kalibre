@@ -103,7 +103,29 @@
   /* ---------- Yerleşim ---------- */
   .shell        { @apply mx-auto w-full max-w-[82.5rem] px-5 sm:px-6; }
   .section      { @apply py-16 sm:py-20 lg:py-28; }
-  .section-head { @apply mb-10 flex max-w-2xl flex-col gap-3 sm:mb-14; }
+  /* Bolum basligi. Ustundeki kisa cizgi bolumun basladigi yeri isaretler ve
+     bolum goruse girdiginde soldan cizilir. Cerceve yerine bu: yapi veriyor
+     ama basligi kutuya kapatmiyor. */
+  .section-head { @apply relative mb-10 flex max-w-2xl flex-col gap-3 pt-5 sm:mb-14; }
+  .section-head::before {
+    content: "";
+    @apply absolute left-0 top-0 block h-0.5 w-10 origin-left bg-brand;
+    transform: scaleX(0);
+    transition: transform 620ms cubic-bezier(0.16, 1, 0.3, 1) 120ms;
+  }
+
+  /* ---------- Sonuc kutusu ----------
+     Cerceve sayfada ENDER kullanilir ve yalnizca bir SONUCU sarar: olculmus
+     bir deger ya da bir taahhut. Basliklara uygulanmaz - her sey cerceveli
+     olursa hicbiri onemli gorunmez. */
+  .verdict      { @apply glass relative flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:gap-8 sm:p-6; }
+  .verdict-key  { @apply text-[11px] uppercase tracking-[0.14em] text-ink-faint; }
+  .verdict-val  { @apply readout mt-1 block text-[clamp(1.6rem,3vw,2.2rem)] leading-none text-ink; }
+  .verdict-note  { @apply sm:border-l sm:border-line sm:pl-8; }
+  .verdict-birim { @apply ml-1 text-base text-ink-muted; font-variation-settings: "wdth" 92, "wght" 400; }
+  .verdict-rule { @apply absolute inset-x-0 top-0 block h-px origin-left bg-brand;
+                  transform: scaleX(0);
+                  transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1) 200ms; }
 
   /* ---------- Aciklama metni ----------
      Ipucu degil, okunmasi gereken cumle. Sorumluluk bildirimleri ve yasal
@@ -596,6 +618,44 @@
   .text-balance { text-wrap: balance; }
 }
 
+
+/* ============================================================
+   Satır satır başlık açılışı - KATMAN DIŞINDA
+
+   Başlık, satırları maskenin altından yukarı kayarak geliyor. Satırlara
+   bölme işi JavaScript'te Range API ile yapılıyor: metin düğümü karakter
+   karakter ölçülüp satır kutusunun değiştiği yerler bulunuyor. innerHTML
+   kullanılmıyor, elemanlar createElement + textContent ile kuruluyor.
+
+   padding/margin çifti tesadüf değil: satır yüksekliği 0,98 ve maske
+   overflow:hidden. Türkçede ğ, ç, y, ş gibi alt çıkıntılı harfler bol;
+   pay bırakılmazsa kırpılıyorlar. Ölçülerek eklendi.
+
+   Animasyon bitince metin eski haline döndürülüyor - kalıcı bir DOM
+   değişikliği bırakmıyor, yeniden boyutlandırma ve metin seçme bozulmuyor.
+   ============================================================ */
+
+.satir     { display: block; overflow: hidden; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.satir-ic  {
+  display: block;
+  transform: translateY(108%);
+  transition: transform 780ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.is-in .satir-ic { transform: none; }
+
+.satir:nth-child(2) .satir-ic { transition-delay: 90ms; }
+.satir:nth-child(3) .satir-ic { transition-delay: 180ms; }
+.satir:nth-child(4) .satir-ic { transition-delay: 270ms; }
+
+[data-reveal].is-in .section-head::before,
+.section-head[data-reveal].is-in::before,
+.is-in .verdict-rule { transform: scaleX(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .satir-ic { transform: none; transition: none; }
+  .section-head::before,
+  .verdict-rule { transform: scaleX(1); transition: none; }
+}
 
 /* ============================================================
    Görünüme giriş - KATMAN DIŞINDA

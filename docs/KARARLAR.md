@@ -578,7 +578,49 @@ gönderilemezse talep yine de kaydedilmiştir ve kullanıcı başarı yanıtın�
 
 ---
 
-## 7c. Tailwind katmanı bir kuralı sessizce yuttu
+## 7c. Çerçeve başlığa değil sonuca
+
+Bölüm başlıklarının düz durduğu, çerçeveye alınabileceği önerildi. Yarısına
+katılıp yarısına katılmadım ve sebebini yazmak gerekiyor.
+
+**Neden çerçeve değil:** sayfada zaten çok cam yüzey var — kartlar, paneller,
+form, panel listesi. Başlıklar da kutulanırsa neredeyse her şey çerçeveli olur
+ve her şey çerçeveliyse hiçbiri önemli görünmez. Kartların "nesne" gibi
+okunmasını sağlayan şey, aralarındaki metnin çerçevesiz olması.
+
+**Ama gözlem doğruydu:** başlıklar gerçekten düz duruyordu. Sebep çerçevesizlik
+değil, **tekdüzelik**. Sekiz bölümün sekizi de aynı ritimdeydi: etiket, büyük
+başlık, paragraf. Aynı desen art arda tekrarlayınca göz kayıyor.
+
+Üç ayrı müdahale yapıldı:
+
+| Ne | Nerede |
+|---|---|
+| Çizilen aksan çizgisi | Her bölüm başlığının üstünde, bölüm görüşe girince soldan çizilir. Yapı verir, kutuya kapatmaz |
+| Satır satır açılış | Başlık, satırları maskenin altından yukarı kayarak gelir |
+| Sonuç kutusu | Çerçeve **yalnızca sonuçlara**: sürecin toplam süresi ve öncesi/sonrası ölçümleri |
+
+Sonuç kutusu sayfada iki yerde var ve bu sayı bilinçli; test de bunu
+doğruluyor. Çerçevenin anlamı ender olmasından geliyor.
+
+### Satırlara bölmenin iki tuzağı
+
+1. **Alt çıkıntılar kırpılıyordu.** Maske `overflow: hidden`, başlık satır
+   yüksekliği 0,98. Türkçede ğ, ç, y, ş bol; pay bırakılmazsa harflerin altı
+   kesiliyor. `padding-bottom` + negatif `margin-bottom` çifti yerleşimi
+   bozmadan pay açıyor.
+
+2. **Yazı tipi yüklenmeden ölçmek yanlış bölüyor.** Satır kutuları yazı tipine
+   bağlı; yedek yazı tipiyle ölçülen satır sonları Archivo yüklenince kayıyor.
+   Bölme `document.fonts.ready` beklendikten sonra yapılıyor.
+
+Ayrıca animasyon bitince metin eski haline döndürülüyor. Kalıcı bir DOM
+değişikliği bırakmak, yeniden boyutlandırmada satırların yanlış yerde kalmasına
+ve metin seçildiğinde parça parça kopyalanmasına yol açardı.
+
+---
+
+## 7d. Tailwind katmanı bir kuralı sessizce yuttu
 
 Görünüme giriş animasyonu ilk yazıldığında `@layer components` içindeydi.
 Sayfa açıldı, bölümlerin yarısı görünmedi. Derlenmiş çıktıya bakınca sebep
@@ -609,7 +651,7 @@ geçerse testin bir değeri kalmaz.
 
 ---
 
-## 7d. SEO ve yerel işletme verisi
+## 7e. SEO ve yerel işletme verisi
 
 | Ne | Nerede |
 |---|---|
@@ -678,7 +720,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 163 birim/duman testi  (php tests/run.php)
+npm test          # 176 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -698,7 +740,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **163 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **176 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin**.
 
 | Katman | Test sayısı | Ne doğrulanıyor |
@@ -720,6 +762,7 @@ kontrast denetiminde **eşik altı 0 metin**.
 | Süreç şeridi | 11 | Adım verisi, ray/nokta işaretlemesi, görselsiz hâl |
 | Görünüme giriş | 6 | Derlenmiş CSS'te kuralların varlığı, JS-siz davranış |
 | Mobil veri | 8 | Tembel yükleme, iki kırpımlı poster, video niteliklerinin indirdiği |
+| Başlık ve sonuç | 13 | Çerçevenin yeri, satır bölme, alt çıkıntı payı |
 | Bildirim | 1 | Adres tanımsızsa akış sessizce atlanır |
 
 ### Rotalar

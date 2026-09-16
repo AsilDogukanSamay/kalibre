@@ -14,7 +14,7 @@ altında bu bilgilendirme görünür.
 | Frontend | Tailwind CSS 3.4, glassmorphic bileşenler, vanilla JS |
 | Backend | PHP 8.4, framework yok, OOP + MVC, kendi PSR-4 autoloader'ı |
 | Veritabanı | MySQL / MariaDB, PDO prepared statements |
-| Test | 163 test + 3 tarayıcı denetimi, hepsi geçiyor |
+| Test | 176 test + 3 tarayıcı denetimi, hepsi geçiyor |
 
 > **Ayrıntılı gerekçeler:** [`docs/KARARLAR.md`](docs/KARARLAR.md) — her kararın
 > nedeni, denenip bırakılan alternatifler ve ölçüm sonuçları.
@@ -37,7 +37,7 @@ npm run start                     # CSS derle + sunucu -> http://127.0.0.1:5174
 |---|---|
 | `npm run start` | CSS derler ve sunucuyu başlatır |
 | `npm run dev` | Geliştirirken CSS'i izler |
-| `npm test` | 163 test (harici bağımlılık yok) |
+| `npm test` | 176 test (harici bağımlılık yok) |
 | `npm run denetim` | Testler + yerleşim + kontrast + hero denetimi |
 
 > `npm run serve` PHP'yi **yönlendirici betiğiyle** başlatır. Elle
@@ -271,6 +271,8 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 | **Range destekli dosya sunucusu** | `video.currentTime` ancak sunucu HTTP Range desteklerse çalışır. PHP'nin dahili sunucusu `206` yerine `200` döner; `Core/FileServer.php` bunu çözer |
 | **Varlık sürümleme** | `asset()` dosyanın değişme zamanını adrese ekler (`app.css?v=6aaa55f3`). Sürümlü adres bir yıl + `immutable`, sürümsüz adres bir saat önbelleklenir. Yayına alınan yeni CSS geri dönen ziyaretçiye anında ulaşır; "sürüm atlamayı unutma" diye bir adım kalmaz |
 | **Süreç şeridi** | Kartlar yan yana duruyordu ama aralarındaki sıra görünmüyordu. Artık bir şeride diziliyorlar: her adımın noktası, noktalar arasında görüşe girince dolan bir çizgi. Her adım "elinize geçen" bilgisini de taşıyor ve bölümün sonunda toplam süre duruyor — müşterinin ilk sorduğu şey aracın kaç gün atölyede kalacağı |
+| **Sonuç kutusu** | Çerçeve sayfada **ender** kullanılır ve yalnızca bir sonucu sarar: ölçülmüş bir değer ya da bir taahhüt. Başlıklara uygulanmaz — her şey çerçeveliyse hiçbiri önemli görünmez. İki yerde var: sürecin toplam süresi ve öncesi/sonrası ölçümleri |
+| **Satır satır başlık açılışı** | Başlık, satırları maskenin altından yukarı kayarak geliyor. Satırlara bölme `Range` API ile yapılır — tarayıcının gerçekte nereye sardığı ölçülür, genişlik tahmin edilmez. `innerHTML` kullanılmaz. Animasyon bitince metin eski haline döner, kalıcı DOM değişikliği bırakmaz |
 | **Görünüme giriş** | Bölümler ve kartlar görüşe girince bir kez açılıyor, grup içinde sırayla. Gecikme JavaScript'ten inline stille değil, sıraya göre CSS'te tanımlı. Tek seferlik: açılan eleman gözlemden çıkarılıyor |
 | **Ölçüm nişangahı (imleç)** | Jenerik bir takip noktası değil: ince halka + artı biçiminde iki tik, parlaklık ölçerin nişangahı. Tıklanabilir hedefte halka açılır, tikler çekilir. Yerli imleç gizlenmez. Konum inline stille değil, sürgüyle aynı CSS-değişkeni yöntemiyle taşınır. Dokunmatik ekranda ve `prefers-reduced-motion` tercihinde hiç çalışmaz; boşta `requestAnimationFrame` döngüsü kapanır |
 | **SEO** | Schema.org `AutoDetailing` JSON-LD, canonical/og etiketleri, favicon, `robots.txt`, `sitemap.xml` |
@@ -280,7 +282,7 @@ CSP'de `style-src 'unsafe-inline'` bilinçli ve dar bir tavizdir; gerekçesi
 ## 9. Testler ve denetimler
 
 ```bash
-npm test          # 163 test (php tests/run.php) - harici bagimlilik yok
+npm test          # 176 test (php tests/run.php) - harici bagimlilik yok
 npm run yerlesim  # 6 genislik x 5 sayfa: yatay tasma, h1, baslik atlamasi, alt metni
 npm run kontrast  # WCAG AA, duz zeminler ve cam yuzeyler
 npm run hero      # hero kontrasti, piksel yontemi (video uzerinde)
@@ -292,7 +294,7 @@ prepared statement kullanıldığı ve kullanıcı girdisinin SQL metnine
 birleştirilmediği doğrulanabilir. `.mjs` denetimleri `playwright-core` ve yerel
 bir Chrome ister, sunucu açıkken çalışır.
 
-**Mevcut durum:** 163 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0 ·
+**Mevcut durum:** 176 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0 ·
 hero eşik altı 0.
 
 ### API sözleşmesi

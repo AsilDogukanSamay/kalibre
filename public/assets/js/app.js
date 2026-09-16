@@ -65,6 +65,103 @@
   })();
 
   /* ------------------------------------------------------------------
+   * Satir satir baslik acilisi
+   * Baslik, satirlari maskenin altindan yukari kayarak geliyor.
+   * innerHTML kullanilmaz: elemanlar createElement + textContent ile kurulur.
+   * ---------------------------------------------------------------- */
+  (function baslikAcilisi() {
+    const basliklar = document.querySelectorAll('[data-satir]');
+    if (!basliklar.length || reduceMotion) return;
+    if (!('IntersectionObserver' in window)) return;
+
+    /**
+     * Metni satirlara boler. Karakterlerin kutu ustleri okunur; ust degistigi
+     * yerde satir bitmistir. Tarayicinin gercekte nereye sardigini olcer,
+     * yani genisligi tahmin etmeye calismaz.
+     */
+    function satirlaraBol(el) {
+      const dugum = el.firstChild;
+      if (!dugum || dugum.nodeType !== 3) return null;
+
+      const metin = dugum.textContent;
+      const aralik = document.createRange();
+      const satirlar = [];
+      let bas = 0;
+      let ust = null;
+
+      for (let i = 0; i < metin.length; i++) {
+        aralik.setStart(dugum, i);
+        aralik.setEnd(dugum, i + 1);
+        const kutu = aralik.getBoundingClientRect();
+        if (kutu.height === 0) continue;
+
+        if (ust === null) {
+          ust = kutu.top;
+        } else if (Math.abs(kutu.top - ust) > 2) {
+          satirlar.push(metin.slice(bas, i));
+          bas = i;
+          ust = kutu.top;
+        }
+      }
+      satirlar.push(metin.slice(bas));
+
+      const temiz = satirlar.map((t) => t.trim()).filter((t) => t !== '');
+      return temiz.length > 1 ? temiz : null; // tek satirsa bolmeye gerek yok
+    }
+
+    function kur(el) {
+      const orijinal = el.textContent;
+      const satirlar = satirlaraBol(el);
+      if (!satirlar) return null;
+
+      el.textContent = '';
+      satirlar.forEach((satir) => {
+        const kap = document.createElement('span');
+        kap.className = 'satir';
+        const ic = document.createElement('span');
+        ic.className = 'satir-ic';
+        ic.textContent = satir;
+        kap.appendChild(ic);
+        el.appendChild(kap);
+      });
+
+      return orijinal;
+    }
+
+    const gozlemci = new IntersectionObserver((girisler) => {
+      girisler.forEach((giris) => {
+        if (!giris.isIntersecting) return;
+        const el = giris.target;
+        gozlemci.unobserve(el);
+
+        const orijinal = kur(el);
+        if (orijinal === null) {
+          el.classList.add('is-in');
+          return;
+        }
+
+        // Bir sonraki karede sinif takilir ki gecis calissin.
+        requestAnimationFrame(() => el.classList.add('is-in'));
+
+        /*
+         * Animasyon bitince metin eski haline doner. Kalici bir DOM
+         * degisikligi birakmiyoruz: yeniden boyutlandirmada satirlar
+         * degisir, metin secmede parca parca kopyalanirdi.
+         */
+        window.setTimeout(() => { el.textContent = orijinal; }, 1400);
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -8% 0px' });
+
+    // Satir kutulari yazi tipine bagli; font yuklenmeden olcmek yanlis boler.
+    const basla = () => basliklar.forEach((el) => gozlemci.observe(el));
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(basla);
+    } else {
+      basla();
+    }
+  })();
+
+  /* ------------------------------------------------------------------
    * Gorunume giris
    * Bolumler ve kartlar goruse girdiginde bir kez aciliyor. Tek seferlik:
    * acilan eleman gozlemden cikariliyor, geri kaydirinca tekrar oynamiyor.

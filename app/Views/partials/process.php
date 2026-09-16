@@ -13,9 +13,9 @@
  */
 ?>
 <section id="surec" class="section shell" data-flow>
-    <div class="section-head">
+    <div class="section-head" data-reveal>
         <span class="eyebrow-label">Süreç</span>
-        <h2 class="h-section text-balance">Araç girdiğinde ne oluyor?</h2>
+        <h2 class="h-section text-balance" data-satir>Araç girdiğinde ne oluyor?</h2>
         <p class="body-text">Dört aşama. Her aşamanın bir çıktısı var; işlem sonunda hepsi tek dosya halinde size veriliyor.</p>
     </div>
 
@@ -67,9 +67,14 @@
         <?php endforeach; ?>
     </ol>
 
-    <p class="flow-total" data-reveal>
-        <span class="flow-total-key">Araç atölyede toplam</span>
-        <strong class="flow-total-val"><?= e($processSummary['total']) ?></strong>
-        <span class="note flow-total-note"><?= e($processSummary['note']) ?></span>
-    </p>
+    <!-- Cerceve sayfada ender kullanilir ve yalnizca bir SONUCU sarar.
+         Burada sarilan sey musterinin ilk sordugu sorunun cevabi. -->
+    <div class="verdict mt-10 xl:mt-12" data-reveal>
+        <span class="verdict-rule" aria-hidden="true"></span>
+        <p class="shrink-0">
+            <span class="verdict-key">Araç atölyede toplam</span>
+            <strong class="verdict-val"><?= e($processSummary['total']) ?></strong>
+        </p>
+        <p class="note verdict-note"><?= e($processSummary['note']) ?></p>
+    </div>
 </section>
