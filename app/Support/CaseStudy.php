@@ -143,14 +143,14 @@ final class CaseStudy
                     // (503 KB, video istegi 0) ama sayfanin imza etkilesimi olan
                     // scroll pasosu telefonda tamamen kayboluyordu. Yasaklamak
                     // yerine kucuk surum gonderiliyor.
-                    'value' => '%23',
+                    'value' => '%35',
                     'label' => 'Mobil veri payı',
-                    'note'  => 'Telefonda ilk yükleme 936 KB; aynı sayfa masaüstünde 4.071 KB. Fark videodan geliyor: dar ekranda 640 piksele kodlanmış sürüm iniyor (hero 3,4 MB yerine 396 KB, scroll pasosu 3,1 MB yerine 336 KB). Scroll videosu ayrıca bölüm yaklaşana kadar hiç indirilmiyor.',
+                    'note'  => 'Telefonda ilk yükleme 1.408 KB; aynı sayfa masaüstünde 4.071 KB. Fark videodan geliyor: dar ekranda 960 piksele kodlanmış sürüm iniyor (hero 3,4 MB yerine 868 KB, scroll pasosu 3,1 MB yerine 1,1 MB). İlk denemede 640 piksele kodlanmıştı ve telefonda görünür biçimde bulanıktı; kareler yan yana konup karşılaştırıldı. Scroll videosu ayrıca bölüm yaklaşana kadar hiç indirilmiyor.',
                 ],
                 [
                     // Bu rakam elle guncellenmez: tests/run.php sonunda kendi
                     // toplamiyla karsilastiriliyor, eskirse test kaliyor.
-                    'value' => '307',
+                    'value' => '309',
                     'label' => 'Geçen test',
                     'note'  => 'Doğrulama, kurumsal kimlik, güvenlik başlıkları, CSRF, giriş freni, prepared statement ve şablon katmanları. Harici bağımlılık yok.',
                 ],

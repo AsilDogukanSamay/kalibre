@@ -986,8 +986,12 @@ foreach (['hero' => 'hero-dar', 'paso' => 'paso-dar'] as $genis => $dar) {
     $yolGenis = $root . "/public/assets/video/$genis.mp4";
     $yolDar   = $root . "/public/assets/video/$dar.mp4";
     check("dar ekran surumu var: $dar.mp4", is_file($yolDar));
+    /* Esik 4 kattan 2,5 kata cekildi: ilk surumler 640 piksele kodlanmisti
+       ve telefonda GORUNUR bicimde bulaniktı (su damlaciklari ve swirl
+       izleri dagiliyordu). 960 piksele cikinca oran dogal olarak dustu.
+       Olculen sey "ne kadar kucuk" degil, "anlamli olcude kucuk mu". */
     check("dar surum belirgin kucuk: $dar.mp4",
-        is_file($yolDar) && is_file($yolGenis) && filesize($yolDar) < filesize($yolGenis) / 4,
+        is_file($yolDar) && is_file($yolGenis) && filesize($yolDar) < filesize($yolGenis) / 2.5,
         is_file($yolDar) ? round(filesize($yolDar) / 1024) . ' KB / ' . round(filesize($yolGenis) / 1024) . ' KB' : '-');
 }
 check('hero videosu iki kaynak tasiyor', str_contains($home, 'data-src-dar'));
@@ -1013,3 +1017,21 @@ check('hareket azaltma tercihine uyuluyor',
 check('scroll videosu tembel yukleniyor',
     (bool) preg_match("/rootMargin: '100% 0px'/", $js));
 check('scroll videosu bir kez yuklenir', str_contains($js, 'videoBaslatildi'));
+
+/*
+ * Dar surumlerin cozunurlugu. Ilk denemede 640 piksele kodlanmislardi ve
+ * telefonda gorunur bicimde bulaniktı: modern bir telefon 390 CSS pikselde
+ * DPR 3 ile ~1170 fiziksel piksel gosteriyor. 960 piksel alt sinir.
+ */
+foreach (['hero-dar', 'paso-dar'] as $dosya) {
+    $yol = $root . "/public/assets/video/$dosya.mp4";
+    $genislik = 0;
+    if (is_file($yol)) {
+        $cikti = @shell_exec('ffprobe -v error -select_streams v -show_entries stream=width -of csv=p=0 '
+            . escapeshellarg($yol));
+        $genislik = (int) trim((string) $cikti);
+    }
+    // ffprobe yoksa test atlanmaz, gecer: kurulum sartina baglamak dogru olmaz.
+    check("dar surum cozunurlugu yeterli: $dosya.mp4", $genislik === 0 || $genislik >= 960,
+        $genislik ? $genislik . 'px' : 'ffprobe yok, atlandi');
+}

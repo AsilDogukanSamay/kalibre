@@ -1045,10 +1045,19 @@ anını hiç görmüyordu.
 **Çözüm yasaklamak değil, küçültmek oldu.** Dar ekran için 640 piksele
 kodlanmış sürümler üretildi:
 
-| Dosya | Geniş | Dar | Oran |
-|---|---|---|---|
-| hero | 3,4 MB | **396 KB** | 8,6× |
-| paso | 3,1 MB | **336 KB** | 9,3× |
+**İlk deneme fazla sıkıştırılmıştı.** 640 piksele kodlanmışlardı ve telefonda
+görünür biçimde bulanıktılar: su damlacıkları ve swirl izleri dağılıyordu.
+Sebep basit bir yanlış hesap — modern bir telefon 390 CSS pikselde DPR 3 ile
+**~1170 fiziksel piksel** gösteriyor, 640 piksel oraya yetmiyor.
+
+Kareler yan yana konup karşılaştırıldı ve çözünürlük 960 piksele çıkarıldı.
+İki videoya farklı kalite verildi, çünkü rolleri farklı: hero ağır bir perdenin
+arkasında ve üzerinde yazı var; scroll pasosu ise tam ekran ve asıl içerik.
+
+| Dosya | Geniş | Dar | Ayar | Oran |
+|---|---|---|---|---|
+| hero | 3,4 MB | **868 KB** | 960p, CRF 29 | 4,0× |
+| paso | 3,1 MB | **1,1 MB** | 960p, CRF 23 | 3,0× |
 
 Scroll pasosunun dar sürümünde anahtar kare aralığı yarım saniyeye çekildi
 (`-g 12`, 24 fps): seyrek anahtar kare kaydırmayı takılmalı yapar, çünkü
@@ -1074,13 +1083,13 @@ metrik yenisiyle değiştirildi:
 
 | | Önce | Sonra |
 |---|---|---|
-| Mobil ilk yükleme | 503 KB, video yok | **936 KB**, 395 KB'i video |
+| Mobil ilk yükleme | 503 KB, video yok | **1.408 KB**, 866 KB'i video |
 | Masaüstü ilk yükleme | ~7 MB | **4.071 KB** |
 | Telefonda scroll pasosu | çalışmıyor | **çalışıyor** |
 
 Mobil yük arttı ve bu bilinçli: karşılığında telefon ziyaretçisi sayfanın
 tamamını görüyor. Asıl anlamlı rakam oran — mobil, masaüstü yükünün
-**%23'üyle** aynı deneyimi alıyor.
+**%35'iyle** aynı deneyimi alıyor.
 
 
 ### Okuma ilerlemesi
@@ -1304,7 +1313,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 307 birim/duman testi  (php tests/run.php)
+npm test          # 309 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -1328,7 +1337,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **307 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **309 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin** (panel dahil 12 sayfa/genişlik
 kombinasyonu), hero kontrastında **eşik altı 0 metin**, hareket denetiminde
 **8/8**.
