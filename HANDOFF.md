@@ -8,6 +8,11 @@ sıfırdan anlatmaktan hızlıdır.
 
 1. Yeni oturumu **`C:\Users\doguk\Claude Usta`** dizininde aç.
    Dosyaları ayrıca göndermene gerek yok, orada duruyorlar.
+
+   > Depo GitHub'da **`kalibre`** adında; temiz bir klon `kalibre/` klasörü
+   > oluşturur. Bu makinedeki klasör tarihsel olarak `kalibre-landing/`
+   > adını taşıyor — aşağıdaki yollar ona göre yazılı. Klonla çalışıyorsan
+   > `kalibre-landing/` yerine `kalibre/` oku.
 2. İlk mesaj olarak şunu yaz:
 
 ```

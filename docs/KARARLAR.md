@@ -103,7 +103,7 @@ Framework kullanılmadı; **saf PHP 8.4 ile OOP + MVC** katmanlı yapı.
 Composer bağımlılığı yok, PSR-4 uyumlu kendi autoloader'ı var.
 
 ```
-kalibre-landing/
+kalibre/
 ├── public/                  ← web kökü (sunucu buraya bakar)
 │   ├── index.php            ← tek giriş noktası (front controller)
 │   └── assets/{css,js,img,video}

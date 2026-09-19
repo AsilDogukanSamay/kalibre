@@ -45,7 +45,7 @@ function depoBilgisi() {
     const m = uzak.match(/[:/]([^/]+)\/([^/]+?)(?:\.git)?$/);
     if (m) return { sahip: m[1], depo: m[2] };
   } catch { /* uzak tanimli degilse asagidaki varsayilana dusulur */ }
-  return { sahip: 'asildogukansamay', depo: 'kalibre-landing' };
+  return { sahip: 'asildogukansamay', depo: 'kalibre' };
 }
 
 /**

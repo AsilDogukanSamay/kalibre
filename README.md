@@ -24,7 +24,7 @@ altında bu bilgilendirme görünür.
 
 ## 0. Canlı önizleme
 
-**https://asildogukansamay.github.io/kalibre-landing/**
+**https://asildogukansamay.github.io/kalibre/**
 
 Statik bir önizlemedir: tasarım, hero ve scroll videoları, scroll paralaksı,
 öncesi/sonrası sürgüsü, sayaçlar, SSS akordeonu ve geri sayım çalışır.
@@ -113,7 +113,7 @@ public/index.php  →  Router  →  Controller  →  Validator / Model  →  Res
 ```
 
 ```
-kalibre-landing/
+kalibre/
 ├── public/                  ← web kökü (sunucu buraya bakar)
 │   ├── index.php            ← tek giriş noktası (front controller)
 │   └── assets/{css,js,img,video}
