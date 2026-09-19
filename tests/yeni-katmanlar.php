@@ -936,3 +936,37 @@ check('agirlik olcegi varsayilan temada tanimli',
     'sayim: ' . preg_match_all('/--wght-/', $kokBlok[1] ?? ''));
 check('agirlik olcegi marka blogunda tekrarlanmiyor',
     preg_match_all('/--wght-/', $boschBlok[1] ?? '') === 0);
+
+/*
+ * HER SAYFANIN KENDI BASLIGI OLMALI
+ *
+ * /case kendi basligini vermiyordu ve duzenin varsayilanina dusuyordu:
+ * ana sayfayla AYNI sekme adini ve AYNI meta aciklamasini tasiyordu.
+ * Sekmede ayirt edilemiyor, arama motoru icin de yinelenen baslik.
+ */
+$vakaKaynak = (string) file_get_contents($root . '/app/Controllers/CaseStudyController.php');
+check('vaka sayfasi kendi basligini veriyor', str_contains($vakaKaynak, "'pageTitle'"));
+check('vaka sayfasi kendi aciklamasini veriyor', str_contains($vakaKaynak, "'pageDescription'"));
+
+// Sekme daraldiginda sonu kirpilir; baslik kisa tutulur.
+preg_match('/<title>(.*?)<\/title>/u', $home, $anaBaslik);
+$anaBaslikMetni = html_entity_decode($anaBaslik[1] ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
+check('ana sayfa basligi 60 karakteri asmiyor',
+    mb_strlen($anaBaslikMetni) <= 60, 'uzunluk: ' . mb_strlen($anaBaslikMetni));
+
+/*
+ * Baslik jenerik bir kategori degil, sayfanin kendi iddiasini tasir.
+ * "Boya duzeltme ve seramik kaplama" her atolyenin yazabilecegi bir sey;
+ * "Boyayi olcerek duzeltiyoruz" yalnizca bu sayfanin.
+ */
+check('ana sayfa basligi sayfanin iddiasini tasiyor',
+    str_contains($anaBaslikMetni, 'ölçerek'), 'baslik: ' . $anaBaslikMetni);
+
+// Duzen icindeki baslik kaliplari birbirinden farkli olmali.
+$duzenKaynak = (string) file_get_contents($root . '/app/Views/layouts/main.php');
+preg_match_all("/'pageTitle'\s*=>\s*'([^']+)'/u", (string) file_get_contents($root . '/app/Controllers/AdminController.php')
+    . $vakaKaynak, $panelBasliklari);
+$tumBasliklar = array_merge([$anaBaslikMetni], $panelBasliklari[1] ?? []);
+check('hicbir sayfa baska bir sayfayla ayni basligi tasimiyor',
+    count($tumBasliklar) === count(array_unique($tumBasliklar)),
+    implode(' | ', $tumBasliklar));

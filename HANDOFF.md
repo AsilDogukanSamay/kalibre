@@ -22,7 +22,7 @@ Sonra şunu yapmanı istiyorum: ...
 ```bash
 npm run db        # veritabani, ayri bir terminalde acik kalmali
 npm run start     # CSS derle + sunucu -> http://127.0.0.1:5174
-npm test          # 290 test
+npm test          # 295 test
 npm run denetim   # testler + yerlesim + kontrast + hero + hareket denetimi
 ```
 
@@ -140,7 +140,7 @@ resources/css/    app.css  ← Tailwind kaynağı, TÜM component sınıfları b
 public/           Web kökü. index.php + assets/{css,js,img,video}
 database/         schema.sql + migrations/
 storage/          Bildirim günlüğü ve giriş deneme sayacı (versiyonlanmaz)
-tests/run.php     Bağımlılıksız duman testleri (290 test)
+tests/run.php     Bağımlılıksız duman testleri (295 test)
 tests/*.mjs       Yerleşim, kontrast ve hero denetimleri (playwright-core ister)
 docs/KARARLAR.md  Ayrıntılı gerekçeler ve ölçümler (README'nin eşlikçisi)
 _eski/            Bu dönüşümden önceki tek dosyalık statik sürüm
@@ -160,7 +160,7 @@ içinde duruyor. Bunları da tek kaynağa taşımak açık bir iyileştirme (§6
 npm install
 npm run start        # CSS derle + sunucu -> http://127.0.0.1:5174
 npm run dev          # gelistirirken CSS'i izle
-npm test             # 290 test
+npm test             # 295 test
 npm run db           # veritabani sunucusu (port 3307)
 npm run db:sql       # veritabanina baglan
 ```
@@ -241,7 +241,8 @@ Aşağıdakiler iddia değil, çalıştırılarak ölçüldü:
 | Kampanya geri sayımı | Geri kondu; boş tarihte render edilmiyor, süresi dolunca bilgilendirmeye dönüyor |
 | Temiz klon kurulumu | Boş veritabanına şema, 7 rota 200, form KLB-000001 |
 | İkinci marka teması | Ağırlık ölçeği artık kalibre temasında da geçerli |
-| Testler | 290/290 |
+| Sayfa başlıkları | Dördü de farklı, en uzunu 52 karakter |
+| Testler | 295/295 |
 
 ---
 

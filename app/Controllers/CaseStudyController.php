@@ -23,6 +23,12 @@ final class CaseStudyController extends Controller
             'brand'      => SiteContent::all()['brand'],
             'brandTheme' => Brand::current(),
             'brands'     => Brand::all(),
+            // Kendi basligi olmadan ana sayfanin varsayilanina dusuyordu:
+            // iki sayfa ayni sekme adini ve ayni meta aciklamasini tasiyordu.
+            'pageTitle'       => 'Vaka çalışması',
+            'pageDescription' => 'Boya düzeltme atölyesi için hazırlanan landing '
+                . 'page ve iletişim modülünün vaka çalışması: problem tanımı, '
+                . 'tasarım kararları, ölçülen sonuçlar ve her kararın bedeli.',
         ]);
     }
 }

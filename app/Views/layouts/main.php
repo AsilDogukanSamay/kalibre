@@ -11,7 +11,9 @@ $legalPages  = App\Support\LegalContent::pages();
 // Sayfaya ozel baslik/aciklama verilmediyse ana sayfa metni kullanilir.
 $pageTitle = isset($pageTitle)
     ? $pageTitle . ' · ' . $brandTheme['name']
-    : $brandTheme['name'] . ' · Boya düzeltme ve seramik kaplama, İstanbul';
+    // Marka once: sekme daraldiginda once o kirpilir. Ardindan jenerik bir
+    // kategori degil sayfanin kendi iddiasi gelir; 65 karakterden 47'ye indi.
+    : $brandTheme['name'] . ' · Boyayı ölçerek düzeltiyoruz';
 
 // Meta aciklamasi hero alt yazisindan TURER. Onceki halde ayni cumle hem
 // burada hem SiteContent icinde yaziliydi; birini duzeltip digerini unutmak
