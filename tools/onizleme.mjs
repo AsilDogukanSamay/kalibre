@@ -29,11 +29,42 @@
  */
 import { mkdir, writeFile, readFile, cp, rm } from 'node:fs/promises';
 import path from 'node:path';
+import { execSync } from 'node:child_process';
 
 const TABAN = process.env.BASE_URL ?? 'http://127.0.0.1:5174';
-/** GitHub Pages proje sayfasi bir ALT DIZINDE yasar; mutlak yollar buna gore yazilir. */
-const KOK   = (process.env.ONIZLEME_KOK ?? '/kalibre-landing').replace(/\/$/, '');
-const GENEL = process.env.ONIZLEME_URL ?? `https://asildogukansamay.github.io${KOK}`;
+
+/**
+ * GitHub Pages proje sayfasi bir ALT DIZINDE yasar ve o dizinin adi DEPO
+ * ADIDIR. Onceki halde "/kalibre-landing" sabit yaziliydi: depo yeniden
+ * adlandirildiginde butun yollar sessizce 404 donerdi. Artik uzak adresten
+ * okunuyor, yani ad degisince kendiliginden uyar.
+ */
+function depoBilgisi() {
+  try {
+    const uzak = execSync('git remote get-url origin', { encoding: 'utf8' }).trim();
+    const m = uzak.match(/[:/]([^/]+)\/([^/]+?)(?:\.git)?$/);
+    if (m) return { sahip: m[1], depo: m[2] };
+  } catch { /* uzak tanimli degilse asagidaki varsayilana dusulur */ }
+  return { sahip: 'asildogukansamay', depo: 'kalibre-landing' };
+}
+
+/**
+ * ONIZLEME_KOK degerini normallestirir.
+ *
+ * Git Bash, "/" ile baslayan ortam degiskenlerini Windows yoluna cevirir:
+ * ONIZLEME_KOK=/kalibre komut satirinda "C:/Program Files/Git/kalibre"
+ * olarak geliyordu. Windows mutlak yolu geldiyse yalnizca son parca alinir.
+ */
+function kokuNormallestir(deger) {
+  let k = deger.trim().replace(/\\/g, '/');
+  if (/^[A-Za-z]:/.test(k)) k = k.split('/').pop();
+  return '/' + k.replace(/^\/+|\/+$/g, '');
+}
+
+const { sahip, depo } = depoBilgisi();
+const KOK = kokuNormallestir(process.env.ONIZLEME_KOK ?? depo);
+// github.io alan adlari kucuk harftir; uzak adres buyuk harfli olabilir.
+const GENEL = process.env.ONIZLEME_URL ?? `https://${sahip.toLowerCase()}.github.io${KOK}`;
 const CIKTI = 'onizleme';
 
 const SAYFALAR = [
