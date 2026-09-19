@@ -16,9 +16,10 @@
  *   CHROME=/yol/chrome.exe node tests/hareket.mjs
  */
 import { chromium } from 'playwright-core';
+import { chromeYolu } from './chrome-yolu.mjs';
 
 const TABAN  = process.env.BASE_URL ?? 'http://127.0.0.1:5174';
-const CHROME = process.env.CHROME ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const CHROME = chromeYolu();
 
 let gecti = 0;
 let kaldi = 0;

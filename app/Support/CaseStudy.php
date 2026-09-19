@@ -145,7 +145,7 @@ final class CaseStudy
                 [
                     // Bu rakam elle guncellenmez: tests/run.php sonunda kendi
                     // toplamiyla karsilastiriliyor, eskirse test kaliyor.
-                    'value' => '280',
+                    'value' => '288',
                     'label' => 'Geçen test',
                     'note'  => 'Doğrulama, kurumsal kimlik, güvenlik başlıkları, CSRF, giriş freni, prepared statement ve şablon katmanları. Harici bağımlılık yok.',
                 ],

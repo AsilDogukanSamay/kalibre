@@ -14,7 +14,7 @@ altında bu bilgilendirme görünür.
 | Frontend | Tailwind CSS 3.4, glassmorphic bileşenler, vanilla JS |
 | Backend | PHP 8.4, framework yok, OOP + MVC, kendi PSR-4 autoloader'ı |
 | Veritabanı | MySQL / MariaDB, PDO prepared statements |
-| Test | 280 test + 4 tarayıcı denetimi, hepsi geçiyor |
+| Test | 288 test + 4 tarayıcı denetimi, hepsi geçiyor |
 
 > **Ayrıntılı gerekçeler:** [`docs/KARARLAR.md`](docs/KARARLAR.md) — her kararın
 > nedeni, denenip bırakılan alternatifler ve ölçüm sonuçları.
@@ -24,6 +24,10 @@ altında bu bilgilendirme görünür.
 
 ## 1. Kurulum
 
+**Gereken:** PHP **8.1** veya üzeri (proje 8.4 ile geliştirildi; alt sınırı
+`Request` sınıfındaki `readonly` özellikler belirliyor), MySQL/MariaDB, Node.js.
+Tarayıcı denetimlerini çalıştıracaksanız ayrıca yerel bir Chrome.
+
 ```bash
 npm install
 cp .env.example .env              # DB bilgilerini düzenleyin
@@ -31,13 +35,16 @@ mysql -u root -p < database/schema.sql
 npm run start                     # CSS derle + sunucu -> http://127.0.0.1:5174
 ```
 
+Windows, macOS ve Linux'ta çalışır. Chrome'un yeri işletim sistemine göre
+otomatik bulunur; bulunamazsa denetim ne yapılacağını söyleyen bir hata verir.
+
 Üretimde web sunucusunun kök dizini **`public/`** olmalıdır.
 
 | Komut | Ne yapar |
 |---|---|
 | `npm run start` | CSS derler ve sunucuyu başlatır |
 | `npm run dev` | Geliştirirken CSS'i izler |
-| `npm test` | 280 test. CSS'i önce kendisi derler (`pretest`), çünkü altı test derlenmiş çıktıyı okur |
+| `npm test` | 288 test. CSS'i önce kendisi derler (`pretest`), çünkü altı test derlenmiş çıktıyı okur |
 | `npm run denetim` | Beşi birden: testler + yerleşim + kontrast + hero piksel kontrastı + hareket |
 
 Tarayıcı denetimleri (`yerlesim`, `kontrast`, `hero`, `hareket`) `playwright-core`
@@ -348,7 +355,7 @@ bölümlerinin altındaki bilgilendirmeler).
 ## 9. Testler ve denetimler
 
 ```bash
-npm test          # 280 test (php tests/run.php) - harici bagimlilik yok
+npm test          # 288 test (php tests/run.php) - harici bagimlilik yok
 npm run yerlesim  # 6 genislik x 5 sayfa: yatay tasma, h1, baslik atlamasi, alt metni
 npm run kontrast  # WCAG AA, duz zeminler ve cam yuzeyler
 npm run hero      # piksel kontrasti: yazinin foto/video uzerinde durdugu sahneler
@@ -361,7 +368,7 @@ prepared statement kullanıldığı ve kullanıcı girdisinin SQL metnine
 birleştirilmediği doğrulanabilir. `.mjs` denetimleri `playwright-core` ve yerel
 bir Chrome ister, sunucu açıkken çalışır.
 
-**Mevcut durum:** 280 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0
+**Mevcut durum:** 288 test geçiyor · yerleşim 0 kusur · kontrast eşik altı 0
 (panel dahil) · hero eşik altı 0 · hareket 8/8.
 
 `npm run hareket` sayfanın **görünür** olmasını gerektirir: `document.hidden`

@@ -15,9 +15,10 @@
  *      varsayilanina duserek siyah ve kocaman ciziyordu.
  */
 import { chromium } from 'playwright-core';
+import { chromeYolu } from './chrome-yolu.mjs';
 
 const TABAN = process.env.BASE_URL ?? 'http://127.0.0.1:5174';
-const CHROME = process.env.CHROME ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const CHROME = chromeYolu();
 
 const YOLLAR = ['/', '/case', '/kvkk', '/gizlilik', '/yonetim/giris'];
 const GENISLIKLER = [360, 390, 768, 1024, 1440, 1920];

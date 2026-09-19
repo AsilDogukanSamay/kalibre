@@ -23,9 +23,10 @@
  * "En kotu kare" boylece bir tahmin degil, videonun kendisinden gelir.
  */
 import { chromium } from 'playwright-core';
+import { chromeYolu } from './chrome-yolu.mjs';
 
 const TABAN = process.env.BASE_URL ?? 'http://127.0.0.1:5174';
-const CHROME = process.env.CHROME ?? 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const CHROME = chromeYolu();
 const KARE_SAYISI = Number(process.env.KARE ?? 10);
 const GENISLIKLER = (process.env.GENISLIK ?? '390,1440,1920').split(',').map(Number);
 

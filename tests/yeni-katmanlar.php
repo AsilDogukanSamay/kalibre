@@ -893,3 +893,26 @@ foreach (['Swirl (yıkama izi)', 'kendi kendini onaran (self healing)', '(ekstra
  */
 $ayniGun = substr_count($metin, 'Aynı gün') + substr_count($metin, 'aynı gün');
 check('ayni gun sozu en fazla iki yerde', $ayniGun <= 2, 'gecis: ' . $ayniGun);
+
+/*
+ * DENETIMLER TEK BIR ISLETIM SISTEMINE CAKILI OLMAMALI
+ *
+ * Dort denetim betiginde de Chrome yolunun varsayilani Windows'a cakiliydi.
+ * Proje Windows'ta gelistirildigi icin fark edilmiyordu; depoyu klonlayan
+ * kisinin Windows kullandigini varsayamayiz. Artik ortak bir cozucu var:
+ * CHROME ortam degiskeni, yoksa isletim sisteminin bilinen yollari, hicbiri
+ * yoksa ne yapilacagini SOYLEYEN bir hata.
+ */
+$denetimler = ['yerlesim', 'kontrast', 'hero-kontrast', 'hareket'];
+foreach ($denetimler as $betik) {
+    $kaynak = (string) file_get_contents($root . '/tests/' . $betik . '.mjs');
+    check("denetim isletim sistemi bagimsiz: $betik",
+        str_contains($kaynak, 'chromeYolu()') && !str_contains($kaynak, 'C:/Program Files'));
+}
+
+$cozucu = (string) file_get_contents($root . '/tests/chrome-yolu.mjs');
+foreach (['win32', 'darwin', 'linux'] as $isletim) {
+    check("Chrome cozucusu $isletim yollarini biliyor", str_contains($cozucu, $isletim));
+}
+check('Chrome bulunamazsa ne yapilacagi soyleniyor',
+    str_contains($cozucu, 'CHROME="/yol/chrome"'));
