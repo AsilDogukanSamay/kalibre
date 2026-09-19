@@ -98,6 +98,32 @@ Bu projede bilinçli olarak konulmuş, bozulmaması gereken kurallar:
 
 ---
 
+## 2b. Commit mesajı biçimi
+
+Depo bir iş başvurusu teslimidir; commit geçmişi de okunur. Biçim:
+
+```
+Konu satırı: emir kipi, en fazla 60 karakter, sonunda nokta yok
+
+Gövde neyin neden değiştiğini anlatır ve 72 karakterde sarılır.
+Değerlendirme, gerekçe ve ölçüm burada durur — konu satırında değil.
+
+- Çok parçalı değişikliklerde kısa madde listesi
+- Ölçüm varsa rakamıyla birlikte
+```
+
+Üç kural:
+
+1. **Türkçe karakter kullanılır** (ç, ğ, ı, ö, ş, ü). Git UTF-8 taşır;
+   dosyaların geri kalanı düzgün Türkçeyken commit'lerin olmaması
+   tutarsızlık yaratır.
+2. **Kip tutarlıdır:** emir kipi. "Ekle", "Düzelt", "Kaldır" — "eklendi",
+   "düzeltildi" değil.
+3. **Konu satırı yorum taşımaz.** "Atölye fotoğrafını kaldır" doğru;
+   "sorun yerleşimde değil malzemedeydi" gövdeye ait.
+
+---
+
 ## 3. Nerede ne var
 
 ```
