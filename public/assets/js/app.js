@@ -522,6 +522,31 @@
   })();
 
   /* ------------------------------------------------------------------
+   * Video kaynagi ve izin kurallari (hero ve scroll pasosu ortak kullanir)
+   *
+   * Onceki halde her iki video da 640 pikselin ALTINDA hic indirilmiyordu.
+   * Gerekce mobil veriydi ve dogruydu - ama kapi kabaydi: genislige bakiyor,
+   * baglantiya bakmiyordu, ve sayfanin imza etkilesimi olan scroll pasosu
+   * telefonda tamamen kayboluyordu.
+   *
+   * Cozum yasaklamak degil, KUCUK SURUM gondermek. Dar ekranda 640 genislikte
+   * kodlanmis surumler iniyor: hero 3,4 MB yerine 396 KB, paso 3,1 MB yerine
+   * 336 KB. Takas ortadan kalkti.
+   *
+   * Veri tasarrufu ve hareket azaltma tercihleri GERCEK sinyaller oldugu icin
+   * durmaya devam ediyor.
+   * ---------------------------------------------------------------- */
+  function videoIndirilebilir() {
+    const conn = navigator.connection || {};
+    return !reduceMotion && conn.saveData !== true;
+  }
+
+  function videoKaynagi(el) {
+    const dar = window.innerWidth < 640 && el.dataset.srcDar;
+    return dar ? el.dataset.srcDar : el.dataset.src;
+  }
+
+  /* ------------------------------------------------------------------
    * Hero arka plan videosu
    * Veri tasarrufu, hareket azaltma veya dar ekranda hic indirilmez.
    * ---------------------------------------------------------------- */
@@ -530,15 +555,12 @@
     const video = document.getElementById('heroVideo');
     if (!bg || !video) return;
 
-    const conn = navigator.connection || {};
-    // Video kaynagi HTML'de data-src olarak durur. Kosullar saglanmazsa
-    // src hic atanmaz, yani tarayici tek bir bayt bile indirmez.
-    if (reduceMotion || conn.saveData === true || window.innerWidth < 640) {
-      return;
-    }
+    // Kosullar saglanmazsa src hic atanmaz, yani tarayici tek bir bayt
+    // bile indirmez. Dar ekranda kucuk surum secilir.
+    if (!videoIndirilebilir()) return;
 
     video.preload = 'auto';
-    video.src = video.dataset.src;
+    video.src = videoKaynagi(video);
     video.addEventListener('canplay', () => {
       const played = video.play();
       if (played && played.then) {
@@ -573,11 +595,16 @@
     const MICRON = [138, 129];
     const GLOSS = [41, 94];
 
-    // Ayni kural: dar ekranda veya veri tasarrufunda src hic atanmaz.
-    const conn2 = navigator.connection || {};
-    const videoIzinli = video && !reduceMotion && conn2.saveData !== true && window.innerWidth >= 640;
+    /* Video, bolum yaklasinca indirilir - sayfa acilir acilmaz degil.
+       Onceki halde src hemen atanıyordu ve bolum ekranin cok asagisinda
+       oldugu halde 3 MB pesinen iniyordu. Ziyaretcinin oraya hic
+       gelmeme ihtimali var. */
+    let videoBaslatildi = false;
 
-    if (videoIzinli) {
+    function videoyuYukle() {
+      if (videoBaslatildi || !video || !videoIndirilebilir()) return;
+      videoBaslatildi = true;
+
       const enable = () => {
         if (video.duration > 0) stage.classList.add('scrub-stage-video');
       };
@@ -586,8 +613,19 @@
       video.addEventListener('loadedmetadata', enable);
       video.addEventListener('error', () => stage.classList.remove('scrub-stage-video'));
       video.preload = 'auto';
-      video.src = video.dataset.src;
+      video.src = videoKaynagi(video);
       if (video.readyState >= 1) enable();
+    }
+
+    // Bir ekran boyu onceden baslar; kullanici bolume vardiginda hazir olur.
+    if (video && 'IntersectionObserver' in window) {
+      new IntersectionObserver((girisler, gozlemci) => {
+        if (!girisler[0].isIntersecting) return;
+        videoyuYukle();
+        gozlemci.disconnect();
+      }, { rootMargin: '100% 0px' }).observe(track);
+    } else {
+      videoyuYukle();
     }
 
     const lerp = (a, b, p) => Math.round(a + (b - a) * p);

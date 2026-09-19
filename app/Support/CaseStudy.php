@@ -138,14 +138,19 @@ final class CaseStudy
                     'note'  => 'Canlı DOM\'da style attribute\'u taşıyan eleman sayısı. Test otomatik doğruluyor.',
                 ],
                 [
-                    'value' => '503 KB',
-                    'label' => 'Mobil veri',
-                    'note'  => '390 pikselde ilk yükleme, ham gövde boyutu; gzip ile 382 KB. Video isteği sıfır. Hero posteri de dar ekranda 960 piksellik sürümüyle iniyor.',
+                    // Bu rakam bir tur degisti: mobilde video artik INIYOR.
+                    // Onceki halde 640 pikselin altinda video hic indirilmiyordu
+                    // (503 KB, video istegi 0) ama sayfanin imza etkilesimi olan
+                    // scroll pasosu telefonda tamamen kayboluyordu. Yasaklamak
+                    // yerine kucuk surum gonderiliyor.
+                    'value' => '%23',
+                    'label' => 'Mobil veri payı',
+                    'note'  => 'Telefonda ilk yükleme 936 KB; aynı sayfa masaüstünde 4.071 KB. Fark videodan geliyor: dar ekranda 640 piksele kodlanmış sürüm iniyor (hero 3,4 MB yerine 396 KB, scroll pasosu 3,1 MB yerine 336 KB). Scroll videosu ayrıca bölüm yaklaşana kadar hiç indirilmiyor.',
                 ],
                 [
                     // Bu rakam elle guncellenmez: tests/run.php sonunda kendi
                     // toplamiyla karsilastiriliyor, eskirse test kaliyor.
-                    'value' => '295',
+                    'value' => '307',
                     'label' => 'Geçen test',
                     'note'  => 'Doğrulama, kurumsal kimlik, güvenlik başlıkları, CSRF, giriş freni, prepared statement ve şablon katmanları. Harici bağımlılık yok.',
                 ],

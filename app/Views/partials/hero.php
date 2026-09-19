@@ -14,8 +14,12 @@
              bile indiriyor; olculdu: mobilde 121 KB'lik dosya her yuklemede
              iniyordu. Ustelik hic gorunmuyor, cunku video oynayana kadar
              saydam ve arkasinda zaten <picture> duruyor. -->
+        <!-- Iki kaynak: dar ekranda 640 genislikteki surum iner (396 KB),
+             genis ekranda 1280'lik (3,4 MB). Secimi JavaScript yapar; <video>
+             icinde media sorgulu <source> tarayicilarda guvenilir degil. -->
         <video class="hero-media hero-video" id="heroVideo"
                data-src="<?= e(asset('video/hero.mp4')) ?>"
+               data-src-dar="<?= e(asset('video/hero-dar.mp4')) ?>"
                muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
         <span class="hero-scrim"></span>
     </div>

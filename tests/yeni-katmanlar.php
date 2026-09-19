@@ -970,3 +970,46 @@ $tumBasliklar = array_merge([$anaBaslikMetni], $panelBasliklari[1] ?? []);
 check('hicbir sayfa baska bir sayfayla ayni basligi tasimiyor',
     count($tumBasliklar) === count(array_unique($tumBasliklar)),
     implode(' | ', $tumBasliklar));
+
+/*
+ * MOBILDE VIDEO: YASAKLAMAK DEGIL, KUCUK SURUM GONDERMEK
+ *
+ * Her iki video da 640 pikselin ALTINDA hic indirilmiyordu. Gerekce mobil
+ * veriydi ve dogruydu, ama kapi kabaydi: genislige bakiyor baglantiya
+ * bakmiyordu, ve sayfanin imza etkilesimi olan scroll pasosu telefonda
+ * tamamen kayboluyordu.
+ *
+ * Artik dar ekranda 640 genislikte kodlanmis surumler iniyor. Takas kalkti:
+ * hero 3,4 MB -> 396 KB, paso 3,1 MB -> 336 KB.
+ */
+foreach (['hero' => 'hero-dar', 'paso' => 'paso-dar'] as $genis => $dar) {
+    $yolGenis = $root . "/public/assets/video/$genis.mp4";
+    $yolDar   = $root . "/public/assets/video/$dar.mp4";
+    check("dar ekran surumu var: $dar.mp4", is_file($yolDar));
+    check("dar surum belirgin kucuk: $dar.mp4",
+        is_file($yolDar) && is_file($yolGenis) && filesize($yolDar) < filesize($yolGenis) / 4,
+        is_file($yolDar) ? round(filesize($yolDar) / 1024) . ' KB / ' . round(filesize($yolGenis) / 1024) . ' KB' : '-');
+}
+check('hero videosu iki kaynak tasiyor', str_contains($home, 'data-src-dar'));
+check('scroll videosu iki kaynak tasiyor', substr_count($home, 'data-src-dar') === 2);
+
+// Genislik artik ENGEL degil, yalnizca KAYNAK SECIMI.
+check('genislik kapisi kaldirildi',
+    !preg_match('/innerWidth\s*<\s*640\s*\)\s*\{?\s*\n?\s*return/', $js)
+    && !preg_match('/innerWidth\s*>=\s*640/', $js));
+check('genislik kaynak secimi icin kullaniliyor',
+    (bool) preg_match('/function videoKaynagi[\s\S]{0,200}innerWidth < 640/', $js));
+
+// Gercek sinyaller duruyor.
+check('veri tasarrufu tercihine uyuluyor', str_contains($js, "conn.saveData !== true"));
+check('hareket azaltma tercihine uyuluyor',
+    (bool) preg_match('/function videoIndirilebilir[\s\S]{0,200}!reduceMotion/', $js));
+
+/*
+ * Scroll videosu sayfa acilir acilmaz degil, BOLUM YAKLASINCA iner.
+ * Onceki halde 3 MB pesinen iniyordu; ziyaretcinin oraya hic gelmeme
+ * ihtimali var.
+ */
+check('scroll videosu tembel yukleniyor',
+    (bool) preg_match("/rootMargin: '100% 0px'/", $js));
+check('scroll videosu bir kez yuklenir', str_contains($js, 'videoBaslatildi'));

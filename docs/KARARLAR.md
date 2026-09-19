@@ -1025,6 +1025,64 @@ Geriye kalan kazanç: `tests/hero-kontrast.mjs` bu deneme sırasında
 ya da video üzerinde durduğu her yer* ölçülüyor; listeye bir satır eklemek
 yetiyor. Zemin denemesi tam da bu sayede ölçülüp elendi.
 
+### Mobilde video: yasaklamak yerine küçük sürüm
+
+Her iki video da 640 pikselin **altında hiç indirilmiyordu**. Gerekçe mobil
+veriydi ve doğruydu: `hero.mp4` 3,4 MB, `paso.mp4` 3,1 MB. Ölçülmüş kazanç da
+gerçekti — mobil ilk yükleme 598 KB'den 503 KB'ye inmişti.
+
+Ama kapı kabaydı ve iki şeyi görmüyordu:
+
+**Genişlik bağlantı demek değil.** Wi-Fi'daki bir telefon ile 3G'deki bir
+telefon aynı muameleyi görüyordu; 700 piksellik bir tablet ise videoyu
+alıyordu. Ölçülen şey ekran, maliyeti doğuran şey bağlantı.
+
+**Sayfanın imza etkileşimi kayboluyordu.** Scroll pasosu bölümünün tamamı
+videoyu kaydırmak üzerine kurulu. Telefonda o bölüm sayaçları olan durağan
+bir görsele dönüşüyordu — yani mobil ziyaretçi sayfanın en ayırt edici
+anını hiç görmüyordu.
+
+**Çözüm yasaklamak değil, küçültmek oldu.** Dar ekran için 640 piksele
+kodlanmış sürümler üretildi:
+
+| Dosya | Geniş | Dar | Oran |
+|---|---|---|---|
+| hero | 3,4 MB | **396 KB** | 8,6× |
+| paso | 3,1 MB | **336 KB** | 9,3× |
+
+Scroll pasosunun dar sürümünde anahtar kare aralığı yarım saniyeye çekildi
+(`-g 12`, 24 fps): seyrek anahtar kare kaydırmayı takılmalı yapar, çünkü
+tarayıcı her konumda en yakın anahtar kareye gitmek zorunda.
+
+Seçimi JavaScript yapıyor. `<video>` içinde medya sorgulu `<source>`
+tarayıcılarda güvenilir değil; kaynak zaten `data-src` üzerinden atanıyordu,
+yanına `data-src-dar` eklendi.
+
+**Gerçek sinyaller duruyor:** `saveData` ve hareket azaltma tercihleri hâlâ
+videoyu tamamen engelliyor. Değişen şey, ekran genişliğinin artık bir **yasak**
+değil bir **seçim ölçütü** olması.
+
+**Yol üstünde bir israf daha çıktı.** Scroll videosu sayfa açılır açılmaz
+iniyordu, oysa bölüm ekranın çok aşağısında ve ziyaretçinin oraya hiç gelmeme
+ihtimali var. Artık bölüm bir ekran boyu yaklaşınca indiriliyor. Bu masaüstünü
+de iyileştirdi: ilk yükleme 7 MB'den 4.071 KB'ye indi.
+
+### Beyan edilen rakam değişti
+
+Vaka sayfası "503 KB · video isteği sıfır" diyordu. Bu artık doğru değil ve
+metrik yenisiyle değiştirildi:
+
+| | Önce | Sonra |
+|---|---|---|
+| Mobil ilk yükleme | 503 KB, video yok | **936 KB**, 395 KB'i video |
+| Masaüstü ilk yükleme | ~7 MB | **4.071 KB** |
+| Telefonda scroll pasosu | çalışmıyor | **çalışıyor** |
+
+Mobil yük arttı ve bu bilinçli: karşılığında telefon ziyaretçisi sayfanın
+tamamını görüyor. Asıl anlamlı rakam oran — mobil, masaüstü yükünün
+**%23'üyle** aynı deneyimi alıyor.
+
+
 ### Okuma ilerlemesi
 
 Menü şeridinin altında 1 piksellik bir çizgi okunan mesafeyi gösteriyor.
@@ -1246,7 +1304,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 295 birim/duman testi  (php tests/run.php)
+npm test          # 307 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -1270,7 +1328,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **295 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **307 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin** (panel dahil 12 sayfa/genişlik
 kombinasyonu), hero kontrastında **eşik altı 0 metin**, hareket denetiminde
 **8/8**.
