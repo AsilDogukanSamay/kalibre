@@ -41,6 +41,26 @@
        Muted ile arasindaki luminans farki artik cok kucuk; ayrimi punto ve
        harf araligi yapiyor. Token yine de duruyor cunku rol farki gercek. */
     --ink-faint:  172 185 196;
+    /* --- AGIRLIK OLCEGI ---
+       Koyu zeminde acik yazi optik olarak daha INCE gorunur; ayni agirlik
+       acik zeminde daha dolgun okunur. Bu yuzden govde 400 degil 470.
+       Kucuk puntoda fark daha belirgin oldugu icin bir kademe daha yukari.
+
+       BU BLOK MARKAYA DEGIL KOYU ZEMINE BAGLI, o yuzden varsayilan :root
+       icinde durur. Onceki halde yalnizca [data-brand="bosch"] icindeydi:
+       APP_BRAND=kalibre secildiginde sekiz token da karsiliksiz kaliyor,
+       font-variation-settings gecersiz oluyor ve olcek sessizce
+       kayboluyordu. "Marka degistirmek tek satir" iddiasi bu yuzden
+       yalnizca Bosch icin dogruydu. */
+    --wght-body:    470;
+    --wght-body-sm: 490;
+    --wght-label:   560;
+    --wght-eyebrow: 640;
+    --wght-readout: 650;
+    --wght-medium:  600;
+    --wght-strong:  660;
+    --wght-display: 730;
+
     --warn:       255 154 139;
     --good:        91 208 138;
 
@@ -77,21 +97,6 @@
        Dolgu, kenarlik ve ikonlar kurumsal --brand rengini kullanmaya
        devam ediyor. */
     --brand-text: 255  85 105;
-
-    /* --- AGIRLIK OLCEGI ---
-       Koyu zeminde acik yazi optik olarak daha INCE gorunur; ayni agirlik
-       acik zeminde daha dolgun okunur. Bu yuzden govde 400 degil 470.
-       Kucuk puntoda fark daha belirgin oldugu icin bir kademe daha yukari.
-       Degerler tek yerde durur: "su bilesen ince kalmis" diye tek tek elle
-       ayarlamak yerine olcek buradan kaydirilir. */
-    --wght-body:    470;
-    --wght-body-sm: 490;
-    --wght-label:   560;
-    --wght-eyebrow: 640;
-    --wght-readout: 650;
-    --wght-medium:  600;
-    --wght-strong:  660;
-    --wght-display: 730;
   }
 
   :root { color-scheme: dark; }

@@ -916,3 +916,23 @@ foreach (['win32', 'darwin', 'linux'] as $isletim) {
 }
 check('Chrome bulunamazsa ne yapilacagi soyleniyor',
     str_contains($cozucu, 'CHROME="/yol/chrome"'));
+
+/*
+ * AGIRLIK OLCEGI MARKADAN BAGIMSIZ OLMALI
+ *
+ * Sekiz --wght-* token'i yalnizca :root[data-brand="bosch"] icinde
+ * tanimliydi. APP_BRAND=kalibre secildiginde hepsi karsiliksiz kaliyor,
+ * font-variation-settings gecersiz oluyor ve olcek SESSIZCE kayboluyordu.
+ * "Marka degistirmek .env'de tek satir" iddiasi bu yuzden yalnizca Bosch
+ * icin dogruydu.
+ *
+ * Degerler markaya degil KOYU ZEMINE bagli (acik yazi koyu zeminde optik
+ * olarak daha ince gorunur), o yuzden varsayilan :root icinde dururlar.
+ */
+preg_match('/:root \{(.*?)\n  \}/s', $css, $kokBlok);
+preg_match('/:root\[data-brand="bosch"\] \{(.*?)\n  \}/s', $css, $boschBlok);
+check('agirlik olcegi varsayilan temada tanimli',
+    preg_match_all('/--wght-/', $kokBlok[1] ?? '') === 8,
+    'sayim: ' . preg_match_all('/--wght-/', $kokBlok[1] ?? ''));
+check('agirlik olcegi marka blogunda tekrarlanmiyor',
+    preg_match_all('/--wght-/', $boschBlok[1] ?? '') === 0);

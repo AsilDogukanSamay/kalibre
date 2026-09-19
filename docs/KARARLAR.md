@@ -1246,7 +1246,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 288 birim/duman testi  (php tests/run.php)
+npm test          # 290 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -1270,7 +1270,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **288 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **290 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin** (panel dahil 12 sayfa/genişlik
 kombinasyonu), hero kontrastında **eşik altı 0 metin**, hareket denetiminde
 **8/8**.
