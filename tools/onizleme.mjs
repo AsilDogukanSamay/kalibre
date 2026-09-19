@@ -58,7 +58,12 @@ function depoBilgisi() {
 function kokuNormallestir(deger) {
   let k = deger.trim().replace(/\\/g, '/');
   if (/^[A-Za-z]:/.test(k)) k = k.split('/').pop();
-  return '/' + k.replace(/^\/+|\/+$/g, '');
+  k = k.replace(/^\/+|\/+$/g, '');
+  /* KOK adresin alt dizin kismidir ve sona egik cizgi EKLENMEZ; yollar
+     `${KOK}/...` diye kuruluyor. Kullanici sayfasinda (ad.github.io) site
+     kokte yasar, o yuzden bos dizge dogru deger: "/" birakilsaydi butun
+     yollar "//..." olurdu ve tarayici onlari protokol-goreli adres sanardi. */
+  return k === '' ? '' : '/' + k;
 }
 
 const { sahip, depo } = depoBilgisi();
@@ -159,8 +164,10 @@ for (const { yol, dosya } of SAYFALAR) {
    ve CSP nonce'unu yakaladi (base64 degeri "/" ile baslayabiliyor). Ayrica
    varlik yollari nitelikten bagimsiz olarak da taranir - asil ariza bicimi
    odur. */
+/* Kok adreste (kullanici/organizasyon sayfasi) yollarin "/" ile baslamasi
+   ZATEN dogrudur; denetim yalnizca alt dizin kullanildiginda anlamli. */
 const kacanlar = [];
-for (const { dosya } of SAYFALAR) {
+for (const { dosya } of KOK === '' ? [] : SAYFALAR) {
   const icerik = await readFile(path.join(CIKTI, dosya), 'utf8');
   const onek = KOK.slice(1);
 
