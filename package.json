@@ -16,10 +16,13 @@
     "yerlesim": "node tests/yerlesim.mjs",
     "denetim": "npm test && npm run yerlesim && npm run kontrast && npm run hero && npm run hareket",
     "hero": "node tests/hero-kontrast.mjs",
-    "hareket": "node tests/hareket.mjs"
+    "hareket": "node tests/hareket.mjs",
+    "onizleme": "node tools/onizleme.mjs",
+    "onizleme:yayinla": "npm run onizleme && gh-pages -d onizleme --dotfiles -m \"Statik onizleme guncellendi\""
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.17",
-    "playwright-core": "^1.63.0"
+    "gh-pages": "^6.3.0",
+    "playwright-core": "^1.63.0",
+    "tailwindcss": "^3.4.17"
   }
 }

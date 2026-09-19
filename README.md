@@ -22,6 +22,25 @@ altında bu bilgilendirme görünür.
 
 ---
 
+## 0. Canlı önizleme
+
+**https://asildogukansamay.github.io/kalibre-landing/**
+
+Statik bir önizlemedir: tasarım, hero ve scroll videoları, scroll paralaksı,
+öncesi/sonrası sürgüsü, sayaçlar, SSS akordeonu ve geri sayım çalışır.
+**İletişim formu çalışmaz** — GitHub Pages PHP çalıştırmaz, arkasında backend
+yoktur. Önizlemede form görünür biçimde devre dışıdır ve yanında bunu söyleyen
+bir not durur; sessizce bozuk görünmesindense açıkça kapalı olması doğru.
+
+Formun doğrulama, PDO ve bildirim katmanlarıyla birlikte çalıştığını görmek
+için projeyi aşağıdaki gibi kurun. Önizleme `npm run onizleme:yayinla` ile
+üretilir; kaynağı `tools/onizleme.mjs`.
+
+Sayfalar arama motorlarına kapalıdır (`noindex`): gerçek bir markanın kurumsal
+kimliğini taşıyan bu sayfa bir vaka çalışmasıdır, bir işletme değil.
+
+---
+
 ## 1. Kurulum
 
 **Gereken:** PHP **8.1** veya üzeri (proje 8.4 ile geliştirildi; alt sınırı

@@ -11,3 +11,6 @@ Thumbs.db
 
 # Denetim ekran goruntuleri (gecici cikti)
 .cikti/
+
+# Statik onizleme ciktisi (gh-pages dalina gider)
+onizleme/
