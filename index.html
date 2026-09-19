@@ -88,12 +88,11 @@
              bile indiriyor; olculdu: mobilde 121 KB'lik dosya her yuklemede
              iniyordu. Ustelik hic gorunmuyor, cunku video oynayana kadar
              saydam ve arkasinda zaten <picture> duruyor. -->
-        <!-- Iki kaynak: dar ekranda 640 genislikteki surum iner (396 KB),
-             genis ekranda 1280'lik (3,4 MB). Secimi JavaScript yapar; <video>
-             icinde media sorgulu <source> tarayicilarda guvenilir degil. -->
+        <!-- Tek kaynak, tam cozunurluk. Mobil icin kucultulmus surum denendi
+             ve kaldirildi: her yeniden kodlama bir nesil kalite kaybi, kaynak
+             zaten 1280x720. Veri tasarrufu tercihi videoyu hala engelliyor. -->
         <video class="hero-media hero-video" id="heroVideo"
                data-src="/kalibre/assets/video/hero.mp4?v=6aa949c6"
-               data-src-dar="/kalibre/assets/video/hero-dar.mp4?v=6aaf19dc"
                muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
         <span class="hero-scrim"></span>
     </div>
@@ -267,11 +266,8 @@
             <img src="/kalibre/assets/img/paso.webp?v=6aaa3773"
                  alt="Pasta makinesiyle kaput üzerinde ilerleyen düzeltme pasosu"
                  width="1280" height="720" loading="lazy" decoding="async">
-            <!-- Dar ekranda 336 KB'lik surum iner. Scroll ile kaydirildigi icin
-                 dar surumde anahtar kare araligi 0,5 saniyeye cekildi; seyrek
-                 anahtar kare kaydirmayi takilmali yapar. -->
+            <!-- Tek kaynak, tam cozunurluk. Bolum yaklasana kadar indirilmez. -->
             <video id="scrubVideo" data-src="/kalibre/assets/video/paso.mp4?v=6aaa3773"
-                   data-src-dar="/kalibre/assets/video/paso-dar.mp4?v=6aaf19dc"
                    poster="/kalibre/assets/img/paso.webp?v=6aaa3773"
                    muted playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
             <span class="scrub-dull"></span>
@@ -976,7 +972,7 @@
 <!-- Schema.org LocalBusiness: adres, telefon ve calisma saatlerinin
      arama sonucunda zengin sonuc olarak cikabilmesi icin.
      nonce: CSP script-src satir ici bloklari nonce ile kabul eder. -->
-<script type="application/ld+json" nonce="st44+lMnVujMK0mIYLyZXw==">
+<script type="application/ld+json" nonce="8fOwzTHAvr4NmP0NwIPiLA==">
 {
     "@context": "https://schema.org",
     "@type": "AutoDetailing",
@@ -1021,7 +1017,7 @@
     "priceRange": "₺₺₺"
 }</script>
 
-<script src="/kalibre/assets/js/app.js?v=6aaf16d2" defer></script>
+<script src="/kalibre/assets/js/app.js?v=6aaf1af8" defer></script>
 <script src="/kalibre/onizleme.js" defer></script>
 </body>
 </html>
