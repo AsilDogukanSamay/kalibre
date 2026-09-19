@@ -84,9 +84,11 @@ function yollariTasi(html) {
   return html
     /* Adres tasiyan her nitelik. Onceki desen yalnizca href/src/action/srcset
        tanıyordu ve <video poster="..."> gozden kacti: statik onizlemede
-       paso.webp 404 donuyordu. Basina ek alan nitelikler de kapsanir
-       (data-src, data-poster gibi). "//" ile baslayanlara dokunulmaz. */
-    .replace(/([a-zA-Z-]*(?:href|src|srcset|action|poster))="\/(?!\/)/g, `$1="${KOK}/`)
+       paso.webp 404 donuyordu. Nitelik adinin ONUNE ve ARKASINA ek alan
+       biçimler de kapsanir: data-src, data-src-dar gibi. Ikincisi de gozden
+       kacti ve mobil video surumleri yayinlanamadi - cikti denetimi yakaladi.
+       "//" ile baslayanlara dokunulmaz. */
+    .replace(/([a-zA-Z-]*(?:href|src|srcset|action|poster)[a-zA-Z-]*)="\/(?!\/)/g, `$1="${KOK}/`)
     // canonical, og:url ve JSON-LD icindeki yerel adres
     .replace(new RegExp(TABAN.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), GENEL);
 }
@@ -172,7 +174,7 @@ for (const { dosya } of KOK === '' ? [] : SAYFALAR) {
   const onek = KOK.slice(1);
 
   for (const [, nitelik] of icerik.matchAll(
-    new RegExp(`([a-zA-Z-]*(?:href|src|srcset|action|poster))="/(?!/)(?!${onek})[^"]*"`, 'g'),
+    new RegExp(`([a-zA-Z-]*(?:href|src|srcset|action|poster)[a-zA-Z-]*)="/(?!/)(?!${onek})[^"]*"`, 'g'),
   )) {
     kacanlar.push(`${dosya}: ${nitelik}`);
   }
