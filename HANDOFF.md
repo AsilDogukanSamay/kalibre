@@ -294,6 +294,14 @@ Son oturumlarda yapılanlar, en yeniden eskiye:
 
 | Ne | Özet |
 |---|---|
+| **Canlı önizleme** | `asildogukansamay.github.io/kalibre/` — statik kopya, `npm run onizleme:yayinla` ile üretilir (`tools/onizleme.mjs`). Form orada devre dışı, sayfalar `noindex` |
+| **Depo adı** | `kalibre-landing` → **`kalibre`**. Bu makinedeki klasör hâlâ eski adı taşıyor; GitHub eski adresi yönlendiriyor |
+| **Video kalitesi** | Cihaza göre düşürülmüyor: her yerde 1280×720 kaynak. İki tur küçültme denendi, ikisi de geri alındı (gerekçe KARARLAR 7j) |
+| **Scroll videosu** | Sayfa açılırken inmiyor; bölüm bir ekran boyu yaklaşınca iniyor. Masaüstü ilk yükleme ~7 MB → 4.071 KB |
+| **Sayfa başlıkları** | `/case` ana sayfayla aynı başlığı taşıyordu; dördü de artık farklı |
+| **Temiz klon** | Boş makinede kurulum ölçüldü: 7 rota 200, form kayıt yazıyor, 303 test geçiyor |
+| **Denetimler** | İşletim sisteminden bağımsız: Chrome yolu Windows/macOS/Linux'ta aranıyor (`tests/chrome-yolu.mjs`) |
+| **Commit biçimi** | §2b'de tanımlı: emir kipi, 60 karakter, Türkçe karakter, konu satırında gerekçe yok |
 | **Ritim ve ton** | Sayfa dört tonal bölüme ayrıldı (`--surface-950` eklendi). Ton tek tek bölüme değil **bölüm grubuna** veriliyor; sırayla vermek şerit etkisi yapıyordu |
 | **Kırmızı disiplini** | On bölümün etiketi kırmızıydı; üç durağa indi (hero ölçümü, fiyat, randevu). Test en fazla üçe izin veriyor |
 | **Geri sayım kaldırıldı** | İndirim sayacı sayfanın ölçüm tonuyla çelişiyordu. Şablon, JS, CSS ve `.env` anahtarı birlikte gitti |
