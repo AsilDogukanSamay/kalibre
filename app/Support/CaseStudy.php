@@ -138,19 +138,20 @@ final class CaseStudy
                     'note'  => 'Canlı DOM\'da style attribute\'u taşıyan eleman sayısı. Test otomatik doğruluyor.',
                 ],
                 [
-                    // Bu rakam bir tur degisti: mobilde video artik INIYOR.
-                    // Onceki halde 640 pikselin altinda video hic indirilmiyordu
-                    // (503 KB, video istegi 0) ama sayfanin imza etkilesimi olan
-                    // scroll pasosu telefonda tamamen kayboluyordu. Yasaklamak
-                    // yerine kucuk surum gonderiliyor.
-                    'value' => '%35',
-                    'label' => 'Mobil veri payı',
-                    'note'  => 'Telefonda ilk yükleme 1.408 KB; aynı sayfa masaüstünde 4.071 KB. Fark videodan geliyor: dar ekranda 960 piksele kodlanmış sürüm iniyor (hero 3,4 MB yerine 868 KB, scroll pasosu 3,1 MB yerine 1,1 MB). İlk denemede 640 piksele kodlanmıştı ve telefonda görünür biçimde bulanıktı; kareler yan yana konup karşılaştırıldı. Scroll videosu ayrıca bölüm yaklaşana kadar hiç indirilmiyor.',
+                    // Bu metrik iki kez degisti. Once "503 KB, video istegi 0"
+                    // idi: mobilde video hic inmiyordu ve sayfanin imza
+                    // etkilesimi telefonda kayboluyordu. Sonra kucultulmus
+                    // surumler denendi. Son karar tam cozunurluk: her yeniden
+                    // kodlama bir nesil kalite kaybi ve sayfa bir portfolyo
+                    // calismasi. Kalan kazanim erteleme, sikistirma degil.
+                    'value' => '4.071 KB',
+                    'label' => 'İlk yükleme',
+                    'note'  => 'Hero videosu dahil, her cihazda aynı 1280×720 kaynak iniyor; kalite cihaza göre düşürülmüyor. Scroll pasosunun videosu (3,1 MB) ilk yüklemeye dahil değil: bölüm bir ekran boyu yaklaşana kadar hiç indirilmiyor. Veri tasarrufu ve hareket azaltma tercihlerinde video hiç istenmiyor.',
                 ],
                 [
                     // Bu rakam elle guncellenmez: tests/run.php sonunda kendi
                     // toplamiyla karsilastiriliyor, eskirse test kaliyor.
-                    'value' => '309',
+                    'value' => '303',
                     'label' => 'Geçen test',
                     'note'  => 'Doğrulama, kurumsal kimlik, güvenlik başlıkları, CSRF, giriş freni, prepared statement ve şablon katmanları. Harici bağımlılık yok.',
                 ],

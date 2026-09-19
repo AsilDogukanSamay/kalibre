@@ -28,11 +28,8 @@
             <img src="<?= e(asset('img/paso.webp')) ?>"
                  alt="Pasta makinesiyle kaput üzerinde ilerleyen düzeltme pasosu"
                  width="1280" height="720" loading="lazy" decoding="async">
-            <!-- Dar ekranda 336 KB'lik surum iner. Scroll ile kaydirildigi icin
-                 dar surumde anahtar kare araligi 0,5 saniyeye cekildi; seyrek
-                 anahtar kare kaydirmayi takilmali yapar. -->
+            <!-- Tek kaynak, tam cozunurluk. Bolum yaklasana kadar indirilmez. -->
             <video id="scrubVideo" data-src="<?= e(asset('video/paso.mp4')) ?>"
-                   data-src-dar="<?= e(asset('video/paso-dar.mp4')) ?>"
                    poster="<?= e(asset('img/paso.webp')) ?>"
                    muted playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
             <span class="scrub-dull"></span>

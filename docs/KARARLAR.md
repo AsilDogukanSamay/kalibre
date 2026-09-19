@@ -1045,27 +1045,27 @@ anını hiç görmüyordu.
 **Çözüm yasaklamak değil, küçültmek oldu.** Dar ekran için 640 piksele
 kodlanmış sürümler üretildi:
 
-**İlk deneme fazla sıkıştırılmıştı.** 640 piksele kodlanmışlardı ve telefonda
-görünür biçimde bulanıktılar: su damlacıkları ve swirl izleri dağılıyordu.
-Sebep basit bir yanlış hesap — modern bir telefon 390 CSS pikselde DPR 3 ile
-**~1170 fiziksel piksel** gösteriyor, 640 piksel oraya yetmiyor.
+**İki tur küçültme denendi ve ikisi de geri alındı.** Önce 640 piksele
+kodlandı; telefonda görünür biçimde bulanıktı, çünkü modern bir telefon
+390 CSS pikselde DPR 3 ile **~1170 fiziksel piksel** gösteriyor. Sonra 960
+piksele çıkarıldı; bu kabul edilebilirdi ama hâlâ kaynağın altındaydı.
 
-Kareler yan yana konup karşılaştırıldı ve çözünürlük 960 piksele çıkarıldı.
-İki videoya farklı kalite verildi, çünkü rolleri farklı: hero ağır bir perdenin
-arkasında ve üzerinde yazı var; scroll pasosu ise tam ekran ve asıl içerik.
+Son karar: **cihaza göre kalite düşürülmüyor.** Her yeniden kodlama bir
+nesil kalite kaybı getiriyor, kaynak zaten 1280×720 ve bu sayfa bir
+portföy çalışması — orada öncelik görüntü kalitesi, bayt değil. Küçültülmüş
+sürümler kaldırıldı, kaynak seçimi mantığı da.
 
-| Dosya | Geniş | Dar | Ayar | Oran |
-|---|---|---|---|---|
-| hero | 3,4 MB | **868 KB** | 960p, CRF 29 | 4,0× |
-| paso | 3,1 MB | **1,1 MB** | 960p, CRF 23 | 3,0× |
+Kalan kazanım **sıkıştırma değil erteleme**: scroll pasosunun videosu
+(3,1 MB) sayfa açılırken hiç indirilmiyor, bölüm bir ekran boyu yaklaşınca
+iniyor. Ziyaretçinin oraya hiç gelmeme ihtimali var ve bu kazanç hiçbir
+kalite tavizi istemiyor.
 
-Scroll pasosunun dar sürümünde anahtar kare aralığı yarım saniyeye çekildi
-(`-g 12`, 24 fps): seyrek anahtar kare kaydırmayı takılmalı yapar, çünkü
-tarayıcı her konumda en yakın anahtar kareye gitmek zorunda.
-
-Seçimi JavaScript yapıyor. `<video>` içinde medya sorgulu `<source>`
-tarayıcılarda güvenilir değil; kaynak zaten `data-src` üzerinden atanıyordu,
-yanına `data-src-dar` eklendi.
+| | Önce | Sonra |
+|---|---|---|
+| Mobilde video | yok | **1280×720, masaüstüyle aynı** |
+| Mobil ilk yükleme | 503 KB | **3.970 KB** |
+| Masaüstü ilk yükleme | ~7 MB | **4.071 KB** |
+| Telefonda scroll pasosu | çalışmıyor | **çalışıyor** |
 
 **Gerçek sinyaller duruyor:** `saveData` ve hareket azaltma tercihleri hâlâ
 videoyu tamamen engelliyor. Değişen şey, ekran genişliğinin artık bir **yasak**
@@ -1081,15 +1081,9 @@ de iyileştirdi: ilk yükleme 7 MB'den 4.071 KB'ye indi.
 Vaka sayfası "503 KB · video isteği sıfır" diyordu. Bu artık doğru değil ve
 metrik yenisiyle değiştirildi:
 
-| | Önce | Sonra |
-|---|---|---|
-| Mobil ilk yükleme | 503 KB, video yok | **1.408 KB**, 866 KB'i video |
-| Masaüstü ilk yükleme | ~7 MB | **4.071 KB** |
-| Telefonda scroll pasosu | çalışmıyor | **çalışıyor** |
-
-Mobil yük arttı ve bu bilinçli: karşılığında telefon ziyaretçisi sayfanın
-tamamını görüyor. Asıl anlamlı rakam oran — mobil, masaüstü yükünün
-**%35'iyle** aynı deneyimi alıyor.
+Mobil yük arttı ve bu bilinçli: karşılığında telefon ziyaretçisi sayfayı
+masaüstüyle aynı kalitede görüyor. Veri tasarrufu tercihi açıksa video yine
+hiç indirilmiyor — karar, tercihini belirtmemiş kullanıcı için verildi.
 
 
 ### Okuma ilerlemesi
@@ -1313,7 +1307,7 @@ bu katman oraya uğramaz.
 ## 9. Testler
 
 ```bash
-npm test          # 309 birim/duman testi  (php tests/run.php)
+npm test          # 303 birim/duman testi  (php tests/run.php)
 npm run yerlesim  # yerlesim denetimi      (6 genislik x 5 sayfa)
 npm run kontrast  # kontrast denetimi      (WCAG AA, duz zeminler)
 npm run hero      # hero kontrasti         (piksel yontemi, video uzerinde)
@@ -1337,7 +1331,7 @@ ortam değişkeninden verilir:
 PANEL_USER=... PANEL_PASS=... npm run kontrast
 ```
 
-Mevcut durum: **309 test geçiyor**, yerleşim denetiminde **0 kusur**,
+Mevcut durum: **303 test geçiyor**, yerleşim denetiminde **0 kusur**,
 kontrast denetiminde **eşik altı 0 metin** (panel dahil 12 sayfa/genişlik
 kombinasyonu), hero kontrastında **eşik altı 0 metin**, hareket denetiminde
 **8/8**.

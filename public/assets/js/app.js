@@ -529,9 +529,10 @@
    * baglantiya bakmiyordu, ve sayfanin imza etkilesimi olan scroll pasosu
    * telefonda tamamen kayboluyordu.
    *
-   * Cozum yasaklamak degil, KUCUK SURUM gondermek. Dar ekranda 640 genislikte
-   * kodlanmis surumler iniyor: hero 3,4 MB yerine 396 KB, paso 3,1 MB yerine
-   * 336 KB. Takas ortadan kalkti.
+   * Once kucultulmus mobil surumler denendi (640p, sonra 960p). Ikisi de
+   * kaldirildi: her yeniden kodlama bir nesil kalite kaybi getiriyor ve
+   * kaynak zaten 1280x720. Sayfa bir portfolyo calismasi; oncelik goruntu
+   * kalitesi. Genislik artik hicbir sey belirlemiyor.
    *
    * Veri tasarrufu ve hareket azaltma tercihleri GERCEK sinyaller oldugu icin
    * durmaya devam ediyor.
@@ -541,10 +542,6 @@
     return !reduceMotion && conn.saveData !== true;
   }
 
-  function videoKaynagi(el) {
-    const dar = window.innerWidth < 640 && el.dataset.srcDar;
-    return dar ? el.dataset.srcDar : el.dataset.src;
-  }
 
   /* ------------------------------------------------------------------
    * Hero arka plan videosu
@@ -560,7 +557,7 @@
     if (!videoIndirilebilir()) return;
 
     video.preload = 'auto';
-    video.src = videoKaynagi(video);
+    video.src = video.dataset.src;
     video.addEventListener('canplay', () => {
       const played = video.play();
       if (played && played.then) {
@@ -613,7 +610,7 @@
       video.addEventListener('loadedmetadata', enable);
       video.addEventListener('error', () => stage.classList.remove('scrub-stage-video'));
       video.preload = 'auto';
-      video.src = videoKaynagi(video);
+      video.src = video.dataset.src;
       if (video.readyState >= 1) enable();
     }
 

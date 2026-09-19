@@ -972,37 +972,26 @@ check('hicbir sayfa baska bir sayfayla ayni basligi tasimiyor',
     implode(' | ', $tumBasliklar));
 
 /*
- * MOBILDE VIDEO: YASAKLAMAK DEGIL, KUCUK SURUM GONDERMEK
+ * MOBILDE VIDEO: TAM COZUNURLUK
  *
- * Her iki video da 640 pikselin ALTINDA hic indirilmiyordu. Gerekce mobil
- * veriydi ve dogruydu, ama kapi kabaydi: genislige bakiyor baglantiya
- * bakmiyordu, ve sayfanin imza etkilesimi olan scroll pasosu telefonda
- * tamamen kayboluyordu.
+ * Her iki video da once 640 pikselin ALTINDA hic indirilmiyordu; gerekce
+ * mobil veriydi ama sayfanin imza etkilesimi olan scroll pasosu telefonda
+ * tamamen kayboluyordu. Sonra kucultulmus surumler denendi (640p, ardindan
+ * 960p) ve ikisi de kaldirildi: her yeniden kodlama bir nesil kalite kaybi
+ * getiriyor, kaynak zaten 1280x720 ve sayfa bir portfolyo calismasi -
+ * oncelik goruntu kalitesi.
  *
- * Artik dar ekranda 640 genislikte kodlanmis surumler iniyor. Takas kalkti:
- * hero 3,4 MB -> 396 KB, paso 3,1 MB -> 336 KB.
+ * Genislik artik hicbir sey belirlemiyor. Veri tasarrufu ve hareket azaltma
+ * tercihleri GERCEK sinyaller oldugu icin durmaya devam ediyor.
  */
-foreach (['hero' => 'hero-dar', 'paso' => 'paso-dar'] as $genis => $dar) {
-    $yolGenis = $root . "/public/assets/video/$genis.mp4";
-    $yolDar   = $root . "/public/assets/video/$dar.mp4";
-    check("dar ekran surumu var: $dar.mp4", is_file($yolDar));
-    /* Esik 4 kattan 2,5 kata cekildi: ilk surumler 640 piksele kodlanmisti
-       ve telefonda GORUNUR bicimde bulaniktı (su damlaciklari ve swirl
-       izleri dagiliyordu). 960 piksele cikinca oran dogal olarak dustu.
-       Olculen sey "ne kadar kucuk" degil, "anlamli olcude kucuk mu". */
-    check("dar surum belirgin kucuk: $dar.mp4",
-        is_file($yolDar) && is_file($yolGenis) && filesize($yolDar) < filesize($yolGenis) / 2.5,
-        is_file($yolDar) ? round(filesize($yolDar) / 1024) . ' KB / ' . round(filesize($yolGenis) / 1024) . ' KB' : '-');
+check('tek video kaynagi var, kucultulmus surum yok',
+    !str_contains($home, 'data-src-dar') && !str_contains($js, 'videoKaynagi'));
+foreach (['hero-dar', 'paso-dar'] as $kaldirilan) {
+    check("kucultulmus surum kalmadi: $kaldirilan.mp4",
+        !is_file($root . "/public/assets/video/$kaldirilan.mp4"));
 }
-check('hero videosu iki kaynak tasiyor', str_contains($home, 'data-src-dar'));
-check('scroll videosu iki kaynak tasiyor', substr_count($home, 'data-src-dar') === 2);
-
-// Genislik artik ENGEL degil, yalnizca KAYNAK SECIMI.
-check('genislik kapisi kaldirildi',
-    !preg_match('/innerWidth\s*<\s*640\s*\)\s*\{?\s*\n?\s*return/', $js)
-    && !preg_match('/innerWidth\s*>=\s*640/', $js));
-check('genislik kaynak secimi icin kullaniliyor',
-    (bool) preg_match('/function videoKaynagi[\s\S]{0,200}innerWidth < 640/', $js));
+check('genislik videoyu artik engellemiyor',
+    !preg_match('/innerWidth\s*<\s*640/', $js) && !preg_match('/innerWidth\s*>=\s*640/', $js));
 
 // Gercek sinyaller duruyor.
 check('veri tasarrufu tercihine uyuluyor', str_contains($js, "conn.saveData !== true"));
@@ -1012,26 +1001,8 @@ check('hareket azaltma tercihine uyuluyor',
 /*
  * Scroll videosu sayfa acilir acilmaz degil, BOLUM YAKLASINCA iner.
  * Onceki halde 3 MB pesinen iniyordu; ziyaretcinin oraya hic gelmeme
- * ihtimali var.
+ * ihtimali var. Kalite tavizi olmadigi icin bu karar korundu.
  */
-check('scroll videosu tembel yukleniyor',
-    (bool) preg_match("/rootMargin: '100% 0px'/", $js));
+check('scroll videosu tembel yukleniyor', (bool) preg_match("/rootMargin: '100% 0px'/", $js));
 check('scroll videosu bir kez yuklenir', str_contains($js, 'videoBaslatildi'));
 
-/*
- * Dar surumlerin cozunurlugu. Ilk denemede 640 piksele kodlanmislardi ve
- * telefonda gorunur bicimde bulaniktı: modern bir telefon 390 CSS pikselde
- * DPR 3 ile ~1170 fiziksel piksel gosteriyor. 960 piksel alt sinir.
- */
-foreach (['hero-dar', 'paso-dar'] as $dosya) {
-    $yol = $root . "/public/assets/video/$dosya.mp4";
-    $genislik = 0;
-    if (is_file($yol)) {
-        $cikti = @shell_exec('ffprobe -v error -select_streams v -show_entries stream=width -of csv=p=0 '
-            . escapeshellarg($yol));
-        $genislik = (int) trim((string) $cikti);
-    }
-    // ffprobe yoksa test atlanmaz, gecer: kurulum sartina baglamak dogru olmaz.
-    check("dar surum cozunurlugu yeterli: $dosya.mp4", $genislik === 0 || $genislik >= 960,
-        $genislik ? $genislik . 'px' : 'ffprobe yok, atlandi');
-}
